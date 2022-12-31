@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "writedown2022"
+version = "0.1.0"
+description = ""
+authors = ["yezi <yehaowei20060411@qq.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+backoff = "^2.2.1"
+jianshuresearchtools = "^2.10.1"
+pyecharts = "^1.9.1"
+jieba = "^0.42.1"
+pymongo = "^4.3.3"
+pywebio = "^1.7.1"
+pyyaml = "^6.0"
+
+
+[tool.poetry.group.dev.dependencies]
+flake8 = ">=5.0.0"
+mypy = "^0.991"
+black = "^22.12.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
