@@ -25,8 +25,8 @@ class User(DataModel):
     attr_db_key_mapping: Dict[str, str] = {
         "id": "_id",
         "status": "status",
-        "user_name": "user.name",
-        "user_url": "user.url",
+        "name": "user.name",
+        "url": "user.url",
         "heat_graph_show_count": "show_count.heat_graph",
         "wordcloud_show_count": "show_count.wordcloud",
         "join_queue_time": "timestamp.join_queue",
@@ -41,8 +41,8 @@ class User(DataModel):
         self,
         id: str,
         status: int,
-        user_name: str,
-        user_url: str,
+        name: str,
+        url: str,
         heat_graph_show_count: int,
         wordcloud_show_count: int,
         join_queue_time: datetime,
@@ -53,8 +53,8 @@ class User(DataModel):
     ) -> None:
         self.id = id
         self.status = status
-        self.user_name = user_name
-        self.user_url = user_url
+        self.name = name
+        self.url = url
         self.heat_graphshow_count = heat_graph_show_count
         self.wordcloud_show_count = wordcloud_show_count
         self.join_queue_time = join_queue_time
