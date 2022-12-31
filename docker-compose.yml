@@ -1,0 +1,28 @@
+version: "3"
+
+networks:
+  mongodb:
+    external: true
+
+services:
+  main:
+    image: write-down-2022:0.1.0
+    build: .
+    ports:
+      - "8607:8607"
+    volumes:
+      - "./config.yaml:/app/config.yaml:ro"
+    networks:
+      - mongodb
+    environment:
+      - PYTHONUNBUFFERED=1
+    deploy:
+      resources:
+        limits:
+          cpus: "1.00"
+          memory: 384M
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+    stop_grace_period: 5s
