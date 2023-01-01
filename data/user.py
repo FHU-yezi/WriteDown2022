@@ -33,7 +33,8 @@ class User(DataModel):
         "start_fetch_time": "timestamp.start_fetch",
         "end_fetch_time": "timestamp.end_fetch",
         "first_show_time": "timestamp.first_show",
-        "last_show_time": "timestamp.last_show"
+        "last_show_time": "timestamp.last_show",
+        "fetch_start_id": "fetch_start_id",
     }
     db_key_attr_mapping = get_reversed_dict(attr_db_key_mapping)
 
@@ -50,6 +51,7 @@ class User(DataModel):
         end_fetch_time: datetime,
         first_show_time: datetime,
         last_show_time: datetime,
+        fetch_start_id: int,
     ) -> None:
         self.id = id
         self.status = status
@@ -62,6 +64,7 @@ class User(DataModel):
         self.end_fetch_time = end_fetch_time
         self.first_show_time = first_show_time
         self.last_show_time = last_show_time
+        self.fetch_start_id = fetch_start_id
 
         super().__init__()
 
@@ -152,4 +155,8 @@ class User(DataModel):
     def set_status_error(self) -> None:
         self.status = UserStatus.ERROR
         self.end_fetch_time = datetime.now()
+        self.sync()
+
+    def set_fetch_start_id(self, start_id: int) -> None:
+        self.fetch_start_id = start_id
         self.sync()
