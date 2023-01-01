@@ -1,5 +1,5 @@
 from collections import Counter
-from typing import Generator, Sequence, Set
+from typing import Generator, Iterable, Set
 
 from jieba import load_userdict
 from jieba import logging as jieba_logging
@@ -18,7 +18,7 @@ jieba_logging.disable()
 load_userdict("word_split_assets/hotwords.txt")
 
 
-def get_word_freq(text_list: Sequence[str]) -> Counter:
+def get_word_freq(text_list: Iterable[str]) -> Counter:
     result: Counter = Counter()
 
     for text in text_list:
