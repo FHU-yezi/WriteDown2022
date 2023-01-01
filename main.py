@@ -1,10 +1,66 @@
-from pywebio import start_server
+from typing import Callable, List
 
-from app.index import index
+from pywebio import start_server
+from pywebio.output import put_markdown
+
 from utils.config import config
+from utils.module_finder import Module, get_all_modules_info
+from utils.page import get_base_url
+from utils.patch import patch_all
+from widgets.card import put_app_card
+
+NAME: str = "落格"
+DESC: str = ""
+VISIBILITY: bool = False
+
+modules_list = get_all_modules_info(config.base_path)
+
+
+def get_jump_link(base_url: str, module_name: str) -> str:
+    return f"{base_url}?app={module_name}"
+
+
+def index():
+    """落格"""
+    put_markdown(
+        f"""
+        # 落格
+
+        版本：{config.version}
+        """
+    )
+
+    config.refresh()
+
+    base_url: str = get_base_url()
+    for module in modules_list:
+        if not module.page_visibility:
+            continue
+
+        put_app_card(
+            name=module.page_name,
+            url=get_jump_link(base_url, module.page_func_name),
+            desc=module.page_desc,
+        )
+
+
+modules_list.append(
+    Module(
+        page_func_name="index",
+        page_func=index,
+        page_name="落格",
+        page_desc="",
+        page_visibility=False,
+    )
+)
+
+func_list: List[Callable[[], None]] = [
+    patch_all(module).page_func for module in modules_list
+]
+
 
 start_server(
-    [index],
+    func_list,
     host="0.0.0.0",
     port=config.deploy.port,
     debug=config.deploy.debug,

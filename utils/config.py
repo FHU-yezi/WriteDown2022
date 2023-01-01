@@ -7,6 +7,7 @@ from yaml import load as yaml_load
 
 _DEFAULT_CONFIG = {
     "version": "v0.1.0",
+    "base_path": "./app",
     "deploy": {
         "debug": False,
         "enable_PyWebIO_CDN": False,
