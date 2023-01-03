@@ -1,6 +1,6 @@
 from datetime import datetime
 from enum import IntEnum
-from typing import Dict
+from typing import Dict, Optional
 
 from bson import ObjectId
 from JianshuResearchTools.assert_funcs import (
@@ -160,3 +160,19 @@ class User(DataModel):
     def set_fetch_start_id(self, start_id: int) -> None:
         self.fetch_start_id = start_id
         self.sync()
+
+
+def get_waiting_user() -> Optional[User]:
+    db_result = (
+        user_data_db.find(
+            {
+                "status": UserStatus.WAITING,
+            },
+        )
+        .sort([("timestamp.join_queue", 1)])
+        .limit(1)
+    ).next()
+
+    if not db_result:
+        return None
+    return User.from_db_data(db_result)

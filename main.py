@@ -3,6 +3,7 @@ from typing import Callable, List
 from pywebio import start_server
 from pywebio.output import put_markdown
 
+from queue_processor import start_queue_processor_threads
 from utils.config import config
 from utils.module_finder import Module, get_all_modules_info
 from utils.page import get_base_url
@@ -58,6 +59,7 @@ func_list: List[Callable[[], None]] = [
     patch_all(module).page_func for module in modules_list
 ]
 
+start_queue_processor_threads()
 
 start_server(
     func_list,

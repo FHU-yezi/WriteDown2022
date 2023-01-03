@@ -7,11 +7,9 @@ from jieba.posseg import cut
 
 ALLOWED_WORD_TYPES: Set[str] = {
     x.strip()
-    for x in open("word_split_assets/allowed_word_types", encoding="utf-8").readlines()
-}
-STOPWORDS: Set[str] = {
-    x.strip()
-    for x in open("word_split_assets/stopwords.txt", encoding="utf-8").readlines()
+    for x in open(
+        "word_split_assets/allowed_word_types.txt", encoding="utf-8"
+    ).readlines()
 }
 
 jieba_logging.disable()
@@ -27,7 +25,6 @@ def get_word_freq(text_list: Iterable[str]) -> Counter:
             for x in cut(text)
             if len(x.word) > 1
             and x.flag in ALLOWED_WORD_TYPES
-            and x.word not in STOPWORDS
         )
         result.update(Counter(word_list))
 
