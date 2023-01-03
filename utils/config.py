@@ -1,9 +1,8 @@
 from os import path as os_path
 from typing import Any, Dict
 
-from yaml import SafeLoader
-from yaml import dump as yaml_dump
-from yaml import load as yaml_load
+from yaml import safe_dump as yaml_dump
+from yaml import safe_load as yaml_load
 
 _DEFAULT_CONFIG = {
     "version": "v0.1.0",
@@ -14,6 +13,10 @@ _DEFAULT_CONFIG = {
         "PyWebIO_CDN": "",
         "PyEcharts_CDN": "",
         "port": 8080,
+    },
+    "queue_processor": {
+        "check_interval": 10,
+        "threads": 3,
     },
     "footer": "",
     "db": {
@@ -38,11 +41,17 @@ class Config:
     def __init__(self) -> None:
         if not os_path.exists("config.yaml"):  # 没有配置文件
             with open("config.yaml", "w", encoding="utf-8") as f:
-                yaml_dump(_DEFAULT_CONFIG, f, allow_unicode=True, indent=4)
+                yaml_dump(
+                    _DEFAULT_CONFIG,
+                    f,
+                    allow_unicode=True,
+                    indent=4,
+                    sort_keys=False,
+                )
             self._data = _DEFAULT_CONFIG
         else:  # 有配置文件
             with open("config.yaml", "r", encoding="utf-8") as f:
-                self._data = yaml_load(f, Loader=SafeLoader)
+                self._data = yaml_load(f)
 
     def __getattr__(self, name: str) -> Any:
         result: Any = self._data[name]

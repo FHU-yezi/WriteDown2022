@@ -5,13 +5,14 @@ from typing import List
 from analyzer import analyze_active_heat_graph, analyze_comment_word_freq
 from data.user import get_waiting_user
 from fetcher import fetch_timeline_data
+from utils.config import config
 
 
 def queue_processor_thread() -> None:
     while True:
         user = get_waiting_user()
         if not user:
-            sleep(10)
+            sleep(config.queue_processor.check_interval)
             continue
 
         fetch_timeline_data(user)
@@ -22,7 +23,7 @@ def queue_processor_thread() -> None:
 def start_queue_processor_threads() -> List[Thread]:
     threads_list: List[Thread] = []
 
-    for i in range(3):
+    for i in range(config.queue_processor.threads):
         thread = Thread(
             target=queue_processor_thread,
             name=f"queue-processor-{i}",
