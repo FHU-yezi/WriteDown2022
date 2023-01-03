@@ -5,6 +5,7 @@ from pywebio.output import put_markdown
 
 from queue_processor import start_queue_processor_threads
 from utils.config import config
+from utils.log import run_logger
 from utils.module_finder import Module, get_all_modules_info
 from utils.page import get_jump_link
 from utils.patch import patch_all
@@ -15,6 +16,7 @@ DESC: str = ""
 VISIBILITY: bool = False
 
 modules_list = get_all_modules_info(config.base_path)
+run_logger.debug(f"模块数量：{len(modules_list)}")
 
 
 def index():
@@ -53,9 +55,13 @@ modules_list.append(
 func_list: List[Callable[[], None]] = [
     patch_all(module).page_func for module in modules_list
 ]
+run_logger.debug("视图函数代码注入已完成")
 
 start_queue_processor_threads()
+run_logger.debug("队列处理线程已启动")
 
+run_logger.debug("正在启动网页服务")
+run_logger.info("服务启动")
 start_server(
     func_list,
     host="0.0.0.0",
