@@ -53,6 +53,9 @@ def fetch_timeline_data(user: User) -> None:
 
     buffer: List[Dict] = []
     for item in get_all_data(user.url, user.fetch_start_id):
+        if not STRAT_TIME < item["operation_time"] < STOP_TIME:
+            continue  # 不在 2022 年内
+
         item["from_user"] = user.id
         item["fetch_time"] = datetime.now()
 
