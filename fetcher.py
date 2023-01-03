@@ -45,6 +45,12 @@ def fetch_timeline_data(user: User) -> None:
         raise ValueError
     user.set_status_fetching()
 
+    if user.fetch_start_id:
+        run_logger.warning(
+            f"用户 {user.id}（{user.name} / {user.url}）上次采集任务未完成，"
+            f"将从 {user.fetch_start_id} 处继续采集"
+        )
+
     buffer: List[Dict] = []
     for item in get_all_data(user.url, user.fetch_start_id):
         item["from_user"] = user.id

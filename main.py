@@ -3,7 +3,7 @@ from typing import Callable, List
 from pywebio import start_server
 from pywebio.output import put_markdown
 
-from queue_processor import start_queue_processor_threads
+from queue_processor import clean_unfinished_job, start_queue_processor_threads
 from utils.config import config
 from utils.log import run_logger
 from utils.module_finder import Module, get_all_modules_info
@@ -56,6 +56,9 @@ func_list: List[Callable[[], None]] = [
     patch_all(module).page_func for module in modules_list
 ]
 run_logger.debug("视图函数代码注入已完成")
+
+clean_unfinished_job()
+run_logger.debug("已清理未完成的任务")
 
 start_queue_processor_threads()
 run_logger.debug("队列处理线程已启动")

@@ -1,11 +1,13 @@
+from datetime import datetime
 from threading import Thread
 from time import sleep
 from typing import List
 
 from analyzer import analyze_active_heat_graph, analyze_comment_word_freq
-from data.user import get_waiting_user
+from data.user import UserStatus, get_waiting_user
 from fetcher import fetch_timeline_data
 from utils.config import config
+from utils.db import user_data_db
 from utils.log import run_logger
 
 
@@ -20,6 +22,24 @@ def queue_processor_thread() -> None:
         fetch_timeline_data(user)
         analyze_active_heat_graph(user)
         analyze_comment_word_freq(user)
+
+
+def clean_unfinished_job() -> None:
+    cleaned_count = user_data_db.update_many(
+        {
+            "status": UserStatus.FETCHING,
+        },
+        {
+            "$set": {
+                "status": UserStatus.WAITING,
+                "timestamp.start_fetch": datetime.now(),
+            }
+        },
+    ).modified_count
+    if cleaned_count:
+        run_logger.warning(f"有 {cleaned_count} 个未完成的任务，已重新加入队列")
+    else:
+        run_logger.info("没有未完成的任务")
 
 
 def start_queue_processor_threads() -> List[Thread]:
