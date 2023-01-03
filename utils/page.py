@@ -1,8 +1,8 @@
-from typing import Set
+from typing import Set, Tuple
 
 from pywebio.session import eval_js, info, run_js
 
-URL_SCHEME_ALLOW_LIST: Set = {"Android", "iPhone", "iPad"}
+URL_SCHEME_ALLOW_LIST: Set[str] = {"Android", "iPhone", "iPad"}
 
 
 def set_footer(html: str) -> None:
@@ -25,7 +25,8 @@ def copy_to_clipboard(text: str) -> None:
             document.execCommand("Copy");
             document.body.removeChild(copyDom);
         }, 100);
-        """ % text
+        """
+        % text
     )
 
 
@@ -46,14 +47,17 @@ def get_base_url() -> str:
     )
 
 
-def get_chart_width(in_tab: bool = False) -> int:
+def get_jump_link(module_name: str) -> str:
+    return f"{get_base_url()}?app={module_name}"
+
+
+def get_chart_size(in_tab: bool = False) -> Tuple[int, int]:
     # 880 为宽度上限
-    result: int = min(eval_js("document.body.clientWidth"), 880)
+    width: int = min(eval_js("document.body.clientWidth"), 880)
     # Tab 两侧边距共 47
     if in_tab:
-        result -= 47
-    return result
+        width -= 47
 
+    height: int = int(width / 1.5)
 
-def get_chart_height() -> int:
-    return int(get_chart_width() / 1.5)
+    return (width, height)

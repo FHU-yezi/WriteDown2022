@@ -6,7 +6,7 @@ from pywebio.output import put_markdown
 from queue_processor import start_queue_processor_threads
 from utils.config import config
 from utils.module_finder import Module, get_all_modules_info
-from utils.page import get_base_url
+from utils.page import get_jump_link
 from utils.patch import patch_all
 from widgets.card import put_app_card
 
@@ -15,10 +15,6 @@ DESC: str = ""
 VISIBILITY: bool = False
 
 modules_list = get_all_modules_info(config.base_path)
-
-
-def get_jump_link(base_url: str, module_name: str) -> str:
-    return f"{base_url}?app={module_name}"
 
 
 def index():
@@ -33,14 +29,13 @@ def index():
 
     config.refresh()
 
-    base_url: str = get_base_url()
     for module in modules_list:
         if not module.page_visibility:
             continue
 
         put_app_card(
             name=module.page_name,
-            url=get_jump_link(base_url, module.page_func_name),
+            url=get_jump_link(module.page_func_name),
             desc=module.page_desc,
         )
 
