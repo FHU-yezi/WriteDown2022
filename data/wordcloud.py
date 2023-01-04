@@ -30,7 +30,7 @@ class Wordcloud(DataModel):
         db_data = cls.db.find_one({"_id": ObjectId(id)})
         if not db_data:
             raise ValueError
-        return cls.from_db_data(db_data)
+        return cls.from_db_data(db_data, flatten=False)
 
     @property
     def user(self):

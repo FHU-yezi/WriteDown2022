@@ -66,7 +66,7 @@ class DataModel:
         return cls.from_db_data(db_data)
 
     @classmethod
-    def from_db_data(cls, db_data: Dict):
+    def from_db_data(cls, db_data: Dict, flatten: bool = True):
         """从数据字典构建数据模型
 
         Args:
@@ -75,8 +75,9 @@ class DataModel:
         Returns:
             DataModel: 数据模型
         """
-        # 展平数据库查询结果
-        db_data = flatten_dict(db_data)
+        if flatten:
+            # 展平数据库查询结果
+            db_data = flatten_dict(db_data)
         db_data["_id"] = str(db_data["_id"])
 
         data_to_init_func: Dict[str, Any] = {}

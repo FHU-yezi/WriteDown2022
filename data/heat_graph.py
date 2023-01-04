@@ -44,7 +44,7 @@ class HeatGraph(DataModel):
         db_data = cls.db.find_one({"_id": ObjectId(id)})
         if not db_data:
             raise ValueError
-        return cls.from_db_data(db_data)
+        return cls.from_db_data(db_data, flatten=False)
 
     @property
     def user(self):
@@ -57,7 +57,7 @@ class HeatGraph(DataModel):
         insert_result = cls.db.insert_one(
             {
                 "user_id": user.id,
-                "max_ineractions_count": max(data.values()),
+                "max_interactions_count": max(data.values()),
                 "total_active_days": len(data),
                 "total_interactions_count": sum(data.values()),
                 "data": data,

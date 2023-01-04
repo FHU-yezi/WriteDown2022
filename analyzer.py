@@ -11,7 +11,7 @@ def analyze_active_data(user: User) -> None:
     if user.status != UserStatus.DONE:
         raise ValueError
 
-    db_result = (
+    db_result = iter(
         timeline_data_db.aggregate(
             [
                 {
@@ -41,7 +41,7 @@ def analyze_active_data(user: User) -> None:
         ),
     )
 
-    data = {item["id"]: item["count"] for item in db_result}
+    data = {item["_id"].isoformat(): item["count"] for item in db_result}
     HeatGraph.create(user=user, data=data)
 
 
