@@ -1,4 +1,4 @@
-from typing import Set, Tuple
+from typing import Dict, Set, Tuple, Union
 
 from pywebio.session import eval_js, info, run_js
 
@@ -61,3 +61,24 @@ def get_chart_size(in_tab: bool = False) -> Tuple[int, int]:
     height: int = int(width / 1.5)
 
     return (width, height)
+
+
+def set_cookies(data: Dict[str, Union[str, int, float]]) -> None:
+    cookies_str = ";".join([f"{key}={value}" for key, value in data.items()])
+    run_js(f"document.cookie = {cookies_str}")
+
+
+def get_cookies() -> Dict[str, str]:
+    cookies_str: str = eval_js("document.cookie")
+    if not cookies_str:  # Cookie 字符串为空
+        return {}
+
+    return dict([x.split("=") for x in cookies_str.split("; ")])
+
+
+def set_user_id_cookies(user_id: str) -> None:
+    set_cookies({"user_id": user_id})
+
+
+def get_user_id_cookies() -> str:
+    return get_cookies().get("user_id")

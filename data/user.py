@@ -7,6 +7,7 @@ from JianshuResearchTools.assert_funcs import (
     AssertUserStatusNormal,
     AssertUserUrl,
 )
+from JianshuResearchTools.user import GetUserName
 
 from data._base import DataModel
 from utils.db import user_data_db
@@ -96,9 +97,10 @@ class User(DataModel):
         return bool(self.first_show_time)
 
     @classmethod
-    def create(cls, user_name: str, user_url: str) -> "User":
+    def create(cls, user_url: str) -> "User":
         AssertUserUrl(user_url)
         AssertUserStatusNormal(user_url)
+        user_name: str = GetUserName(user_url, disable_check=True)
 
         insert_result = cls.db.insert_one(
             {
@@ -107,6 +109,7 @@ class User(DataModel):
                     "name": user_name,
                     "url": user_url,
                 },
+                "fetch_start_id": None,
                 "show_count": {
                     "heat_graph": 0,
                     "wordcloud": 0,
@@ -171,8 +174,13 @@ def get_waiting_user() -> Optional[User]:
         )
         .sort([("timestamp.join_queue", 1)])
         .limit(1)
-    ).next()
+    )
 
-    if not db_result:
+    try:
+        return User.from_db_data(db_result.next())
+    except StopIteration:  # 队列为空
         return None
-    return User.from_db_data(db_result)
+
+
+def get_waiting_users_count() -> int:
+    return user_data_db.count_documents({"status": UserStatus.WAITING})

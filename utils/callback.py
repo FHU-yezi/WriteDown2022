@@ -10,7 +10,6 @@ def bind_enter_key_callback(pin_name: str, on_press: Callable[[Any], None]) -> N
         """
         $("input[name=\'%s\']").keyup(function(e){
             if(e.which == "13"){
-                console.log(e.which)
                 WebIO.pushData(null, callback_id)
             }
         });

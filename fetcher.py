@@ -44,15 +44,14 @@ def fetch_timeline_data(user: User) -> None:
     if user.status != UserStatus.WAITING:
         raise ValueError
     user.set_status_fetching()
+    run_logger.debug(f"开始采集用户 {user.id} 的时间线数据")
 
     if user.fetch_start_id:
-        run_logger.warning(
-            f"用户 {user.id}（{user.name} / {user.url}）上次采集任务未完成，"
-            f"将从 {user.fetch_start_id} 处继续采集"
-        )
+        run_logger.warning(f"用户 {user.id} 上次采集任务未完成，将从 {user.fetch_start_id} 处继续采集")
 
     buffer: List[Dict] = []
     for item in get_all_data(user.url, user.fetch_start_id):
+        item["operation_time"] = item["operation_time"].replace(tzinfo=None)  # 处理时区问题
         if not STRAT_TIME < item["operation_time"] < STOP_TIME:
             continue  # 不在 2022 年内
 
@@ -65,5 +64,7 @@ def fetch_timeline_data(user: User) -> None:
             timeline_data_db.insert_many(buffer)
             buffer.clear()
             user.set_fetch_start_id(item["operation_id"])
+            run_logger.debug(f"用户 {user.id} 的时间线数据已保存（{item['operation_id']}）")
 
     user.set_status_done()
+    run_logger.debug(f"用户 {user.id} 的时间线数据采集已完成")
