@@ -11,7 +11,9 @@ from utils.db import user_data_db
 from utils.log import run_logger
 
 
-def queue_processor_thread() -> None:
+def queue_processor_thread(start_sleep_time: int) -> None:
+    sleep(start_sleep_time)
+
     while True:
         user = get_waiting_user()
         if not user:
@@ -64,10 +66,16 @@ def start_queue_processor_threads() -> List[Thread]:
 
     run_logger.debug(f"将启动 {config.queue_processor.threads} 个队列处理线程")
     for i in range(config.queue_processor.threads):
+
         thread = Thread(
             target=queue_processor_thread,
             name=f"queue-processor-{i}",
             daemon=True,
+            kwargs={
+                "start_sleep_time": config.queue_processor.check_interval
+                / config.queue_processor.threads
+                * (i + 1)
+            },
         )
         thread.start()
         threads_list.append(thread)
