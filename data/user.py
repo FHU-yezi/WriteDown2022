@@ -36,6 +36,7 @@ class User(DataModel):
         "first_show_time": "timestamp.first_show",
         "last_show_time": "timestamp.last_show",
         "fetch_start_id": "fetch_start_id",
+        "error_info": "error_info",
     }
     db_key_attr_mapping = get_reversed_dict(attr_db_key_mapping)
 
@@ -53,6 +54,7 @@ class User(DataModel):
         first_show_time: datetime,
         last_show_time: datetime,
         fetch_start_id: int,
+        error_info: str,
     ) -> None:
         self.id = id
         self.status = status
@@ -66,6 +68,7 @@ class User(DataModel):
         self.first_show_time = first_show_time
         self.last_show_time = last_show_time
         self.fetch_start_id = fetch_start_id
+        self.error_info = error_info
 
         super().__init__()
 
@@ -109,7 +112,6 @@ class User(DataModel):
                     "name": user_name,
                     "url": user_url,
                 },
-                "fetch_start_id": None,
                 "show_count": {
                     "heat_graph": 0,
                     "wordcloud": 0,
@@ -121,6 +123,8 @@ class User(DataModel):
                     "first_show": None,
                     "last_show": None,
                 },
+                "fetch_start_id": None,
+                "error_info": None,
             }
         )
         return cls.from_id(insert_result.inserted_id)
@@ -155,9 +159,10 @@ class User(DataModel):
         self.end_fetch_time = datetime.now()
         self.sync()
 
-    def set_status_error(self) -> None:
+    def set_status_error(self, error_info: str) -> None:
         self.status = UserStatus.ERROR
         self.end_fetch_time = datetime.now()
+        self.error_info = error_info
         self.sync()
 
     def set_fetch_start_id(self, start_id: int) -> None:

@@ -7,7 +7,7 @@ from utils.db import timeline_data_db
 from utils.word_split import get_word_freq
 
 
-def analyze_active_heat_graph(user: User) -> None:
+def analyze_active_data(user: User) -> None:
     if user.status != UserStatus.DONE:
         raise ValueError
 
