@@ -42,6 +42,8 @@ def queue_processor_thread(start_sleep_time: int) -> None:
             run_logger.error(f"分析 {user.id} 的评论词频数据时发生异常：{repr(e)}")
             continue
 
+        run_logger.debug(f"已完成对 {user.id} 的全部处理流程")
+
 
 def clean_unfinished_job() -> None:
     cleaned_count = user_data_db.update_many(

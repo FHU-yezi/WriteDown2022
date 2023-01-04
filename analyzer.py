@@ -4,6 +4,7 @@ from data.heat_graph import HeatGraph
 from data.user import User, UserStatus
 from data.wordcloud import Wordcloud
 from utils.db import timeline_data_db
+from utils.log import run_logger
 from utils.word_split import get_word_freq
 
 
@@ -43,6 +44,7 @@ def analyze_active_data(user: User) -> None:
 
     data = {item["_id"].isoformat(): item["count"] for item in db_result}
     HeatGraph.create(user=user, data=data)
+    run_logger.debug(f"已完成对 {user.id} 的活跃度数据分析")
 
 
 def analyze_comment_word_freq(user: User) -> None:
@@ -67,3 +69,4 @@ def analyze_comment_word_freq(user: User) -> None:
         user=user,
         data=data,
     )
+    run_logger.debug(f"已完成对 {user.id} 的评论词频数据分析")
