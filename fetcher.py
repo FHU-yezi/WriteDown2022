@@ -51,20 +51,30 @@ def fetch_timeline_data(user: User) -> None:
 
     buffer: List[Dict] = []
     for item in get_all_data(user.url, user.fetch_start_id):
-        item["operation_time"] = item["operation_time"].replace(tzinfo=None)  # 处理时区问题
-        if not STRAT_TIME < item["operation_time"] < STOP_TIME:
-            continue  # 不在 2022 年内
+        operation_time = item["operation_time"].replace(tzinfo=None)
+        item["operation_time"] = operation_time  # 处理时区问题
+
+        if operation_time > STOP_TIME:
+            continue  # 晚于 2022 年，尚未进入采集范围
+        if operation_time < STRAT_TIME:
+            break  # 早于 2022 年，已超出采集范围
 
         item["from_user"] = user.id
         item["fetch_time"] = datetime.now()
 
         buffer.append(item)
-
         if len(buffer) == 50:
             timeline_data_db.insert_many(buffer)
             buffer.clear()
             user.set_fetch_start_id(item["operation_id"])
             run_logger.debug(f"已保存用户 {user.id} 的时间线数据（{item['operation_id']}）")
+
+    # 采集完成，将剩余数据存入数据库
+    if buffer:
+        timeline_data_db.insert_many(buffer)
+        buffer.clear()
+        user.set_fetch_start_id(item["operation_id"])
+        run_logger.debug(f"已保存用户 {user.id} 的时间线数据（{item['operation_id']}）")
 
     user.set_status_done()
     run_logger.debug(f"用户 {user.id} 的时间线数据采集已完成")
