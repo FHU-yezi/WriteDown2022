@@ -2,14 +2,34 @@ from datetime import datetime
 from re import findall
 from typing import Dict, List
 
+from JianshuResearchTools.assert_funcs import AssertType
 from JianshuResearchTools.basic_apis import GetUserTimelineHtmlDataApi
 from JianshuResearchTools.convert import (
-    ArticleSlugToArticleUrl,
     CollectionSlugToCollectionUrl,
     NotebookSlugToNotebookUrl,
     UserSlugToUserUrl,
     UserUrlToUserSlug,
 )
+from JianshuResearchTools.exceptions import InputError
+
+
+def ArticleSlugToArticleUrl(article_slug: str) -> str:
+    """文章 Slug 转文章 URL
+
+    Args:
+        article_slug (str): 文章 Slug
+
+    Returns:
+        str: 文章 URL
+    """
+    AssertType(article_slug, str)
+    result = f"https://www.jianshu.com/p/{article_slug}"
+
+    # 原 AssertArticleUrl 函数
+    if not result.startswith("https://www.jianshu.com/p/"):
+        raise InputError(f"{result} 不是有效的简书文章 URL")
+
+    return result
 
 
 def GetUserTimelineInfo(user_url: str, max_id: int = 1000000000) -> List[Dict]:
