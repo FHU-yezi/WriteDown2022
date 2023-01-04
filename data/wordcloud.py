@@ -3,10 +3,14 @@ from typing import Dict
 import pyecharts.options as opts
 from bson import ObjectId
 from pyecharts.charts import WordCloud as _WordCloud
+from pyecharts.globals import CurrentConfig
 
 from data._base import DataModel
+from utils.config import config
 from utils.db import wordcloud_data_db
 from utils.dict_helper import get_reversed_dict
+
+CurrentConfig.ONLINE_HOST = config.deploy.PyEcharts_CDN
 
 
 class Wordcloud(DataModel):
@@ -32,6 +36,13 @@ class Wordcloud(DataModel):
             raise ValueError
         return cls.from_db_data(db_data, flatten=False)
 
+    @classmethod
+    def from_user_id(cls, user_id: str) -> "Wordcloud":
+        db_data = cls.db.find_one({"user_id": user_id})
+        if not db_data:
+            raise ValueError
+        return cls.from_db_data(db_data, flatten=False)
+
     @property
     def user(self):
         from data.user import User
@@ -53,8 +64,8 @@ class Wordcloud(DataModel):
         return (
             _WordCloud(
                 init_opts=opts.InitOpts(
-                    width=width,
-                    height=height,
+                    width=f"{width}px",
+                    height=f"{height}px",
                 ),
             )
             .add(

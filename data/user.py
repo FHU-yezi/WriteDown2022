@@ -99,6 +99,18 @@ class User(DataModel):
     def is_first_show(self) -> bool:
         return bool(self.first_show_time)
 
+    @property
+    def heat_graph(self):
+        from data.heat_graph import HeatGraph
+
+        return HeatGraph.from_user_id(self.id)
+
+    @property
+    def wordcloud(self):
+        from data.wordcloud import Wordcloud
+
+        return Wordcloud.from_user_id(self.id)
+
     @classmethod
     def create(cls, user_url: str) -> "User":
         AssertUserUrl(user_url)

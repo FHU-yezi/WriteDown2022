@@ -1,4 +1,4 @@
-from typing import Dict, Set, Tuple, Union
+from typing import Dict, Optional, Set, Tuple, Union
 
 from pywebio.session import eval_js, info, run_js
 
@@ -80,5 +80,13 @@ def set_user_id_cookies(user_id: str) -> None:
     set_cookies({"user_id": user_id})
 
 
-def get_user_id_cookies() -> str:
+def get_user_id_cookies() -> Optional[str]:
     return get_cookies().get("user_id")
+
+
+def get_query_params() -> Dict[str, str]:
+    url = eval_js("window.location.href")
+    result: Dict[str, str] = dict([x.split("=") for x in url.split("?")[1].split("&")])
+    if result.get("app"):  # 去除子页面参数
+        del result["app"]
+    return result

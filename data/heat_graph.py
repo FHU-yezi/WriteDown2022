@@ -1,12 +1,17 @@
+from datetime import datetime
 from typing import Dict
 
 import pyecharts.options as opts
 from bson import ObjectId
 from pyecharts.charts import Calendar
+from pyecharts.globals import CurrentConfig
 
 from data._base import DataModel
+from utils.config import config
 from utils.db import heat_graph_data_db
 from utils.dict_helper import get_reversed_dict
+
+CurrentConfig.ONLINE_HOST = config.deploy.PyEcharts_CDN
 
 
 class HeatGraph(DataModel):
@@ -46,6 +51,13 @@ class HeatGraph(DataModel):
             raise ValueError
         return cls.from_db_data(db_data, flatten=False)
 
+    @classmethod
+    def from_user_id(cls, user_id: str) -> "HeatGraph":
+        db_data = cls.db.find_one({"user_id": user_id})
+        if not db_data:
+            raise ValueError
+        return cls.from_db_data(db_data, flatten=False)
+
     @property
     def user(self):
         from data.user import User
@@ -70,13 +82,13 @@ class HeatGraph(DataModel):
         return (
             Calendar(
                 init_opts=opts.InitOpts(
-                    width=width,
-                    height=height,
+                    width=f"{width}px",
+                    height=f"{height}px",
                 ),
             )
             .add(
                 series_name="",
-                yaxis_data=list(self.data.items()),
+                yaxis_data=[(datetime.fromisoformat(key), value) for key, value in self.data.items()],
                 calendar_opts=opts.CalendarOpts(
                     range_="2022",
                     daylabel_opts=opts.CalendarDayLabelOpts(
