@@ -18,13 +18,15 @@ class Wordcloud(DataModel):
     attr_db_key_mapping: Dict[str, str] = {
         "id": "_id",
         "user_id": "user_id",
+        "total_comments_count": "total_comments_count",
         "data": "data",
     }
     db_key_attr_mapping = get_reversed_dict(attr_db_key_mapping)
 
-    def __init__(self, id: str, user_id: str, data: Dict[str, str]) -> None:
+    def __init__(self, id: str, user_id: str, total_comments_count: int, data: Dict[str, str]) -> None:
         self.id = id
         self.user_id = user_id
+        self.total_comments_count = total_comments_count
         self.data = data
 
         super().__init__()
@@ -54,18 +56,22 @@ class Wordcloud(DataModel):
         insert_result = cls.db.insert_one(
             {
                 "user_id": user.id,
+                "total_comments_count": len(data),
                 "data": data,
             },
         )
 
         return cls.from_id(insert_result.inserted_id)
 
-    def get_graph_obj(self, width: int, height: int) -> _WordCloud:
+    def get_graph_obj(self) -> _WordCloud:
         return (
             _WordCloud(
                 init_opts=opts.InitOpts(
-                    width=f"{width}px",
-                    height=f"{height}px",
+                    width="100%",
+                    height="600px",
+                    animation_opts=opts.AnimationOpts(
+                        animation=False,
+                    ),
                 ),
             )
             .add(
@@ -75,7 +81,24 @@ class Wordcloud(DataModel):
             )
             .set_global_opts(
                 title_opts=opts.TitleOpts(
+                    pos_top="10%",
                     title=f"{self.user.name} 的 2022 评论词云图",
+                    subtitle=f"总评论量：{self.total_comments_count}",
+                ),
+                toolbox_opts=opts.ToolboxOpts(
+                    feature=opts.ToolBoxFeatureOpts(
+                        save_as_image=opts.ToolBoxFeatureSaveAsImageOpts(
+                            type_="png",
+                            title="下载",
+                            background_color="#FFFFFF",
+                            pixel_ratio=2,
+                        ),
+                        restore=None,
+                        data_view=None,
+                        data_zoom=None,
+                        magic_type=None,
+                        brush=None,
+                    )
                 ),
             )
         )

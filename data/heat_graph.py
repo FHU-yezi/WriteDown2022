@@ -78,18 +78,26 @@ class HeatGraph(DataModel):
 
         return cls.from_id(insert_result.inserted_id)
 
-    def get_graph_obj(self, width: int, height: int) -> Calendar:
+    def get_graph_obj(self) -> Calendar:
         return (
             Calendar(
                 init_opts=opts.InitOpts(
-                    width=f"{width}px",
-                    height=f"{height}px",
+                    width="100%",
+                    height="400px",
+                    animation_opts=opts.AnimationOpts(
+                        animation=False,
+                    ),
                 ),
             )
             .add(
                 series_name="",
-                yaxis_data=[(datetime.fromisoformat(key), value) for key, value in self.data.items()],
+                yaxis_data=[
+                    (datetime.fromisoformat(key), value)
+                    for key, value in self.data.items()
+                ],
                 calendar_opts=opts.CalendarOpts(
+                    pos_left="center",
+                    pos_top="center",
                     range_="2022",
                     daylabel_opts=opts.CalendarDayLabelOpts(
                         name_map="cn",
@@ -97,15 +105,17 @@ class HeatGraph(DataModel):
                     monthlabel_opts=opts.CalendarMonthLabelOpts(
                         name_map="cn",
                     ),
+                    yearlabel_opts=opts.CalendarYearLabelOpts(is_show=False),
                 ),
             )
             .set_global_opts(
                 title_opts=opts.TitleOpts(
-                    pos_left="center",
+                    pos_top="10%",
                     title=f"{self.user.name} 的 2022 互动热力图",
                     subtitle=(
-                        f"活跃天数：{self.total_active_days} "
-                        f"/ 总互动量：{self.total_interactions_count}"
+                        f"活跃天数：{self.total_active_days}   "
+                        f"活跃比例：{round(self.total_active_days / 365, 2) * 100}%   "
+                        f"总互动量：{self.total_interactions_count}"
                     ),
                 ),
                 visualmap_opts=opts.VisualMapOpts(
@@ -116,6 +126,22 @@ class HeatGraph(DataModel):
                     max_=(int(self.max_interactions_count / 10) + 1) * 10,
                     orient="horizontal",
                     is_piecewise=True,
+                    range_color=("#fbe2de", "#f7c5bd", "#f2a99c", "#ee8c7b", "#ea6f5a"),
+                ),
+                toolbox_opts=opts.ToolboxOpts(
+                    feature=opts.ToolBoxFeatureOpts(
+                        save_as_image=opts.ToolBoxFeatureSaveAsImageOpts(
+                            type_="png",
+                            title="下载",
+                            background_color="#FFFFFF",
+                            pixel_ratio=2,
+                        ),
+                        restore=None,
+                        data_view=None,
+                        data_zoom=None,
+                        magic_type=None,
+                        brush=None,
+                    )
                 ),
             )
         )

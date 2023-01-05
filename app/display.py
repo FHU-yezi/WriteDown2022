@@ -1,7 +1,7 @@
 from pywebio.output import put_html, put_markdown
 
 from data.user import User, get_waiting_users_count
-from utils.page import get_chart_size, get_query_params
+from utils.page import get_query_params
 from widgets.toast import toast_error_and_return
 
 NAME: str = "数据展示"
@@ -39,8 +39,6 @@ def display() -> None:
         )
         return
 
-    width, height = get_chart_size()
+    put_html(user.heat_graph.get_graph_obj().render_notebook())
 
-    put_html(user.heat_graph.get_graph_obj(width, height).render_notebook())
-
-    put_html(user.wordcloud.get_graph_obj(width, height).render_notebook())
+    put_html(user.wordcloud.get_graph_obj().render_notebook())

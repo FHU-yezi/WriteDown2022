@@ -1,4 +1,4 @@
-from typing import Dict, Optional, Set, Tuple, Union
+from typing import Dict, Optional, Set, Union
 
 from pywebio.session import eval_js, info, run_js
 
@@ -49,18 +49,6 @@ def get_base_url() -> str:
 
 def get_jump_link(module_name: str) -> str:
     return f"{get_base_url()}?app={module_name}"
-
-
-def get_chart_size(in_tab: bool = False) -> Tuple[int, int]:
-    # 880 为宽度上限
-    width: int = min(eval_js("document.body.clientWidth"), 880)
-    # Tab 两侧边距共 47
-    if in_tab:
-        width -= 47
-
-    height: int = int(width / 1.5)
-
-    return (width, height)
 
 
 def set_cookies(data: Dict[str, Union[str, int, float]]) -> None:
