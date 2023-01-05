@@ -1,10 +1,17 @@
+from typing import Optional
+
 from JianshuResearchTools.exceptions import InputError, ResourceError
-from pywebio.output import put_markdown
+from pywebio.output import put_info, put_markdown, put_success
 from pywebio.pin import pin, put_input
 
 from data.user import User, get_waiting_users_count
 from utils.callback import bind_enter_key_callback
-from utils.page import set_user_id_cookies
+from utils.page import (
+    get_jump_link,
+    get_user_slug_cookies,
+    jump_to,
+    set_user_slug_cookies,
+)
 from widgets.button import put_button
 from widgets.toast import toast_success, toast_warn_and_return
 
@@ -21,7 +28,7 @@ def on_submit_button_clicked() -> None:
     except (InputError, ResourceError):
         toast_warn_and_return("链接有误，请检查")
 
-    set_user_id_cookies(user.id)
+    set_user_slug_cookies(user.slug)
 
     toast_success("排队成功")
 
@@ -54,3 +61,21 @@ def join_queue() -> None:
         "user_url",
         on_press=lambda _: on_submit_button_clicked(),
     )
+
+    user_slug: Optional[str] = get_user_slug_cookies()
+    if user_slug:
+        user = User.from_slug(user_slug)
+
+        if user.is_waiting:
+            put_info(f"{user.name}，您已经在队列中了，数据正在全力获取中......")
+        elif user.is_done:
+            put_success(f"{user.name}，您的数据已经获取完成。")
+            put_button(
+                "点击查看>>",
+                onclick=lambda: jump_to(
+                    get_jump_link("display", query_args={"user_slug": user.slug})
+                ),
+                color="success",
+                block=True,
+                outline=True,
+            )

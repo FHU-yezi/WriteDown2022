@@ -47,8 +47,13 @@ def get_base_url() -> str:
     )
 
 
-def get_jump_link(module_name: str) -> str:
-    return f"{get_base_url()}?app={module_name}"
+def get_jump_link(module_name: str, query_args: Optional[Dict] = None) -> str:
+    result = f"{get_base_url()}?app={module_name}"
+    if not query_args:
+        return result
+
+    result += "&" + "&".join([f"{key}={value}" for key, value in query_args.items()])
+    return result
 
 
 def set_cookies(data: Dict[str, Union[str, int, float]]) -> None:
@@ -64,12 +69,12 @@ def get_cookies() -> Dict[str, str]:
     return dict([x.split("=") for x in cookies_str.split("; ")])
 
 
-def set_user_id_cookies(user_id: str) -> None:
-    set_cookies({"user_id": user_id})
+def set_user_slug_cookies(user_slug: str) -> None:
+    set_cookies({"user_slug": user_slug})
 
 
-def get_user_id_cookies() -> Optional[str]:
-    return get_cookies().get("user_id")
+def get_user_slug_cookies() -> Optional[str]:
+    return get_cookies().get("user_slug")
 
 
 def get_query_params() -> Dict[str, str]:
