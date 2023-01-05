@@ -10,12 +10,12 @@ VISIBILITY: bool = False
 
 
 def display() -> None:
-    user_id = get_query_params().get("user")
-    if not user_id:
+    user_slug = get_query_params().get("user_slug")
+    if not user_slug:
         toast_error_and_return("请求参数错误")
 
     try:
-        user = User.from_id(user_id)
+        user = User.from_slug(user_slug)
     except ValueError:
         toast_error_and_return("请求参数错误")
 

@@ -1,4 +1,5 @@
 from datetime import datetime
+from JianshuResearchTools.convert import UserUrlToUserSlug
 from enum import IntEnum
 from typing import Dict, Optional
 
@@ -27,6 +28,7 @@ class User(DataModel):
         "id": "_id",
         "status": "status",
         "name": "user.name",
+        "slug": "user.slug",
         "url": "user.url",
         "heat_graph_show_count": "show_count.heat_graph",
         "wordcloud_show_count": "show_count.wordcloud",
@@ -45,6 +47,7 @@ class User(DataModel):
         id: str,
         status: int,
         name: str,
+        slug: str,
         url: str,
         heat_graph_show_count: int,
         wordcloud_show_count: int,
@@ -59,6 +62,7 @@ class User(DataModel):
         self.id = id
         self.status = status
         self.name = name
+        self.slug = slug
         self.url = url
         self.heat_graphshow_count = heat_graph_show_count
         self.wordcloud_show_count = wordcloud_show_count
@@ -75,6 +79,13 @@ class User(DataModel):
     @classmethod
     def from_id(cls, id: str) -> "User":
         db_data = cls.db.find_one({"_id": ObjectId(id)})
+        if not db_data:
+            raise ValueError
+        return cls.from_db_data(db_data)
+
+    @classmethod
+    def from_slug(cls, slug: str) -> "User":
+        db_data = cls.db.find_one({"user.slug": slug})
         if not db_data:
             raise ValueError
         return cls.from_db_data(db_data)
@@ -122,6 +133,7 @@ class User(DataModel):
                 "status": UserStatus.WAITING,
                 "user": {
                     "name": user_name,
+                    "slug": UserUrlToUserSlug(user_url),
                     "url": user_url,
                 },
                 "show_count": {
