@@ -20,4 +20,26 @@ wordcloud_data_db = db.wordcloud_data
 
 # 创建索引
 
-# TODO
+user_data_db.create_indexes(
+    [
+        IndexModel([("status", 1)]),
+        IndexModel([("user.slug", 1)]),
+    ]
+)
+timeline_data_db.create_indexes(
+    [
+        IndexModel([("from_user", 1)]),
+        IndexModel([("operation_type", 1)]),
+        IndexModel([("operation_time", 1)]),
+    ]
+)
+heat_graph_data_db.create_indexes(
+    [
+        IndexModel([("user_id", 1)]),
+    ]
+)
+wordcloud_data_db.create_indexes(
+    [
+        IndexModel([("user_id", 1)]),
+    ]
+)
