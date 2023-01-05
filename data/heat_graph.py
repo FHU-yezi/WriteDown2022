@@ -7,6 +7,12 @@ from pyecharts.charts import Calendar
 from pyecharts.globals import CurrentConfig
 
 from data._base import DataModel
+from utils.chart import (
+    ANIMATION_OFF,
+    CALENDAR_DAY_MONTH_CHINESE_YEAR_HIDE,
+    TOOLBOX_ONLY_SAVE_PNG_WHITE_2X,
+    VISUALMAP_JIANSHU_COLOR,
+)
 from utils.config import config
 from utils.db import heat_graph_data_db
 from utils.dict_helper import get_reversed_dict
@@ -83,10 +89,8 @@ class HeatGraph(DataModel):
             Calendar(
                 init_opts=opts.InitOpts(
                     width="100%",
-                    height="400px",
-                    animation_opts=opts.AnimationOpts(
-                        animation=False,
-                    ),
+                    height="300px",
+                    animation_opts=ANIMATION_OFF,
                 ),
             )
             .add(
@@ -96,21 +100,16 @@ class HeatGraph(DataModel):
                     for key, value in self.data.items()
                 ],
                 calendar_opts=opts.CalendarOpts(
-                    pos_left="center",
+                    pos_left="5px",
                     pos_top="center",
                     range_="2022",
-                    daylabel_opts=opts.CalendarDayLabelOpts(
-                        name_map="cn",
-                    ),
-                    monthlabel_opts=opts.CalendarMonthLabelOpts(
-                        name_map="cn",
-                    ),
-                    yearlabel_opts=opts.CalendarYearLabelOpts(is_show=False),
+                    **CALENDAR_DAY_MONTH_CHINESE_YEAR_HIDE,
                 ),
             )
             .set_global_opts(
                 title_opts=opts.TitleOpts(
-                    pos_top="10%",
+                    pos_left="5px",
+                    pos_top="5px",
                     title=f"{self.user.name} 的 2022 互动热力图",
                     subtitle=(
                         f"活跃天数：{self.total_active_days}   "
@@ -119,6 +118,8 @@ class HeatGraph(DataModel):
                     ),
                 ),
                 visualmap_opts=opts.VisualMapOpts(
+                    pos_left="5px",
+                    pos_bottom="5px",
                     min_=0,
                     # 数据范围会根据用户的最高单日互动量动态调整
                     # 数据范围上限为最高单日互动量十分位向上取整
@@ -126,22 +127,8 @@ class HeatGraph(DataModel):
                     max_=(int(self.max_interactions_count / 10) + 1) * 10,
                     orient="horizontal",
                     is_piecewise=True,
-                    range_color=("#fbe2de", "#f7c5bd", "#f2a99c", "#ee8c7b", "#ea6f5a"),
+                    range_color=VISUALMAP_JIANSHU_COLOR,
                 ),
-                toolbox_opts=opts.ToolboxOpts(
-                    feature=opts.ToolBoxFeatureOpts(
-                        save_as_image=opts.ToolBoxFeatureSaveAsImageOpts(
-                            type_="png",
-                            title="下载",
-                            background_color="#FFFFFF",
-                            pixel_ratio=2,
-                        ),
-                        restore=None,
-                        data_view=None,
-                        data_zoom=None,
-                        magic_type=None,
-                        brush=None,
-                    )
-                ),
+                toolbox_opts=TOOLBOX_ONLY_SAVE_PNG_WHITE_2X,
             )
         )
