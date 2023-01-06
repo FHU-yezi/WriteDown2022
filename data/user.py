@@ -1,5 +1,4 @@
 from datetime import datetime
-from JianshuResearchTools.convert import UserUrlToUserSlug
 from enum import IntEnum
 from typing import Dict, Optional
 
@@ -8,11 +7,14 @@ from JianshuResearchTools.assert_funcs import (
     AssertUserStatusNormal,
     AssertUserUrl,
 )
+from JianshuResearchTools.convert import UserUrlToUserSlug
 from JianshuResearchTools.user import GetUserName
+from pymongo.errors import DuplicateKeyError
 
 from data._base import DataModel
 from utils.db import user_data_db
 from utils.dict_helper import get_reversed_dict
+from utils.exceptions import DuplicateUserError, UserNotExistError
 
 
 class UserStatus(IntEnum):
@@ -80,14 +82,16 @@ class User(DataModel):
     def from_id(cls, id: str) -> "User":
         db_data = cls.db.find_one({"_id": ObjectId(id)})
         if not db_data:
-            raise ValueError
+            raise UserNotExistError(f"未找到 _id = {id} 的用户")
+
         return cls.from_db_data(db_data)
 
     @classmethod
     def from_slug(cls, slug: str) -> "User":
         db_data = cls.db.find_one({"user.slug": slug})
         if not db_data:
-            raise ValueError
+            raise UserNotExistError(f"未找到 user.slug = {slug} 的用户")
+
         return cls.from_db_data(db_data)
 
     @property
@@ -128,29 +132,33 @@ class User(DataModel):
         AssertUserStatusNormal(user_url)
         user_name: str = GetUserName(user_url, disable_check=True)
 
-        insert_result = cls.db.insert_one(
-            {
-                "status": UserStatus.WAITING,
-                "user": {
-                    "name": user_name,
-                    "slug": UserUrlToUserSlug(user_url),
-                    "url": user_url,
-                },
-                "show_count": {
-                    "heat_graph": 0,
-                    "wordcloud": 0,
-                },
-                "timestamp": {
-                    "join_queue": datetime.now(),
-                    "start_fetch": None,
-                    "end_fetch": None,
-                    "first_show": None,
-                    "last_show": None,
-                },
-                "fetch_start_id": None,
-                "error_info": None,
-            }
-        )
+        data_to_insert = {
+            "status": UserStatus.WAITING,
+            "user": {
+                "name": user_name,
+                "slug": UserUrlToUserSlug(user_url),
+                "url": user_url,
+            },
+            "show_count": {
+                "heat_graph": 0,
+                "wordcloud": 0,
+            },
+            "timestamp": {
+                "join_queue": datetime.now(),
+                "start_fetch": None,
+                "end_fetch": None,
+                "first_show": None,
+                "last_show": None,
+            },
+            "fetch_start_id": None,
+            "error_info": None,
+        }
+
+        try:
+            insert_result = cls.db.insert_one(data_to_insert)
+        except DuplicateKeyError:
+            raise DuplicateUserError(f"用户 {user_name}（{user_url}）已存在")
+
         return cls.from_id(insert_result.inserted_id)
 
     def heat_graph_shown(self) -> None:

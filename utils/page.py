@@ -65,7 +65,7 @@ def get_jump_link(module_name: str, query_args: Optional[Dict] = None) -> str:
 
 def set_cookies(data: Dict[str, Union[str, int, float]]) -> None:
     cookies_str = ";".join([f"{key}={value}" for key, value in data.items()])
-    run_js(f"document.cookie = {cookies_str}")
+    run_js(f"document.cookie = '{cookies_str}'")
 
 
 def get_cookies() -> Dict[str, str]:

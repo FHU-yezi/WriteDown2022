@@ -23,7 +23,7 @@ wordcloud_data_db = db.wordcloud_data
 user_data_db.create_indexes(
     [
         IndexModel([("status", 1)]),
-        IndexModel([("user.slug", 1)]),
+        IndexModel([("user.slug", 1)], unique=True),
     ]
 )
 timeline_data_db.create_indexes(
@@ -35,11 +35,11 @@ timeline_data_db.create_indexes(
 )
 heat_graph_data_db.create_indexes(
     [
-        IndexModel([("user_id", 1)]),
+        IndexModel([("user_id", 1)], unique=True),
     ]
 )
 wordcloud_data_db.create_indexes(
     [
-        IndexModel([("user_id", 1)]),
+        IndexModel([("user_id", 1)], unique=True),
     ]
 )

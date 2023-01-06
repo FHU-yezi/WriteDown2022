@@ -1,11 +1,13 @@
 from typing import Optional
 
+from JianshuResearchTools.convert import UserUrlToUserSlug
 from JianshuResearchTools.exceptions import InputError, ResourceError
-from pywebio.output import put_info, put_markdown, put_success
+from pywebio.output import put_info, put_markdown, put_success, toast
 from pywebio.pin import pin, put_input
 
 from data.user import User, get_waiting_users_count
 from utils.callback import bind_enter_key_callback
+from utils.exceptions import DuplicateUserError
 from utils.page import (
     get_jump_link,
     get_user_slug_cookies,
@@ -29,6 +31,12 @@ def on_submit_button_clicked() -> None:
         user = User.create(user_url)
     except (InputError, ResourceError):
         toast_warn_and_return("链接有误，请检查")
+    except DuplicateUserError:
+        # 写入 Cookie，以便在重载页面后隐藏排队部分
+        set_user_slug_cookies(UserUrlToUserSlug(user_url))
+        toast("您已经在队列中", color="warn")
+        reload(delay=1)
+        return
 
     set_user_slug_cookies(user.slug)
 
@@ -72,7 +80,7 @@ def join_queue() -> None:
         put_button(
             "清除账号绑定信息",
             onclick=on_clear_bind_data_button_clicked,
-            color="warning",
+            color="secondary",
             block=True,
             outline=True,
         )
@@ -95,4 +103,3 @@ def join_queue() -> None:
             "user_url",
             on_press=lambda _: on_submit_button_clicked(),
         )
-
