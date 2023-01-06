@@ -1,3 +1,4 @@
+from time import sleep
 from typing import Dict, Optional, Set, Union
 
 from pywebio.session import eval_js, info, run_js
@@ -47,6 +48,12 @@ def get_base_url() -> str:
     )
 
 
+def reload(delay: int = 0) -> None:
+    if delay:
+        sleep(delay)
+    run_js("location.reload()")
+
+
 def get_jump_link(module_name: str, query_args: Optional[Dict] = None) -> str:
     result = f"{get_base_url()}?app={module_name}"
     if not query_args:
@@ -69,12 +76,20 @@ def get_cookies() -> Dict[str, str]:
     return dict([x.split("=") for x in cookies_str.split("; ")])
 
 
+def remove_cookies(key: str) -> None:
+    run_js(f"document.cookie = '{key}='")
+
+
 def set_user_slug_cookies(user_slug: str) -> None:
     set_cookies({"user_slug": user_slug})
 
 
 def get_user_slug_cookies() -> Optional[str]:
     return get_cookies().get("user_slug")
+
+
+def remove_user_slug_cookies() -> None:
+    remove_cookies("user_slug")
 
 
 def get_query_params() -> Dict[str, str]:
