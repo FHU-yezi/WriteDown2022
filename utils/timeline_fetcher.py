@@ -59,9 +59,6 @@ def GetUserTimelineInfo(user_url: str, max_id: int = 1000000000) -> List[Dict]:
 
         if item_data["operation_type"] == "like_note":  # 对文章点赞
             item_data["operation_type"] = "like_article"  # 鬼知道谁把对文章点赞写成 like_note 的
-            item_data["operator_name"] = block.xpath("//a[@class='nickname']/text()")[0]
-            item_data["operator_url"] = UserSlugToUserUrl(block.xpath("//a[@class='nickname']/@href")[0][3:])
-            item_data["operator_avatar_url"] = block.xpath("//a[@class='avatar']/img/@src")[0]
             item_data["target_article_title"] = block.xpath("//a[@class='title']/text()")[0]
             item_data["target_article_url"] = ArticleSlugToArticleUrl(block.xpath("//a[@class='title']/@href")[0][3:])
             item_data["target_user_name"] = block.xpath("//div[@class='origin-author']/a/text()")[0]
@@ -78,9 +75,6 @@ def GetUserTimelineInfo(user_url: str, max_id: int = 1000000000) -> List[Dict]:
                 item_data["target_article_description"] = ""
 
         elif item_data["operation_type"] == "like_comment":  # 对评论点赞
-            item_data["operator_name"] = block.xpath("//a[@class='nickname']/text()")[0]
-            item_data["operator_url"] = UserSlugToUserUrl(block.xpath("//a[@class='nickname']/@href")[0][3:])
-            item_data["operator_avatar_url"] = block.xpath("//a[@class='avatar']/img/@src")[0]
             item_data["comment_content"] = "\n".join(block.xpath("//p[@class='comment']/text()"))
             item_data["target_article_title"] = block.xpath("//blockquote/div/span/a/text()")[0]
             item_data["target_article_url"] = ArticleSlugToArticleUrl(block.xpath("//blockquote/div/span/a/@href")[0][3:])
@@ -89,9 +83,6 @@ def GetUserTimelineInfo(user_url: str, max_id: int = 1000000000) -> List[Dict]:
 
         elif item_data["operation_type"] == "share_note":  # 发表文章
             item_data["operation_type"] = "publish_article"  # 鬼知道谁把发表文章写成 share_note 的
-            item_data["operator_name"] = block.xpath("//a[@class='nickname']/text()")[0]
-            item_data["operator_url"] = UserSlugToUserUrl(block.xpath("//a[@class='nickname']/@href")[0][3:])
-            item_data["operator_avatar_url"] = block.xpath("//a[@class='avatar']/img/@src")[0]
             item_data["target_article_title"] = block.xpath("//a[@class='title']/text()")[0]
             item_data["target_article_url"] = ArticleSlugToArticleUrl(block.xpath("//a[@class='title']/@href")[0][3:])
             item_data["target_article_reads_count"] = int(block.xpath("//div[@class='meta']/a/text()")[1])
@@ -103,9 +94,6 @@ def GetUserTimelineInfo(user_url: str, max_id: int = 1000000000) -> List[Dict]:
                 item_data["target_article_comments_count"] = 0
 
         elif item_data["operation_type"] == "comment_note":  # 发表评论
-            item_data["operator_name"] = block.xpath("//a[@class='nickname']/text()")[0]
-            item_data["operator_url"] = UserSlugToUserUrl(block.xpath("//a[@class='nickname']/@href")[0][3:])
-            item_data["operator_avatar_url"] = block.xpath("//a[@class='avatar']/img/@src")[0]
             item_data["comment_content"] = "\n".join(block.xpath("//p[@class='comment']/text()"))
             item_data["target_article_title"] = block.xpath("//a[@class='title']/text()")[0]
             item_data["target_article_url"] = ArticleSlugToArticleUrl(block.xpath("//a[@class='title']/@href")[0][3:])
@@ -128,9 +116,6 @@ def GetUserTimelineInfo(user_url: str, max_id: int = 1000000000) -> List[Dict]:
 
         elif item_data["operation_type"] == "like_notebook":  # 关注文集
             item_data["operation_type"] = "follow_notebook"  # 鬼知道谁把关注文集写成 like_notebook 的
-            item_data["operator_name"] = block.xpath("//a[@class='nickname']/text()")[0]
-            item_data["operator_url"] = UserSlugToUserUrl(block.xpath("//a[@class='nickname']/@href")[0][4:])
-            item_data["operator_avatar_url"] = block.xpath("//a[@class='avatar']/img/@src")[0]
             item_data["target_notebook_title"] = block.xpath("//a[@class='title']/text()")[0]
             # 此处对 JRT 中的错误进行了修复
             item_data["target_notebook_url"] = NotebookSlugToNotebookUrl(block.xpath("//a[@class='title']/@href")[0][4:])
@@ -141,10 +126,7 @@ def GetUserTimelineInfo(user_url: str, max_id: int = 1000000000) -> List[Dict]:
             item_data["target_notebook_subscribers_count"] = int(findall(r"\d+", block.xpath("//div[@class='info'][1]/p/text()")[1])[1])
 
         elif item_data["operation_type"] == "like_collection":  # 关注专题
-            item_data["operator_type"] = "follow_collection"  # 鬼知道谁把关注专题写成 like_collection 的
-            item_data["operator_name"] = block.xpath("//a[@class='nickname']/text()")[0]
-            item_data["operator_url"] = UserSlugToUserUrl(block.xpath("//a[@class='nickname']/@href")[0][4:])
-            item_data["operator_avatar_url"] = block.xpath("//a[@class='avatar']/img/@src")[0]
+            item_data["operation_type"] = "follow_collection"  # 鬼知道谁把关注专题写成 like_collection 的
             item_data["target_collection_title"] = block.xpath("//a[@class='title']/text()")[0]
             item_data["target_collection_url"] = CollectionSlugToCollectionUrl(block.xpath("//a[@class='title']/@href")[0][3:])
             item_data["target_collection_avatar_url"] = block.xpath("//div[@class='follow-detail']/div/a/img/@src")[0]
@@ -155,9 +137,6 @@ def GetUserTimelineInfo(user_url: str, max_id: int = 1000000000) -> List[Dict]:
 
         elif item_data["operation_type"] == "like_user":  # 关注用户
             item_data["operation_type"] = "follow_user"  # 鬼知道谁把关注用户写成 like_user 的
-            item_data["operator_name"] = block.xpath("//a[@class='nickname']/text()")[0]
-            item_data["operator_url"] = UserSlugToUserUrl(block.xpath("//a[@class='nickname']/@href")[0][4:])
-            item_data["operator_avatar_url"] = block.xpath("//a[@class='avatar']/img/@src")[0]
             item_data["target_user_name"] = block.xpath("//div[@class='info']/a[@class='title']/text()")[0]
             item_data["target_user_url"] = UserSlugToUserUrl(block.xpath("//div[@class='info']/a[@class='title']/@href")[0][3:])
             item_data["target_user_wordage"] = int(findall(r"\d+", block.xpath("//div[@class='follow-detail']/div[@class='info']/p/text()")[0])[0])
@@ -167,9 +146,6 @@ def GetUserTimelineInfo(user_url: str, max_id: int = 1000000000) -> List[Dict]:
 
         elif item_data["operation_type"] == "reward_note":  # 赞赏文章
             item_data["operation_type"] = "reward_article"  # 鬼知道谁把赞赏文章写成 reward_note 的
-            item_data["operator_name"] = block.xpath("//a[@class='nickname']/text()")[0]
-            item_data["operator_url"] = UserSlugToUserUrl(block.xpath("//a[@class='nickname']/@href")[0][4:])
-            item_data["operator_avatar_url"] = block.xpath("//a[@class='avatar']/img/@src")[0]
             item_data["target_article_title"] = block.xpath("//a[@class='title']/text()")[0]
             item_data["target_article_url"] = ArticleSlugToArticleUrl(block.xpath("//a[@class='title']/@href")[0][3:])
             item_data["target_user_name"] = block.xpath("//div[@class='origin-author']/a/text()")[0]
@@ -188,11 +164,6 @@ def GetUserTimelineInfo(user_url: str, max_id: int = 1000000000) -> List[Dict]:
                 item_data["target_article_rewards_count"] = int(block.xpath("//div[@class='meta']/span/text()")[1])
             except IndexError:  # 没有赞赏数据
                 item_data["target_article_rewards_count"] = 0
-
-        elif item_data["operation_type"] == "join_jianshu":  # 加入简书
-            item_data["operator_name"] = block.xpath("//a[@class='nickname']/text()")[0]
-            item_data["operator_url"] = UserSlugToUserUrl(block.xpath("//a[@class='nickname']/@href")[0][4:])
-            item_data["operator_avatar_url"] = block.xpath("//a[@class='avatar']/img/@src")[0]
 
         result.append(item_data)
     return result

@@ -39,8 +39,8 @@ def on_submit_button_clicked() -> None:
         return
 
     set_user_slug_cookies(user.slug)
-
     toast_success("排队成功")
+    reload(delay=1)
 
 
 def on_clear_bind_data_button_clicked() -> None:
