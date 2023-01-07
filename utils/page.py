@@ -16,6 +16,10 @@ def jump_to(url: str, new_window: bool = False, delay: int = 0) -> None:
     run_js(f'window.open("{url}", "{"_blank" if new_window else "_target"}")')
 
 
+def get_current_link() -> str:
+    return eval_js("window.location.href")
+
+
 def copy_to_clipboard(text: str) -> None:
     # 参见：https://juejin.cn/post/7119169721081004069
     run_js(
