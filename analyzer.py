@@ -1,6 +1,7 @@
 from typing import Dict
 
 from data.heat_graph import HeatGraph
+from data.interaction_type_pie import InteractionTypePie
 from data.user import User, UserStatus
 from data.wordcloud import Wordcloud
 from utils.db import timeline_data_db
@@ -70,3 +71,32 @@ def analyze_comment_word_freq(user: User) -> None:
         data=data,
     )
     run_logger.debug(f"已完成对 {user.id} 的评论词频数据分析")
+
+
+def analyze_operation_type(user: User) -> None:
+    if user.status != UserStatus.DONE:
+        raise ValueError
+
+    db_result = iter(
+        timeline_data_db.aggregate(
+            [
+                {
+                    "$group": {
+                        "_id": "$operation_type",
+                        "count": {
+                            "$sum": 1,
+                        },
+                    },
+                },
+                {
+                    "$sort": {
+                        "count": -1,
+                    },
+                },
+            ]
+        )
+    )
+
+    data: Dict[str, int] = {x["_id"]: x["count"] for x in db_result}
+    InteractionTypePie.create(user=user, data=data)
+    run_logger.debug(f"已完成对 {user.id} 的互动类型数据分析")

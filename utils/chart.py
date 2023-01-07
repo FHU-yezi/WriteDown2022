@@ -19,7 +19,7 @@ TOOLBOX_ONLY_SAVE_PNG_WHITE_2X = opts.ToolboxOpts(
         data_zoom=None,
         magic_type=None,
         brush=None,
-    )
+    ),
 )
 
 CALENDAR_DAY_MONTH_CHINESE_YEAR_HIDE = {
@@ -35,3 +35,7 @@ CALENDAR_DAY_MONTH_CHINESE_YEAR_HIDE = {
 }
 
 VISUALMAP_JIANSHU_COLOR = ("#fbe2de", "#f7c5bd", "#f2a99c", "#ee8c7b", "#ea6f5a")
+
+NO_LEGEND = opts.LegendOpts(
+    is_show=False,
+)

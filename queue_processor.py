@@ -3,7 +3,11 @@ from threading import Thread
 from time import sleep
 from typing import List
 
-from analyzer import analyze_active_data, analyze_comment_word_freq
+from analyzer import (
+    analyze_active_data,
+    analyze_comment_word_freq,
+    analyze_operation_type,
+)
 from data.user import UserStatus, get_waiting_user
 from fetcher import fetch_timeline_data
 from utils.config import config
@@ -40,6 +44,13 @@ def queue_processor_thread(start_sleep_time: int) -> None:
         except Exception as e:
             user.set_status_error("分析评论词频失败")
             run_logger.error(f"分析 {user.id} 的评论词频数据时发生异常：{repr(e)}")
+            continue
+
+        try:
+            analyze_operation_type(user)
+        except Exception as e:
+            user.set_status_error("分析互动类型失败")
+            run_logger.error(f"分析 {user.id} 的互动类型数据时发生异常：{repr(e)}")
             continue
 
         run_logger.debug(f"已完成对 {user.id} 的全部处理流程")

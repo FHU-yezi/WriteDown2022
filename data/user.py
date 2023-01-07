@@ -126,6 +126,12 @@ class User(DataModel):
 
         return Wordcloud.from_user_id(self.id)
 
+    @property
+    def interaction_type_pie(self):
+        from data.interaction_type_pie import InteractionTypePie
+
+        return InteractionTypePie.from_user_id(self.id)
+
     @classmethod
     def create(cls, user_url: str) -> "User":
         AssertUserUrl(user_url)

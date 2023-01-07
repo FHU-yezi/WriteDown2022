@@ -94,6 +94,7 @@ def GetUserTimelineInfo(user_url: str, max_id: int = 1000000000) -> List[Dict]:
                 item_data["target_article_comments_count"] = 0
 
         elif item_data["operation_type"] == "comment_note":  # 发表评论
+            item_data["operation_type"] = "comment_article"  # 鬼知道谁把评论文章写成 comment_note 的
             item_data["comment_content"] = "\n".join(block.xpath("//p[@class='comment']/text()"))
             item_data["target_article_title"] = block.xpath("//a[@class='title']/text()")[0]
             item_data["target_article_url"] = ArticleSlugToArticleUrl(block.xpath("//a[@class='title']/@href")[0][3:])
