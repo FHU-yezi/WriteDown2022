@@ -5,7 +5,7 @@ from utils.page import get_query_params
 from widgets.toast import toast_error_and_return
 
 NAME: str = "数据展示"
-DESC: str = "查看您的年度统计结果"
+DESC: str = "查看您的年度统计数据"
 VISIBILITY: bool = False
 
 

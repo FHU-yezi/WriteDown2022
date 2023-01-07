@@ -10,7 +10,9 @@ def set_footer(html: str) -> None:
     run_js(f"$('footer').html('{html}')")
 
 
-def jump_to(url: str, new_window: bool = False) -> None:
+def jump_to(url: str, new_window: bool = False, delay: int = 0) -> None:
+    if delay:
+        sleep(delay)
     run_js(f'window.open("{url}", "{"_blank" if new_window else "_target"}")')
 
 
