@@ -75,9 +75,9 @@ class HeatGraph(DataModel):
         insert_result = cls.db.insert_one(
             {
                 "user_id": user.id,
-                "max_interactions_count": max(data.values()),
+                "max_interactions_count": max(data.values()) if data else 0,
                 "total_active_days": len(data),
-                "total_interactions_count": sum(data.values()),
+                "total_interactions_count": sum(data.values()) if data else 0,
                 "data": data,
             },
         )
