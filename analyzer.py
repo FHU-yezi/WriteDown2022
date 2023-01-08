@@ -81,6 +81,11 @@ def analyze_operation_type(user: User) -> None:
         timeline_data_db.aggregate(
             [
                 {
+                    "$match": {
+                        "from_user": user.id,
+                    },
+                },
+                {
                     "$group": {
                         "_id": "$operation_type",
                         "count": {
