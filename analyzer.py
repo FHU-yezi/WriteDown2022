@@ -55,7 +55,7 @@ def analyze_comment_word_freq(user: User) -> None:
     db_result = timeline_data_db.find(
         {
             "from_user": user.id,
-            "operation_type": "comment_note",
+            "operation_type": "comment_article",
         },
         {
             "_id": 0,
