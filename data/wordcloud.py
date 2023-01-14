@@ -6,7 +6,7 @@ from pyecharts.charts import WordCloud as _WordCloud
 from pyecharts.globals import CurrentConfig
 
 from data._base import DataModel
-from utils.chart import TOOLBOX_ONLY_SAVE_PNG_WHITE_2X
+from utils.chart import TEXT_JIANSHU_COLOR, TOOLBOX_ONLY_SAVE_PNG_WHITE_2X
 from utils.config import config
 from utils.db import wordcloud_data_db
 from utils.dict_helper import get_reversed_dict
@@ -83,6 +83,7 @@ class Wordcloud(DataModel):
                 word_size_range=[10, 70],
                 pos_left="center",
                 pos_top="center",
+                textstyle_opts=TEXT_JIANSHU_COLOR,
             )
             .set_global_opts(
                 title_opts=opts.TitleOpts(
