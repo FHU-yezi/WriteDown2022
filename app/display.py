@@ -94,7 +94,7 @@ def display() -> None:
         current_link: str = get_current_link()
         put_markdown(
             """
-            您可以复制以下链接分享给简友，他们也可以查看您的统计数据：
+            您可以复制以下链接分享给其它简友，让他们查看您的统计数据：
             """
         )
         put_row(
