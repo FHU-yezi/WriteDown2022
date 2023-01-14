@@ -18,6 +18,7 @@ timeline_data_db = db.timeline_data
 heat_graph_data_db = db.heat_graph_data
 wordcloud_data_db = db.wordcloud_data
 interaction_type_pie_data_db = db.interaction_type_pie_data
+interaction_summary_data_db = db.interaction_summary_data
 
 # 创建索引
 
@@ -45,6 +46,11 @@ wordcloud_data_db.create_indexes(
     ]
 )
 interaction_type_pie_data_db.create_indexes(
+    [
+        IndexModel([("user_id", 1)], unique=True),
+    ]
+)
+interaction_summary_data_db.create_indexes(
     [
         IndexModel([("user_id", 1)], unique=True),
     ]

@@ -115,6 +115,12 @@ class User(DataModel):
         return bool(self.first_show_time)
 
     @property
+    def interaction_summary(self):
+        from data.interaction_summary import InteractionSummary
+
+        return InteractionSummary.from_user_id(self.id)
+
+    @property
     def heat_graph(self):
         from data.heat_graph import HeatGraph
 

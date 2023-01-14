@@ -55,6 +55,8 @@ def display() -> None:
         )
         return
 
+    put_markdown(user.interaction_summary.get_summary(), sanitize=False)
+
     put_html(user.heat_graph.get_graph_obj().render_notebook())
 
     put_html(user.interaction_type_pie.get_graph_obj().render_notebook())
