@@ -3,12 +3,7 @@ from threading import Thread
 from time import sleep
 from typing import List
 
-from analyzer import (
-    analyze_active_data,
-    analyze_comment_word_freq,
-    analyze_operation_type,
-    analyze_interaction_summary_data,
-)
+from analyzer import ANALYZE_FUNCS
 from data.user import UserStatus, get_waiting_user
 from fetcher import fetch_timeline_data
 from utils.config import config
@@ -33,33 +28,15 @@ def queue_processor_thread(start_sleep_time: int) -> None:
             run_logger.error(f"获取用户 {user.id} 的时间线数据时发生异常：{repr(e)}")
             continue
 
-        try:
-            analyze_active_data(user)
-        except Exception as e:
-            user.set_status_error("分析活跃度数据失败")
-            run_logger.error(f"分析 {user.id} 的活跃度数据时发生异常：{repr(e)}")
-            continue
-
-        try:
-            analyze_comment_word_freq(user)
-        except Exception as e:
-            user.set_status_error("分析评论词频失败")
-            run_logger.error(f"分析 {user.id} 的评论词频数据时发生异常：{repr(e)}")
-            continue
-
-        try:
-            analyze_operation_type(user)
-        except Exception as e:
-            user.set_status_error("分析互动类型失败")
-            run_logger.error(f"分析 {user.id} 的互动类型数据时发生异常：{repr(e)}")
-            continue
-
-        try:
-            analyze_interaction_summary_data(user)
-        except Exception as e:
-            user.set_status_error("分析互动总结数据失败")
-            run_logger.error(f"分析 {user.id} 的互动总结数据时发生异常：{repr(e)}")
-            continue
+        for analyze_item_name, analyze_func in ANALYZE_FUNCS.items():
+            try:
+                analyze_func(user)
+            except Exception as e:
+                user.set_status_error(f"分析{analyze_item_name}失败")
+                run_logger.error(f"分析 {user.id} 的{analyze_item_name}时发生异常：{repr(e)}")
+                continue
+            else:
+                run_logger.debug(f"已完成对 {user.id} 的{analyze_item_name}分析")
 
         run_logger.debug(f"已完成对 {user.id} 的全部处理流程")
 

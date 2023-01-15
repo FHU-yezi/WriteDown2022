@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any, Callable, Dict
 
 from data.heat_graph import HeatGraph
 from data.interaction_summary import InteractionSummary
@@ -6,7 +6,6 @@ from data.interaction_type_pie import InteractionTypePie
 from data.user import User, UserStatus
 from data.wordcloud import Wordcloud
 from utils.db import timeline_data_db
-from utils.log import run_logger
 from utils.word_split import get_word_freq
 
 
@@ -46,7 +45,6 @@ def analyze_active_data(user: User) -> None:
 
     data = {item["_id"].isoformat(): item["count"] for item in db_result}
     HeatGraph.create(user=user, data=data)
-    run_logger.debug(f"已完成对 {user.id} 的活跃度数据分析")
 
 
 def analyze_comment_word_freq(user: User) -> None:
@@ -71,10 +69,9 @@ def analyze_comment_word_freq(user: User) -> None:
         user=user,
         data=data,
     )
-    run_logger.debug(f"已完成对 {user.id} 的评论词频数据分析")
 
 
-def analyze_operation_type(user: User) -> None:
+def analyze_interaction_type(user: User) -> None:
     if user.status != UserStatus.DONE:
         raise ValueError
 
@@ -105,7 +102,6 @@ def analyze_operation_type(user: User) -> None:
 
     data: Dict[str, int] = {x["_id"]: x["count"] for x in db_result}
     InteractionTypePie.create(user=user, data=data)
-    run_logger.debug(f"已完成对 {user.id} 的互动类型数据分析")
 
 
 def analyze_interaction_summary_data(user: User) -> None:
@@ -287,4 +283,11 @@ def analyze_interaction_summary_data(user: User) -> None:
         max_comments_user_url=max_comments_user_url,
         max_comments_user_comments_count=max_comments_user_comments_count,
     )
-    run_logger.debug(f"已完成对 {user.id} 的互动总结数据分析")
+
+
+ANALYZE_FUNCS: Dict[str, Callable[[User], None]] = {
+    "活跃度数据": analyze_active_data,
+    "评论词频数据": analyze_comment_word_freq,
+    "互动类型数据": analyze_interaction_type,
+    "互动总结数据": analyze_interaction_summary_data,
+}
