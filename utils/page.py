@@ -104,3 +104,7 @@ def get_query_params() -> Dict[str, str]:
     if result.get("app"):  # 去除子页面参数
         del result["app"]
     return result
+
+
+def is_full_width() -> bool:
+    return eval_js('$("#output-container")[0].clientWidth === 880')

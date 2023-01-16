@@ -11,6 +11,7 @@ from utils.page import (
     get_jump_link,
     get_query_params,
     get_user_slug_cookies,
+    is_full_width,
     jump_to,
 )
 from widgets.button import put_button
@@ -70,6 +71,9 @@ def display() -> None:
     )
 
     put_markdown(user.interaction_summary.get_summary(), sanitize=False)
+
+    if not is_full_width():
+        put_markdown("（左右滑动查看图表）")
 
     put_html(user.heat_graph.get_graph().render_notebook())
 
