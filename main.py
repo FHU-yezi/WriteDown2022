@@ -7,6 +7,7 @@ from queue_processor import clean_unfinished_job, start_queue_processor_threads
 from utils.config import config
 from utils.log import run_logger
 from utils.module_finder import Module, get_all_modules_info
+from pywebio.output import put_warning
 from utils.page import get_jump_link
 from utils.patch import patch_all
 from widgets.card import put_app_card
@@ -28,6 +29,7 @@ def index():
         版本：{config.version}
         """
     )
+    put_warning("服务尚在内测期间，不代表最终效果")
 
     config.refresh()
 
