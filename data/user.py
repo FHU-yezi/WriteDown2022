@@ -130,10 +130,10 @@ class User(DataModel):
         return Wordcloud.from_user_id(self.id)
 
     @property
-    def interaction_type_pie(self):
-        from data.interaction_type_pie import InteractionTypePie
+    def interaction_type(self):
+        from data.interaction_type import InteractionType
 
-        return InteractionTypePie.from_user_id(self.id)
+        return InteractionType.from_user_id(self.id)
 
     @classmethod
     def create(cls, user_url: str) -> "User":

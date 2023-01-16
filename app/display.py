@@ -77,7 +77,7 @@ def display() -> None:
 
     put_html(user.heat_graph.get_graph().render_notebook())
 
-    put_html(user.interaction_type_pie.get_graph().render_notebook())
+    put_html(user.interaction_type.get_graph().render_notebook())
 
     put_html(user.wordcloud.get_graph().render_notebook())
 

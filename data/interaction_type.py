@@ -12,7 +12,7 @@ from utils.chart import (
     TOOLBOX_ONLY_SAVE_PNG_WHITE_2X,
 )
 from utils.config import config
-from utils.db import interaction_type_pie_data_db
+from utils.db import interaction_type_data_db
 from utils.dict_helper import get_reversed_dict
 
 INTERACTION_NAME_MAPPING: Dict[str, str] = {
@@ -28,8 +28,8 @@ INTERACTION_NAME_MAPPING: Dict[str, str] = {
 CurrentConfig.ONLINE_HOST = config.deploy.PyEcharts_CDN
 
 
-class InteractionTypePie(DataModel):
-    db = interaction_type_pie_data_db
+class InteractionType(DataModel):
+    db = interaction_type_data_db
     attr_db_key_mapping: Dict[str, str] = {
         "id": "_id",
         "user_id": "user_id",
@@ -49,14 +49,14 @@ class InteractionTypePie(DataModel):
         super().__init__()
 
     @classmethod
-    def from_id(cls, id: str) -> "InteractionTypePie":
+    def from_id(cls, id: str) -> "InteractionType":
         db_data = cls.db.find_one({"_id": ObjectId(id)})
         if not db_data:
             raise ValueError
         return cls.from_db_data(db_data, flatten=False)
 
     @classmethod
-    def from_user_id(cls, user_id: str) -> "InteractionTypePie":
+    def from_user_id(cls, user_id: str) -> "InteractionType":
         db_data = cls.db.find_one({"user_id": user_id})
         if not db_data:
             raise ValueError
@@ -69,7 +69,7 @@ class InteractionTypePie(DataModel):
         return User.from_id(self.user_id)
 
     @classmethod
-    def create(cls, user, data: Dict[str, int]) -> "InteractionTypePie":
+    def create(cls, user, data: Dict[str, int]) -> "InteractionType":
         insert_result = cls.db.insert_one(
             {
                 "user_id": user.id,

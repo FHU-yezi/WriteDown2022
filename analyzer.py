@@ -2,7 +2,7 @@ from typing import Any, Callable, Dict
 
 from data.heat_graph import HeatGraph
 from data.interaction_summary import InteractionSummary
-from data.interaction_type_pie import InteractionTypePie
+from data.interaction_type import InteractionType
 from data.user import User, UserStatus
 from data.wordcloud import Wordcloud
 from utils.db import timeline_data_db
@@ -101,7 +101,7 @@ def analyze_interaction_type(user: User) -> None:
     )
 
     data: Dict[str, int] = {x["_id"]: x["count"] for x in db_result}
-    InteractionTypePie.create(user=user, data=data)
+    InteractionType.create(user=user, data=data)
 
 
 def analyze_interaction_summary_data(user: User) -> None:
