@@ -70,7 +70,7 @@ class Wordcloud(DataModel):
         return (
             _WordCloud(
                 init_opts=opts.InitOpts(
-                    width="100%",
+                    width="880px",
                     height="500px",
                     animation_opts=opts.AnimationOpts(
                         animation=False,

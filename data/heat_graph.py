@@ -88,7 +88,7 @@ class HeatGraph(DataModel):
         return (
             Calendar(
                 init_opts=opts.InitOpts(
-                    width="100%",
+                    width="880px",
                     height="300px",
                     animation_opts=ANIMATION_OFF,
                 ),
