@@ -84,7 +84,7 @@ class HeatGraph(DataModel):
 
         return cls.from_id(insert_result.inserted_id)
 
-    def get_graph_obj(self) -> Calendar:
+    def get_graph(self) -> Calendar:
         return (
             Calendar(
                 init_opts=opts.InitOpts(

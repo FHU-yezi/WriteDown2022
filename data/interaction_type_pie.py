@@ -80,7 +80,7 @@ class InteractionTypePie(DataModel):
 
         return cls.from_id(insert_result.inserted_id)
 
-    def get_graph_obj(self) -> Pie:
+    def get_graph(self) -> Pie:
         # 对操作名称进行映射，如果找不到对应的文本，则返回原文本
         data_pair: List[str, int] = [
             (INTERACTION_NAME_MAPPING.get(name, name), value)

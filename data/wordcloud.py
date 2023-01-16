@@ -66,7 +66,7 @@ class Wordcloud(DataModel):
 
         return cls.from_id(insert_result.inserted_id)
 
-    def get_graph_obj(self) -> _WordCloud:
+    def get_graph(self) -> _WordCloud:
         return (
             _WordCloud(
                 init_opts=opts.InitOpts(
