@@ -4,6 +4,7 @@ from pywebio.output import put_html, put_markdown, put_row
 from pywebio.pin import put_input
 
 from data.user import User, get_waiting_users_count
+from utils.html import grey_text
 from utils.page import (
     copy_to_clipboard,
     get_current_link,
@@ -48,12 +49,25 @@ def display() -> None:
     if user.is_error:
         put_markdown(
             f"""
-            很抱歉，在获取数据的过程中出现了异常。
+            很抱歉，在获取数据的过程中发生了异常。
 
             错误信息：{user.error_info}
             """
         )
         return
+
+    user.result_shown()
+
+    put_markdown(
+        f"""
+        # {user.name} 的 2022 年度数据统计
+
+        {grey_text(
+            f'生成时间：{user.end_fetch_time.strftime(r"%Y-%m-%d %H:%M:%S")} | '
+            f'展示次数：{user.result_show_count}'
+        )}
+        """
+    )
 
     put_markdown(user.interaction_summary.get_summary(), sanitize=False)
 
@@ -113,7 +127,7 @@ def display() -> None:
                     onclick=lambda: on_copy_link_button_clicked(current_link),
                     color="secondary",
                     outline=True,
-                )
+                ),
             ],
             size="auto 10px 60px",
         )

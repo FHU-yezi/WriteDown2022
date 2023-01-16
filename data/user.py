@@ -32,8 +32,7 @@ class User(DataModel):
         "name": "user.name",
         "slug": "user.slug",
         "url": "user.url",
-        "heat_graph_show_count": "show_count.heat_graph",
-        "wordcloud_show_count": "show_count.wordcloud",
+        "result_show_count": "result_show_count",
         "join_queue_time": "timestamp.join_queue",
         "start_fetch_time": "timestamp.start_fetch",
         "end_fetch_time": "timestamp.end_fetch",
@@ -51,8 +50,7 @@ class User(DataModel):
         name: str,
         slug: str,
         url: str,
-        heat_graph_show_count: int,
-        wordcloud_show_count: int,
+        result_show_count: int,
         join_queue_time: datetime,
         start_fetch_time: datetime,
         end_fetch_time: datetime,
@@ -66,8 +64,7 @@ class User(DataModel):
         self.name = name
         self.slug = slug
         self.url = url
-        self.heat_graphshow_count = heat_graph_show_count
-        self.wordcloud_show_count = wordcloud_show_count
+        self.result_show_count = result_show_count
         self.join_queue_time = join_queue_time
         self.start_fetch_time = start_fetch_time
         self.end_fetch_time = end_fetch_time
@@ -151,10 +148,7 @@ class User(DataModel):
                 "slug": UserUrlToUserSlug(user_url),
                 "url": user_url,
             },
-            "show_count": {
-                "heat_graph": 0,
-                "wordcloud": 0,
-            },
+            "result_show_count": 0,
             "timestamp": {
                 "join_queue": datetime.now(),
                 "start_fetch": None,
@@ -173,20 +167,12 @@ class User(DataModel):
 
         return cls.from_id(insert_result.inserted_id)
 
-    def heat_graph_shown(self) -> None:
+    def result_shown(self) -> None:
         if self.is_first_show:
             self.first_show_time = datetime.now()
 
+        self.result_show_count += 1
         self.last_show_time = datetime.now()
-        self.heat_graphshow_count += 1
-        self.sync()
-
-    def wordcloud_shown(self) -> None:
-        if self.is_first_show:
-            self.first_show_time = datetime.now()
-
-        self.last_show_time = datetime.now()
-        self.wordcloud_show_count += 1
         self.sync()
 
     def set_status_waiting(self) -> None:
