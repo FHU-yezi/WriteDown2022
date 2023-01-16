@@ -1,12 +1,8 @@
-from typing import Dict, List, Tuple
+from typing import Dict
 
 
 def get_reversed_dict(item: Dict) -> Dict:
-    result = {}
-    kv_pairs: List[Tuple] = list(item.items())
-    for key, value in kv_pairs:
-        result[value] = key
-    return result
+    return {v: k for k, v in item.items()}
 
 
 def flatten_dict(item: Dict) -> Dict:
