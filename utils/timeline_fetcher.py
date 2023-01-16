@@ -62,7 +62,7 @@ def GetUserTimelineInfo(user_url: str, max_id: int = 1000000000) -> List[Dict]:
             item_data["target_article_title"] = block.xpath("//a[@class='title']/text()")[0]
             item_data["target_article_url"] = ArticleSlugToArticleUrl(block.xpath("//a[@class='title']/@href")[0][3:])
             item_data["target_user_name"] = block.xpath("//div[@class='origin-author']/a/text()")[0]
-            item_data["target_user_url"] = UserSlugToUserUrl(block.xpath("//div[@class='meta']/a/@href")[0][3:])
+            item_data["target_user_url"] = UserSlugToUserUrl(block.xpath("//div[@class='origin-author']/a/@href")[0].split("/")[-1])
             item_data["target_article_reads_count"] = int(block.xpath("//div[@class='meta']/a/text()")[1])
             item_data["target_article_likes_count"] = int(block.xpath("//div[@class='meta']/span/text()")[0])
             try:
@@ -99,7 +99,7 @@ def GetUserTimelineInfo(user_url: str, max_id: int = 1000000000) -> List[Dict]:
             item_data["target_article_title"] = block.xpath("//a[@class='title']/text()")[0]
             item_data["target_article_url"] = ArticleSlugToArticleUrl(block.xpath("//a[@class='title']/@href")[0][3:])
             item_data["target_user_name"] = block.xpath("//div[@class='origin-author']/a/text()")[0]
-            item_data["target_user_url"] = UserSlugToUserUrl(block.xpath("//div[@class='meta']/a/@href")[0][3:])
+            item_data["target_user_url"] = UserSlugToUserUrl(block.xpath("//div[@class='origin-author']/a/@href")[0].split("/")[-1])
             item_data["target_article_reads_count"] = int(block.xpath("//div[@class='meta']/a/text()")[1])
             item_data["target_article_likes_count"] = int(block.xpath("//div[@class='meta']/span/text()")[0])
             try:
