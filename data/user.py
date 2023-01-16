@@ -18,10 +18,13 @@ from utils.exceptions import DuplicateUserError, UserNotExistError
 
 
 class UserStatus(IntEnum):
-    WAITING = 0
+    WAITING_FOR_FETCH = 0
     FETCHING = 1
-    DONE = 2
-    ERROR = 3
+    WAITING_FOR_ANALYZE = 2
+    ANALYZING = 3
+    ANALYZE_DONE = 4
+    FETCH_ERROR = 5
+    ANALYZE_ERROR = 6
 
 
 class User(DataModel):
@@ -36,6 +39,8 @@ class User(DataModel):
         "join_queue_time": "timestamp.join_queue",
         "start_fetch_time": "timestamp.start_fetch",
         "end_fetch_time": "timestamp.end_fetch",
+        "start_analyze_time": "timestamp.start_analyze",
+        "end_analyze_time": "timestamp.end_analyze",
         "first_show_time": "timestamp.first_show",
         "last_show_time": "timestamp.last_show",
         "fetch_start_id": "fetch_start_id",
@@ -54,6 +59,8 @@ class User(DataModel):
         join_queue_time: datetime,
         start_fetch_time: datetime,
         end_fetch_time: datetime,
+        start_analyze_time: datetime,
+        end_analyze_time: datetime,
         first_show_time: datetime,
         last_show_time: datetime,
         fetch_start_id: int,
@@ -68,6 +75,8 @@ class User(DataModel):
         self.join_queue_time = join_queue_time
         self.start_fetch_time = start_fetch_time
         self.end_fetch_time = end_fetch_time
+        self.start_analyze_time = start_analyze_time
+        self.end_analyze_time = end_analyze_time
         self.first_show_time = first_show_time
         self.last_show_time = last_show_time
         self.fetch_start_id = fetch_start_id
@@ -92,20 +101,28 @@ class User(DataModel):
         return cls.from_db_data(db_data)
 
     @property
-    def is_waiting(self) -> bool:
-        return self.status == UserStatus.WAITING
+    def is_waiting_for_fetch(self) -> bool:
+        return self.status == UserStatus.WAITING_FOR_FETCH
 
     @property
     def is_fetching(self) -> bool:
         return self.status == UserStatus.FETCHING
 
     @property
-    def is_done(self) -> bool:
-        return self.status == UserStatus.DONE
+    def is_waiting_for_analyze(self) -> bool:
+        return self.status == UserStatus.WAITING_FOR_ANALYZE
+
+    @property
+    def is_analyzing(self) -> bool:
+        return self.status == UserStatus.ANALYZING
+
+    @property
+    def is_analyze_done(self) -> bool:
+        return self.status == UserStatus.ANALYZE_DONE
 
     @property
     def is_error(self) -> bool:
-        return self.status == UserStatus.ERROR
+        return self.status in (UserStatus.FETCH_ERROR, UserStatus.ANALYZE_ERROR)
 
     @property
     def is_first_show(self) -> bool:
@@ -148,7 +165,7 @@ class User(DataModel):
         user_name: str = GetUserName(user_url, disable_check=True)
 
         data_to_insert = {
-            "status": UserStatus.WAITING,
+            "status": UserStatus.WAITING_FOR_FETCH,
             "user": {
                 "name": user_name,
                 "slug": UserUrlToUserSlug(user_url),
@@ -159,6 +176,8 @@ class User(DataModel):
                 "join_queue": datetime.now(),
                 "start_fetch": None,
                 "end_fetch": None,
+                "start_analyze": None,
+                "end_analyze": None,
                 "first_show": None,
                 "last_show": None,
             },
@@ -181,8 +200,9 @@ class User(DataModel):
         self.last_show_time = datetime.now()
         self.sync()
 
-    def set_status_waiting(self) -> None:
-        self.status = UserStatus.WAITING
+    def set_status_waiting_for_fetch(self) -> None:
+        self.status = UserStatus.WAITING_FOR_FETCH
+        self.join_queue_time = datetime.now()
         self.sync()
 
     def set_status_fetching(self) -> None:
@@ -190,14 +210,30 @@ class User(DataModel):
         self.start_fetch_time = datetime.now()
         self.sync()
 
-    def set_status_done(self) -> None:
-        self.status = UserStatus.DONE
+    def set_status_waiting_for_analyze(self) -> None:
+        self.status = UserStatus.WAITING_FOR_ANALYZE
         self.end_fetch_time = datetime.now()
         self.sync()
 
-    def set_status_error(self, error_info: str) -> None:
-        self.status = UserStatus.ERROR
+    def set_status_analyzing(self) -> None:
+        self.status = UserStatus.ANALYZING
+        self.start_analyze_time = datetime.now()
+        self.sync()
+
+    def set_status_analyze_done(self) -> None:
+        self.status = UserStatus.ANALYZE_DONE
+        self.end_analyze_time = datetime.now()
+        self.sync()
+
+    def set_status_fetch_error(self, error_info: str) -> None:
+        self.status = UserStatus.FETCH_ERROR
         self.end_fetch_time = datetime.now()
+        self.error_info = error_info
+        self.sync()
+
+    def set_status_analyze_error(self, error_info: str) -> None:
+        self.status = UserStatus.ANALYZE_ERROR
+        self.end_analyze_time = datetime.now()
         self.error_info = error_info
         self.sync()
 
@@ -210,7 +246,7 @@ def get_waiting_user() -> Optional[User]:
     db_result = (
         user_data_db.find(
             {
-                "status": UserStatus.WAITING,
+                "status": UserStatus.WAITING_FOR_FETCH,
             },
         )
         .sort([("timestamp.join_queue", 1)])
@@ -224,4 +260,4 @@ def get_waiting_user() -> Optional[User]:
 
 
 def get_waiting_users_count() -> int:
-    return user_data_db.count_documents({"status": UserStatus.WAITING})
+    return user_data_db.count_documents({"status": UserStatus.WAITING_FOR_FETCH})

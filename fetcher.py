@@ -6,7 +6,7 @@ from typing import Dict, Generator, List, Optional
 from backoff import expo, on_exception
 from httpx import TimeoutException
 
-from data.user import User, UserStatus
+from data.user import User
 from utils.db import timeline_data_db
 from utils.log import run_logger
 from utils.timeline_fetcher import GetUserTimelineInfo
@@ -41,11 +41,6 @@ def get_all_data(user_url: str, start_id: Optional[int]) -> Generator[Dict, None
 
 
 def fetch_timeline_data(user: User) -> None:
-    if user.status != UserStatus.WAITING:
-        raise ValueError
-    user.set_status_fetching()
-    run_logger.debug(f"开始采集用户 {user.id} 的时间线数据")
-
     if user.fetch_start_id:
         run_logger.warning(f"用户 {user.id} 上次采集任务未完成，将从 {user.fetch_start_id} 处继续采集")
 
@@ -75,6 +70,3 @@ def fetch_timeline_data(user: User) -> None:
         buffer.clear()
         user.set_fetch_start_id(item["operation_id"])
         run_logger.debug(f"已保存用户 {user.id} 的时间线数据（{item['operation_id']}）")
-
-    user.set_status_done()
-    run_logger.debug(f"用户 {user.id} 的时间线数据采集已完成")

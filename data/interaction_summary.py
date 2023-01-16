@@ -141,5 +141,5 @@ class InteractionSummary(DataModel):
 
         你最喜欢给 {link(self.max_likes_user_name, self.max_likes_user_url, new_window=True)} 的文章点赞，这一年你为 TA 送上了 {self.max_likes_user_likes_count} 个赞。
 
-        你最喜欢评论 {link(self.max_comments_user_name, self.max_comments_user_url, new_window=True)} 的文章，这一年你在他的文章下评论了 {self.max_comments_user_comments_count} 次。
+        你最喜欢评论 {link(self.max_comments_user_name, self.max_comments_user_url, new_window=True)} 的文章，这一年你在 TA 的文章下评论了 {self.max_comments_user_comments_count} 次。
         """

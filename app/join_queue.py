@@ -64,9 +64,9 @@ def join_queue() -> None:
     if user_slug:
         user = User.from_slug(user_slug)
 
-        if user.is_waiting or user.is_fetching:
+        if not user.is_analyze_done and not user.is_error:
             put_info(f"{user.name}，您已经在队列中了，数据正在全力获取中......")
-        elif user.is_done or user.is_error:  # 错误信息在展示页面显示，因此出错时也让用户跳转到展示页面
+        elif user.is_analyze_done or user.is_error:  # 错误信息在展示页面显示，因此出错时也让用户跳转到展示页面
             put_success(f"{user.name}，您的数据已经获取完成。")
             put_button(
                 "点击查看>>",

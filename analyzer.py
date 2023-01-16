@@ -4,16 +4,13 @@ from data.heat_graph import HeatGraph
 from data.interaction_per_hour import InteractionPerHour
 from data.interaction_summary import InteractionSummary
 from data.interaction_type import InteractionType
-from data.user import User, UserStatus
+from data.user import User
 from data.wordcloud import Wordcloud
 from utils.db import timeline_data_db
 from utils.word_split import get_word_freq
 
 
 def analyze_active_data(user: User) -> None:
-    if user.status != UserStatus.DONE:
-        raise ValueError
-
     db_result = iter(
         timeline_data_db.aggregate(
             [
@@ -49,9 +46,6 @@ def analyze_active_data(user: User) -> None:
 
 
 def analyze_comment_word_freq(user: User) -> None:
-    if user.status != UserStatus.DONE:
-        raise ValueError
-
     db_result = timeline_data_db.find(
         {
             "from_user": user.id,
@@ -73,9 +67,6 @@ def analyze_comment_word_freq(user: User) -> None:
 
 
 def analyze_interaction_type(user: User) -> None:
-    if user.status != UserStatus.DONE:
-        raise ValueError
-
     db_result = iter(
         timeline_data_db.aggregate(
             [
@@ -106,9 +97,6 @@ def analyze_interaction_type(user: User) -> None:
 
 
 def analyze_interaction_per_hour_data(user: User) -> None:
-    if user.status != UserStatus.DONE:
-        raise ValueError
-
     db_result = iter(
         timeline_data_db.aggregate(
             [

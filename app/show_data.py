@@ -44,7 +44,7 @@ def on_show_button_clicked() -> None:
         if user_url and not slug_from_cookie:
             set_user_slug_cookies(UserUrlToUserSlug(user_url))
 
-    if user.is_waiting or user.is_fetching:
+    if user.is_waiting_for_fetch or user.is_fetching:
         toast_warn_and_return("您的数据正在全力获取中，请稍等")
 
     toast_success("您的数据已经获取完成，即将为您跳转")
@@ -82,7 +82,7 @@ def show_data() -> None:
         remove_user_slug_cookies()
         reload(delay=1)
 
-    if user.is_waiting or user.is_fetching:
+    if user.is_waiting_for_fetch or user.is_fetching:
         put_markdown(
             f"""
             我们正在全力获取您的数据，过一会再来试试吧。

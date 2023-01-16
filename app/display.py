@@ -37,7 +37,7 @@ def display() -> None:
     except ValueError:
         toast_error_and_return("请求参数错误")
 
-    if user.is_waiting or user.is_fetching:
+    if not user.is_analyze_done and not user.is_error:
         put_markdown(
             f"""
             我们正在全力获取您的数据，过一会再来试试吧。
@@ -46,8 +46,7 @@ def display() -> None:
             """
         )
         return
-
-    if user.is_error:
+    elif user.is_error:
         put_markdown(
             f"""
             很抱歉，在获取数据的过程中发生了异常。
