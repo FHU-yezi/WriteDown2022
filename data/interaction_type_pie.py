@@ -101,7 +101,7 @@ class InteractionTypePie(DataModel):
             )
             .set_global_opts(
                 title_opts=opts.TitleOpts(
-                    pos_left="5px",
+                    pos_left="30px",
                     pos_top="5px",
                     title=f"{self.user.name} 的 2022 互动类型图",
                     subtitle=(f"总互动量：{self.total_interactions_count}"),

@@ -5,7 +5,7 @@ ANIMATION_OFF = opts.AnimationOpts(
 )
 
 TOOLBOX_ONLY_SAVE_PNG_WHITE_2X = opts.ToolboxOpts(
-    pos_right="5px",
+    pos_left="5px",
     pos_top="5px",
     feature=opts.ToolBoxFeatureOpts(
         save_as_image=opts.ToolBoxFeatureSaveAsImageOpts(
