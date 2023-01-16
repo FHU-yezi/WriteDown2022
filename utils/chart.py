@@ -36,9 +36,7 @@ CALENDAR_DAY_MONTH_CHINESE_YEAR_HIDE = {
 
 VISUALMAP_JIANSHU_COLOR = ("#fbe2de", "#f7c5bd", "#f2a99c", "#ee8c7b", "#ea6f5a")
 
-TEXT_JIANSHU_COLOR = opts.TextStyleOpts(
-    color="#ea6f5a",
-)
+JIANSHU_COLOR = "#ea6f5a"
 
 NO_LEGEND = opts.LegendOpts(
     is_show=False,

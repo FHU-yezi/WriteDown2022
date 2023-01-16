@@ -8,6 +8,7 @@ from pyecharts.globals import CurrentConfig
 from data._base import DataModel
 from utils.chart import (
     ANIMATION_OFF,
+    JIANSHU_COLOR,
     NO_LEGEND,
     TOOLBOX_ONLY_SAVE_PNG_WHITE_2X,
 )
@@ -70,21 +71,38 @@ class InteractionPerHour(DataModel):
             Line(
                 init_opts=opts.InitOpts(
                     width="880px",
-                    height="400px",
+                    height="450px",
                     animation_opts=ANIMATION_OFF,
                 ),
             )
-            .add_xaxis(tuple(self.data.keys()))
+            .add_xaxis(
+                tuple(self.data.keys()),
+            )
             .add_yaxis(
                 "",
                 y_axis=tuple(self.data.values()),
                 is_smooth=True,
+                linestyle_opts=opts.LineStyleOpts(
+                    color=JIANSHU_COLOR,
+                ),
+                label_opts=opts.LabelOpts(
+                    color=JIANSHU_COLOR,
+                ),
+                itemstyle_opts=opts.ItemStyleOpts(
+                    color=JIANSHU_COLOR,
+                )
             )
             .set_global_opts(
                 title_opts=opts.TitleOpts(
                     pos_left="30px",
                     pos_top="5px",
                     title=f"{self.user.name} 的 2022 互动小时分布图",
+                ),
+                xaxis_opts=opts.AxisOpts(
+                    name="小时"
+                ),
+                yaxis_opts=opts.AxisOpts(
+                    name="互动次数"
                 ),
                 legend_opts=NO_LEGEND,
                 toolbox_opts=TOOLBOX_ONLY_SAVE_PNG_WHITE_2X,
