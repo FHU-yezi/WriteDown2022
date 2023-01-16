@@ -179,17 +179,9 @@ def analyze_interaction_summary_data(user: User) -> None:
             },
             {
                 "$group": {
-                    "_id": {
-                        "$dateTrunc": {
-                            "date": "$operation_time",
-                            "unit": "day",
-                        }
-                    },
-                    "user_name": {
+                    "_id": "$target_user_url",
+                    "name": {
                         "$first": "$target_user_name",
-                    },
-                    "user_url": {
-                        "$first": "$target_user_url",
                     },
                     "count": {
                         "$sum": 1,
@@ -202,19 +194,12 @@ def analyze_interaction_summary_data(user: User) -> None:
                 },
             },
             {
-                "$match": {
-                    "user_name": {
-                        "$ne": "ordinary_player",
-                    },
-                },
-            },
-            {
                 "$limit": 1,
             },
         ]
     ).next()
-    max_likes_user_name = max_likes_data["user_name"]
-    max_likes_user_url = max_likes_data["user_url"]
+    max_likes_user_name = max_likes_data["name"]
+    max_likes_user_url = max_likes_data["_id"]
     max_likes_user_likes_count = max_likes_data["count"]
     del max_likes_data
 
@@ -228,17 +213,9 @@ def analyze_interaction_summary_data(user: User) -> None:
             },
             {
                 "$group": {
-                    "_id": {
-                        "$dateTrunc": {
-                            "date": "$operation_time",
-                            "unit": "day",
-                        }
-                    },
+                    "_id": "$target_user_url",
                     "user_name": {
                         "$first": "$target_user_name",
-                    },
-                    "user_url": {
-                        "$first": "$target_user_url",
                     },
                     "count": {
                         "$sum": 1,
@@ -251,19 +228,12 @@ def analyze_interaction_summary_data(user: User) -> None:
                 },
             },
             {
-                "$match": {
-                    "user_name": {
-                        "$ne": "ordinary_player",
-                    },
-                },
-            },
-            {
                 "$limit": 1,
             },
         ]
     ).next()
-    max_comments_user_name = max_comments_data["user_name"]
-    max_comments_user_url = max_comments_data["user_url"]
+    max_comments_user_name = max_comments_data["name"]
+    max_comments_user_url = max_comments_data["_id"]
     max_comments_user_comments_count = max_comments_data["count"]
     del max_comments_data
 
