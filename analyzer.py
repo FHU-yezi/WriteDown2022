@@ -1,6 +1,7 @@
 from typing import Any, Callable, Dict
 
 from data.heat_graph import HeatGraph
+from data.interaction_per_hour import InteractionPerHour
 from data.interaction_summary import InteractionSummary
 from data.interaction_type import InteractionType
 from data.user import User, UserStatus
@@ -102,6 +103,45 @@ def analyze_interaction_type(user: User) -> None:
 
     data: Dict[str, int] = {x["_id"]: x["count"] for x in db_result}
     InteractionType.create(user=user, data=data)
+
+
+def analyze_interaction_per_hour_data(user: User) -> None:
+    if user.status != UserStatus.DONE:
+        raise ValueError
+
+    db_result = iter(
+        timeline_data_db.aggregate(
+            [
+                {
+                    "$match": {
+                        "from_user": user.id,
+                    },
+                },
+                {
+                    "$group": {
+                        "_id": {
+                            "$hour": "$operation_time",
+                        },
+                        "count": {
+                            "$sum": 1,
+                        },
+                    }
+                },
+                {
+                    "$sort": {
+                        "_id": 1,
+                    },
+                },
+            ],
+        )
+    )
+
+    # 不能使用整数作为键，此处进行类型转换
+    data: Dict[str, int] = {str(x["_id"]): x["count"] for x in db_result}
+    InteractionPerHour.create(
+        user=user,
+        data=data,
+    )
 
 
 def analyze_interaction_summary_data(user: User) -> None:
@@ -214,7 +254,7 @@ def analyze_interaction_summary_data(user: User) -> None:
             {
                 "$group": {
                     "_id": "$target_user_url",
-                    "user_name": {
+                    "name": {
                         "$first": "$target_user_name",
                     },
                     "count": {
@@ -259,5 +299,6 @@ ANALYZE_FUNCS: Dict[str, Callable[[User], None]] = {
     "活跃度数据": analyze_active_data,
     "评论词频数据": analyze_comment_word_freq,
     "互动类型数据": analyze_interaction_type,
+    "互动小时分布数据": analyze_interaction_per_hour_data,
     "互动总结数据": analyze_interaction_summary_data,
 }

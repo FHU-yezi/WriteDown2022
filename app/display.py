@@ -79,6 +79,8 @@ def display() -> None:
 
     put_html(user.interaction_type.get_graph().render_notebook())
 
+    put_html(user.interaction_per_hour.get_graph().render_notebook())
+
     put_html(user.wordcloud.get_graph().render_notebook())
 
     put_markdown("---")

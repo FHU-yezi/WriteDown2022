@@ -135,6 +135,12 @@ class User(DataModel):
 
         return InteractionType.from_user_id(self.id)
 
+    @property
+    def interaction_per_hour(self):
+        from data.interaction_per_hour import InteractionPerHour
+
+        return InteractionPerHour.from_user_id(self.id)
+
     @classmethod
     def create(cls, user_url: str) -> "User":
         AssertUserUrl(user_url)
