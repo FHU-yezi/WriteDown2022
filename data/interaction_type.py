@@ -39,7 +39,7 @@ class InteractionType(DataModel):
     db_key_attr_mapping = get_reversed_dict(attr_db_key_mapping)
 
     def __init__(
-        self, id: str, user_id: str, total_interactions_count: int, data: Dict[str, str]
+        self, id: str, user_id: str, total_interactions_count: int, data: Dict[str, int]
     ) -> None:
         self.id = id
         self.user_id = user_id
