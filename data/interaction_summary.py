@@ -16,7 +16,6 @@ class InteractionSummary(DataModel):
         "user_id": "user_id",
         "likes_count": "interactions.likes_count",
         "comments_count": "interactions.comments_count",
-        "rewards_count": "interactions.rewards_count",
         "subscribe_users_count": "interactions.subscribe_users_count",
         "publish_articles_count": "interactions.publish_articles_count",
         "max_interactions_date": "max_interactions.date",
@@ -36,7 +35,6 @@ class InteractionSummary(DataModel):
         user_id: str,
         likes_count: int,
         comments_count: int,
-        rewards_count: int,
         subscribe_users_count: int,
         publish_articles_count: int,
         max_interactions_date: datetime,
@@ -52,7 +50,6 @@ class InteractionSummary(DataModel):
         self.user_id = user_id
         self.likes_count = likes_count
         self.comments_count = comments_count
-        self.rewards_count = rewards_count
         self.subscribe_users_count = subscribe_users_count
         self.publish_articles_count = publish_articles_count
         self.max_interactions_date = max_interactions_date
@@ -92,7 +89,6 @@ class InteractionSummary(DataModel):
         user,
         likes_count: int,
         comments_count: int,
-        rewards_count: int,
         subscribe_users_count: int,
         publish_articles_count: int,
         max_interactions_date: datetime,
@@ -109,7 +105,6 @@ class InteractionSummary(DataModel):
                 "user_id": user.id,
                 "interactions.likes_count": likes_count,
                 "interactions.comments_count": comments_count,
-                "interactions.rewards_count": rewards_count,
                 "interactions.subscribe_users_count": subscribe_users_count,
                 "interactions.publish_articles_count": publish_articles_count,
                 "max_interactions.date": max_interactions_date,
@@ -133,7 +128,6 @@ class InteractionSummary(DataModel):
 
         - 点赞：{self.likes_count} 次
         - 评论：{self.comments_count} 次
-        - 打赏：{self.rewards_count} 次
         - 关注用户：{self.subscribe_users_count} 人
         - 发布文章：{self.publish_articles_count} 篇
 

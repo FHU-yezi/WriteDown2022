@@ -72,7 +72,7 @@ def display() -> None:
     put_markdown(user.interaction_summary.get_summary(), sanitize=False)
 
     if not is_full_width():
-        put_markdown("（左右滑动查看图表）")
+        put_markdown(grey_text("（左右滑动查看图表）"))
 
     put_html(user.heat_graph.get_graph().render_notebook())
 

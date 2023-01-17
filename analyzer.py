@@ -124,8 +124,12 @@ def analyze_interaction_per_hour_data(user: User) -> None:
         )
     )
 
+    # 对没有互动的小时补 0
     # 不能使用整数作为键，此处进行类型转换
-    data: Dict[str, int] = {str(x["_id"]): x["count"] for x in db_result}
+    data: Dict[str, int] = {str(x): 0 for x in range(24)}
+    data.update(
+        {str(x["_id"]): x["count"] for x in db_result}
+    )
     InteractionPerHour.create(
         user=user,
         data=data,
@@ -143,12 +147,6 @@ def analyze_interaction_summary_data(user: User) -> None:
         {
             "from_user": user.id,
             "operation_type": "comment_article",
-        }
-    )
-    rewards_count: int = timeline_data_db.count_documents(
-        {
-            "from_user": user.id,
-            "operation_type": "reward_article",
         }
     )
     subscribe_users_count: int = timeline_data_db.count_documents(
@@ -217,6 +215,13 @@ def analyze_interaction_summary_data(user: User) -> None:
                 },
             },
             {
+                "$match": {
+                    "_id": {
+                        "$ne": user.url,
+                    },
+                },
+            },
+            {
                 "$sort": {
                     "count": -1,
                 },
@@ -251,6 +256,13 @@ def analyze_interaction_summary_data(user: User) -> None:
                 },
             },
             {
+                "$match": {
+                    "_id": {
+                        "$ne": user.url,
+                    },
+                },
+            },
+            {
                 "$sort": {
                     "count": -1,
                 },
@@ -269,7 +281,6 @@ def analyze_interaction_summary_data(user: User) -> None:
         user=user,
         likes_count=likes_count,
         comments_count=comments_count,
-        rewards_count=rewards_count,
         subscribe_users_count=subscribe_users_count,
         publish_articles_count=publish_articles_count,
         max_interactions_date=max_interactions_date,
