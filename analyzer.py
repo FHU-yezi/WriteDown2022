@@ -146,123 +146,139 @@ def analyze_interaction_per_hour_data(user: User) -> None:
 
 
 def analyze_interaction_summary_data(user: User) -> None:
-    max_interactions_data: Dict[str, Any] = timeline_db.aggregate(
-        [
-            {
-                "$match": {
-                    "from_user": user.id,
-                }
-            },
-            {
-                "$group": {
-                    "_id": {
-                        "$dateTrunc": {
-                            "date": "$operation_time",
-                            "unit": "day",
+    try:
+        max_interactions_data: Dict[str, Any] = timeline_db.aggregate(
+            [
+                {
+                    "$match": {
+                        "from_user": user.id,
+                    }
+                },
+                {
+                    "$group": {
+                        "_id": {
+                            "$dateTrunc": {
+                                "date": "$operation_time",
+                                "unit": "day",
+                            },
+                        },
+                        "count": {
+                            "$sum": 1,
+                        },
+                    }
+                },
+                {
+                    "$sort": {
+                        "count": -1,
+                    },
+                },
+                {
+                    "$limit": 1,
+                },
+            ]
+        ).next()
+    except StopIteration:
+        max_interactions_date = None
+        max_interactions_count = None
+    else:
+        max_interactions_date = max_interactions_data["_id"]
+        max_interactions_count = max_interactions_data["count"]
+
+    try:
+        max_likes_data: Dict[str, Any] = timeline_db.aggregate(
+            [
+                {
+                    "$match": {
+                        "from_user": user.id,
+                        "operation_type": "like_article",
+                    },
+                },
+                {
+                    "$group": {
+                        "_id": "$target_user_url",
+                        "name": {
+                            "$first": "$target_user_name",
+                        },
+                        "count": {
+                            "$sum": 1,
                         },
                     },
-                    "count": {
-                        "$sum": 1,
-                    },
-                }
-            },
-            {
-                "$sort": {
-                    "count": -1,
                 },
-            },
-            {
-                "$limit": 1,
-            },
-        ]
-    ).next()
-    max_interactions_date = max_interactions_data["_id"]
-    max_interactions_count = max_interactions_data["count"]
-    del max_interactions_data
+                {
+                    "$match": {
+                        "_id": {
+                            "$ne": user.url,
+                        },
+                    },
+                },
+                {
+                    "$sort": {
+                        "count": -1,
+                    },
+                },
+                {
+                    "$limit": 1,
+                },
+            ]
+        ).next()
+    except StopIteration:
+        max_likes_user_name = None
+        max_likes_user_url = None
+        max_likes_user_likes_count = None
+    else:
+        max_likes_user_name = max_likes_data["name"]
+        max_likes_user_url = max_likes_data["_id"]
+        max_likes_user_likes_count = max_likes_data["count"]
+        del max_likes_data
 
-    max_likes_data: Dict[str, Any] = timeline_db.aggregate(
-        [
-            {
-                "$match": {
-                    "from_user": user.id,
-                    "operation_type": "like_article",
-                },
-            },
-            {
-                "$group": {
-                    "_id": "$target_user_url",
-                    "name": {
-                        "$first": "$target_user_name",
-                    },
-                    "count": {
-                        "$sum": 1,
+    try:
+        max_comments_data: Dict[str, Any] = timeline_db.aggregate(
+            [
+                {
+                    "$match": {
+                        "from_user": user.id,
+                        "operation_type": "comment_article",
                     },
                 },
-            },
-            {
-                "$match": {
-                    "_id": {
-                        "$ne": user.url,
+                {
+                    "$group": {
+                        "_id": "$target_user_url",
+                        "name": {
+                            "$first": "$target_user_name",
+                        },
+                        "count": {
+                            "$sum": 1,
+                        },
                     },
                 },
-            },
-            {
-                "$sort": {
-                    "count": -1,
+                {
+                    "$match": {
+                        "_id": {
+                            "$ne": user.url,
+                        },
+                    },
                 },
-            },
-            {
-                "$limit": 1,
-            },
-        ]
-    ).next()
-    max_likes_user_name = max_likes_data["name"]
-    max_likes_user_url = max_likes_data["_id"]
-    max_likes_user_likes_count = max_likes_data["count"]
-    del max_likes_data
+                {
+                    "$sort": {
+                        "count": -1,
+                    },
+                },
+                {
+                    "$limit": 1,
+                },
+            ]
+        ).next()
+    except StopIteration:
+        max_comments_user_name = None
+        max_comments_user_url = None
+        max_comments_user_comments_count = None
+    else:
+        max_comments_user_name = max_comments_data["name"]
+        max_comments_user_url = max_comments_data["_id"]
+        max_comments_user_comments_count = max_comments_data["count"]
+        del max_comments_data
 
-    max_comments_data: Dict[str, Any] = timeline_db.aggregate(
-        [
-            {
-                "$match": {
-                    "from_user": user.id,
-                    "operation_type": "comment_article",
-                },
-            },
-            {
-                "$group": {
-                    "_id": "$target_user_url",
-                    "name": {
-                        "$first": "$target_user_name",
-                    },
-                    "count": {
-                        "$sum": 1,
-                    },
-                },
-            },
-            {
-                "$match": {
-                    "_id": {
-                        "$ne": user.url,
-                    },
-                },
-            },
-            {
-                "$sort": {
-                    "count": -1,
-                },
-            },
-            {
-                "$limit": 1,
-            },
-        ]
-    ).next()
-    max_comments_user_name = max_comments_data["name"]
-    max_comments_user_url = max_comments_data["_id"]
-    max_comments_user_comments_count = max_comments_data["count"]
-    del max_comments_data
-
-    interactions_count_data: Dict[str, int] = {
+    interactions_data: Dict[str, int] = {
         x["_id"]: x["count"]
         for x in timeline_db.aggregate(
             [
@@ -282,13 +298,12 @@ def analyze_interaction_summary_data(user: User) -> None:
             ],
         )
     }
+    if interactions_data.get("join_jianshu"):
+        del interactions_data["join_jianshu"]
 
     InteractionSummary.create(
         user=user,
-        likes_count=interactions_count_data.get("like_article", 0),
-        comments_count=interactions_count_data.get("comment_article", 0),
-        subscribe_users_count=interactions_count_data.get("follow_user", 0),
-        publish_articles_count=interactions_count_data.get("publish_article", 0),
+        interactions_data=interactions_data,
         max_interactions_date=max_interactions_date,
         max_interactions_count=max_interactions_count,
         max_likes_user_name=max_likes_user_name,

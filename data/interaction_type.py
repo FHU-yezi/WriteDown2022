@@ -12,18 +12,9 @@ from utils.chart import (
     TOOLBOX_ONLY_SAVE_PNG_WHITE_2X,
 )
 from utils.config import config
+from utils.constants import INTERACTION_NAME_MAPPING
 from utils.db import interaction_type_db
 from utils.dict_helper import get_reversed_dict
-
-INTERACTION_NAME_MAPPING: Dict[str, str] = {
-    "like_article": "点赞文章",
-    "comment_article": "评论文章",
-    "like_comment": "点赞评论",
-    "follow_user": "关注用户",
-    "publish_article": "发布文章",
-    "follow_collection": "关注专题",
-    "follow_notebook": "关注文集",
-}
 
 CurrentConfig.ONLINE_HOST = config.deploy.PyEcharts_CDN
 
