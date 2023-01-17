@@ -100,6 +100,10 @@ def analyze_interaction_type(user: User) -> None:
     )
 
     data: Dict[str, int] = {x["_id"]: x["count"] for x in db_result}
+    # “加入简书”不包含在互动类型图中
+    if data.get("join_jianshu"):
+        del data["join_jianshu"]
+
     InteractionType.create(user=user, data=data)
 
 
