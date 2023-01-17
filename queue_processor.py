@@ -6,7 +6,7 @@ from analyzer import ANALYZE_FUNCS
 from data.user import UserStatus, get_waiting_user
 from fetcher import fetch_timeline_data
 from utils.config import config
-from utils.db import user_data_db
+from utils.db import user_db
 from utils.log import run_logger
 
 
@@ -48,7 +48,7 @@ def queue_processor_thread(start_sleep_time: int) -> None:
 
 
 def clean_unfinished_job() -> None:
-    cleaned_count = user_data_db.update_many(
+    cleaned_count = user_db.update_many(
         {
             "status": UserStatus.FETCHING,
         },

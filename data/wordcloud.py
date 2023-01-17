@@ -8,14 +8,14 @@ from pyecharts.globals import CurrentConfig
 from data._base import DataModel
 from utils.chart import JIANSHU_COLOR, TOOLBOX_ONLY_SAVE_PNG_WHITE_2X
 from utils.config import config
-from utils.db import wordcloud_data_db
+from utils.db import wordcloud_db
 from utils.dict_helper import get_reversed_dict
 
 CurrentConfig.ONLINE_HOST = config.deploy.PyEcharts_CDN
 
 
 class Wordcloud(DataModel):
-    db = wordcloud_data_db
+    db = wordcloud_db
     attr_db_key_mapping: Dict[str, str] = {
         "id": "_id",
         "user_id": "user_id",

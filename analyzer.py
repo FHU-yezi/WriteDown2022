@@ -6,13 +6,13 @@ from data.interaction_summary import InteractionSummary
 from data.interaction_type import InteractionType
 from data.user import User
 from data.wordcloud import Wordcloud
-from utils.db import timeline_data_db
+from utils.db import timeline_db
 from utils.word_split import get_word_freq
 
 
 def analyze_active_data(user: User) -> None:
     db_result = iter(
-        timeline_data_db.aggregate(
+        timeline_db.aggregate(
             [
                 {
                     "$match": {
@@ -46,7 +46,7 @@ def analyze_active_data(user: User) -> None:
 
 
 def analyze_comment_word_freq(user: User) -> None:
-    db_result = timeline_data_db.find(
+    db_result = timeline_db.find(
         {
             "from_user": user.id,
             "operation_type": "comment_article",
@@ -68,7 +68,7 @@ def analyze_comment_word_freq(user: User) -> None:
 
 def analyze_interaction_type(user: User) -> None:
     db_result = iter(
-        timeline_data_db.aggregate(
+        timeline_db.aggregate(
             [
                 {
                     "$match": {
@@ -98,7 +98,7 @@ def analyze_interaction_type(user: User) -> None:
 
 def analyze_interaction_per_hour_data(user: User) -> None:
     db_result = iter(
-        timeline_data_db.aggregate(
+        timeline_db.aggregate(
             [
                 {
                     "$match": {
@@ -137,31 +137,31 @@ def analyze_interaction_per_hour_data(user: User) -> None:
 
 
 def analyze_interaction_summary_data(user: User) -> None:
-    likes_count: int = timeline_data_db.count_documents(
+    likes_count: int = timeline_db.count_documents(
         {
             "from_user": user.id,
             "operation_type": "like_article",
         }
     )
-    comments_count: int = timeline_data_db.count_documents(
+    comments_count: int = timeline_db.count_documents(
         {
             "from_user": user.id,
             "operation_type": "comment_article",
         }
     )
-    subscribe_users_count: int = timeline_data_db.count_documents(
+    subscribe_users_count: int = timeline_db.count_documents(
         {
             "from_user": user.id,
             "operation_type": "follow_user",
         }
     )
-    publish_articles_count: int = timeline_data_db.count_documents(
+    publish_articles_count: int = timeline_db.count_documents(
         {
             "from_user": user.id,
             "operation_type": "publish_article",
         }
     )
-    max_interactions_data: Dict[str, Any] = timeline_data_db.aggregate(
+    max_interactions_data: Dict[str, Any] = timeline_db.aggregate(
         [
             {
                 "$match": {
@@ -195,7 +195,7 @@ def analyze_interaction_summary_data(user: User) -> None:
     max_interactions_count = max_interactions_data["count"]
     del max_interactions_data
 
-    max_likes_data: Dict[str, Any] = timeline_data_db.aggregate(
+    max_likes_data: Dict[str, Any] = timeline_db.aggregate(
         [
             {
                 "$match": {
@@ -236,7 +236,7 @@ def analyze_interaction_summary_data(user: User) -> None:
     max_likes_user_likes_count = max_likes_data["count"]
     del max_likes_data
 
-    max_comments_data: Dict[str, Any] = timeline_data_db.aggregate(
+    max_comments_data: Dict[str, Any] = timeline_db.aggregate(
         [
             {
                 "$match": {

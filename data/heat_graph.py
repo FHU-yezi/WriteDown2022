@@ -14,14 +14,14 @@ from utils.chart import (
     VISUALMAP_JIANSHU_COLOR,
 )
 from utils.config import config
-from utils.db import heat_graph_data_db
+from utils.db import heat_graph_db
 from utils.dict_helper import get_reversed_dict
 
 CurrentConfig.ONLINE_HOST = config.deploy.PyEcharts_CDN
 
 
 class HeatGraph(DataModel):
-    db = heat_graph_data_db
+    db = heat_graph_db
     attr_db_key_mapping: Dict[str, str] = {
         "id": "_id",
         "user_id": "user_id",

@@ -13,40 +13,40 @@ db = init_DB(config.db.main_database)
 
 run_log_db = db.run_log
 access_log_db = db.access_log
-user_data_db = db.user_data
-timeline_data_db = db.timeline_data
-heat_graph_data_db = db.heat_graph_data
-wordcloud_data_db = db.wordcloud_data
-interaction_type_data_db = db.interaction_type_data
+user_db = db.user
+timeline_db = db.timeline
+heat_graph_db = db.heat_graph
+wordcloud_db = db.wordcloud
+interaction_type_db = db.interaction_type
 interaction_per_hour_db = db.interaction_per_hour
-interaction_summary_data_db = db.interaction_summary_data
+interaction_summary_db = db.interaction_summary
 
 # 创建索引
 
-user_data_db.create_indexes(
+user_db.create_indexes(
     [
         IndexModel([("status", 1)]),
         IndexModel([("user.slug", 1)], unique=True),
     ]
 )
-timeline_data_db.create_indexes(
+timeline_db.create_indexes(
     [
         IndexModel([("from_user", 1)]),
         IndexModel([("operation_type", 1)]),
         IndexModel([("operation_time", 1)]),
     ]
 )
-heat_graph_data_db.create_indexes(
+heat_graph_db.create_indexes(
     [
         IndexModel([("user_id", 1)], unique=True),
     ]
 )
-wordcloud_data_db.create_indexes(
+wordcloud_db.create_indexes(
     [
         IndexModel([("user_id", 1)], unique=True),
     ]
 )
-interaction_type_data_db.create_indexes(
+interaction_type_db.create_indexes(
     [
         IndexModel([("user_id", 1)], unique=True),
     ]
@@ -56,7 +56,7 @@ interaction_per_hour_db.create_indexes(
         IndexModel([("user_id", 1)], unique=True),
     ]
 )
-interaction_summary_data_db.create_indexes(
+interaction_summary_db.create_indexes(
     [
         IndexModel([("user_id", 1)], unique=True),
     ]
