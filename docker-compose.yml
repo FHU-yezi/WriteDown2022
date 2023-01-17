@@ -6,7 +6,7 @@ networks:
 
 services:
   main:
-    image: write-down-2022:0.1.0
+    image: write-down-2022:0.2.0
     build: .
     ports:
       - "8607:8607"
