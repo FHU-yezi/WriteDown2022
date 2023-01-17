@@ -55,11 +55,11 @@ class Wordcloud(DataModel):
         return User.from_id(self.user_id)
 
     @classmethod
-    def create(cls, user, data: Dict[str, int]) -> "Wordcloud":
+    def create(cls, user, data: Dict[str, int], total_comments_count: int) -> "Wordcloud":
         insert_result = cls.db.insert_one(
             {
                 "user_id": user.id,
-                "total_comments_count": len(data),
+                "total_comments_count": total_comments_count,
                 "data": data,
             },
         )
