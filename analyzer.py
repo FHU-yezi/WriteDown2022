@@ -217,6 +217,13 @@ def analyze_interaction_summary_data(user: User) -> None:
                 },
             },
             {
+                "$match": {
+                    "_id": {
+                        "$ne": user.url,
+                    },
+                },
+            },
+            {
                 "$sort": {
                     "count": -1,
                 },
@@ -247,6 +254,13 @@ def analyze_interaction_summary_data(user: User) -> None:
                     },
                     "count": {
                         "$sum": 1,
+                    },
+                },
+            },
+            {
+                "$match": {
+                    "_id": {
+                        "$ne": user.url,
                     },
                 },
             },
