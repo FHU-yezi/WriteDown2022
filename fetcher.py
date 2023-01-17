@@ -11,8 +11,8 @@ from utils.db import timeline_data_db
 from utils.log import run_logger
 from utils.timeline_fetcher import GetUserTimelineInfo
 
-STRAT_TIME: datetime = datetime(2022, 1, 1)
-STOP_TIME: datetime = datetime(2022, 12, 31)
+STRAT_TIME: datetime = datetime(2022, 1, 1, 0, 0, 0)
+STOP_TIME: datetime = datetime(2022, 12, 31, 23, 59, 59)
 
 GetUserTimelineInfo = on_exception(
     expo,
