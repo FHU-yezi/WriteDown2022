@@ -8,14 +8,14 @@ from pyecharts.globals import CurrentConfig
 from data._base import DataModel
 from utils.chart import JIANSHU_COLOR, TOOLBOX_ONLY_SAVE_PNG_WHITE_2X
 from utils.config import config
-from utils.db import wordcloud_data_db
+from utils.db import wordcloud_db
 from utils.dict_helper import get_reversed_dict
 
 CurrentConfig.ONLINE_HOST = config.deploy.PyEcharts_CDN
 
 
 class Wordcloud(DataModel):
-    db = wordcloud_data_db
+    db = wordcloud_db
     attr_db_key_mapping: Dict[str, str] = {
         "id": "_id",
         "user_id": "user_id",
@@ -55,11 +55,11 @@ class Wordcloud(DataModel):
         return User.from_id(self.user_id)
 
     @classmethod
-    def create(cls, user, data: Dict[str, int]) -> "Wordcloud":
+    def create(cls, user, data: Dict[str, int], total_comments_count: int) -> "Wordcloud":
         insert_result = cls.db.insert_one(
             {
                 "user_id": user.id,
-                "total_comments_count": len(data),
+                "total_comments_count": total_comments_count,
                 "data": data,
             },
         )
@@ -91,7 +91,7 @@ class Wordcloud(DataModel):
                 title_opts=opts.TitleOpts(
                     pos_left="30px",
                     pos_top="5px",
-                    title=f"{self.user.name} 的 2022 评论词云图",
+                    title=f"{self.user.name}的 2022 评论词云图",
                     subtitle=f"总评论量：{self.total_comments_count}",
                 ),
                 toolbox_opts=TOOLBOX_ONLY_SAVE_PNG_WHITE_2X,

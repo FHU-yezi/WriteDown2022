@@ -96,7 +96,7 @@ class InteractionPerHour(DataModel):
                 title_opts=opts.TitleOpts(
                     pos_left="30px",
                     pos_top="5px",
-                    title=f"{self.user.name} 的 2022 互动小时分布图",
+                    title=f"{self.user.name}的 2022 互动小时分布图",
                 ),
                 xaxis_opts=opts.AxisOpts(
                     name="小时"

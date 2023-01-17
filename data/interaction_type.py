@@ -12,7 +12,7 @@ from utils.chart import (
     TOOLBOX_ONLY_SAVE_PNG_WHITE_2X,
 )
 from utils.config import config
-from utils.db import interaction_type_data_db
+from utils.db import interaction_type_db
 from utils.dict_helper import get_reversed_dict
 
 INTERACTION_NAME_MAPPING: Dict[str, str] = {
@@ -29,7 +29,7 @@ CurrentConfig.ONLINE_HOST = config.deploy.PyEcharts_CDN
 
 
 class InteractionType(DataModel):
-    db = interaction_type_data_db
+    db = interaction_type_db
     attr_db_key_mapping: Dict[str, str] = {
         "id": "_id",
         "user_id": "user_id",
@@ -103,7 +103,7 @@ class InteractionType(DataModel):
                 title_opts=opts.TitleOpts(
                     pos_left="30px",
                     pos_top="5px",
-                    title=f"{self.user.name} 的 2022 互动类型图",
+                    title=f"{self.user.name}的 2022 互动类型图",
                     subtitle=(f"总互动量：{self.total_interactions_count}"),
                 ),
                 legend_opts=NO_LEGEND,

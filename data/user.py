@@ -12,7 +12,7 @@ from JianshuResearchTools.user import GetUserName
 from pymongo.errors import DuplicateKeyError
 
 from data._base import DataModel
-from utils.db import user_data_db
+from utils.db import user_db
 from utils.dict_helper import get_reversed_dict
 from utils.exceptions import DuplicateUserError, UserNotExistError
 
@@ -28,7 +28,7 @@ class UserStatus(IntEnum):
 
 
 class User(DataModel):
-    db = user_data_db
+    db = user_db
     attr_db_key_mapping: Dict[str, str] = {
         "id": "_id",
         "status": "status",
@@ -244,7 +244,7 @@ class User(DataModel):
 
 def get_waiting_user() -> Optional[User]:
     db_result = (
-        user_data_db.find(
+        user_db.find(
             {
                 "status": UserStatus.WAITING_FOR_FETCH,
             },
@@ -260,4 +260,4 @@ def get_waiting_user() -> Optional[User]:
 
 
 def get_waiting_users_count() -> int:
-    return user_data_db.count_documents({"status": UserStatus.WAITING_FOR_FETCH})
+    return user_db.count_documents({"status": UserStatus.WAITING_FOR_FETCH})

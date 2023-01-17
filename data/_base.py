@@ -2,7 +2,7 @@ from typing import Any, Dict, List, Sequence
 
 from bson import ObjectId
 
-from utils.db import user_data_db
+from utils.db import user_db
 from utils.dict_helper import flatten_dict, get_reversed_dict
 
 
@@ -10,7 +10,7 @@ class DataModel:
     """数据模型基类
     """
     # 避免静态检查报错
-    db = user_data_db
+    db = user_db
     attr_db_key_mapping: Dict[str, str] = {}
     db_key_attr_mapping = get_reversed_dict(attr_db_key_mapping)
 

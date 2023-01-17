@@ -14,14 +14,14 @@ from utils.chart import (
     VISUALMAP_JIANSHU_COLOR,
 )
 from utils.config import config
-from utils.db import heat_graph_data_db
+from utils.db import heat_graph_db
 from utils.dict_helper import get_reversed_dict
 
 CurrentConfig.ONLINE_HOST = config.deploy.PyEcharts_CDN
 
 
 class HeatGraph(DataModel):
-    db = heat_graph_data_db
+    db = heat_graph_db
     attr_db_key_mapping: Dict[str, str] = {
         "id": "_id",
         "user_id": "user_id",
@@ -110,10 +110,10 @@ class HeatGraph(DataModel):
                 title_opts=opts.TitleOpts(
                     pos_left="30px",
                     pos_top="5px",
-                    title=f"{self.user.name} 的 2022 互动热力图",
+                    title=f"{self.user.name}的 2022 互动热力图",
                     subtitle=(
                         f"活跃天数：{self.total_active_days}   "
-                        f"活跃比例：{round(self.total_active_days / 365, 2) * 100}%   "
+                        f"活跃比例：{round(self.total_active_days * 100 / 365, 1)}%   "
                         f"总互动量：{self.total_interactions_count}"
                     ),
                 ),

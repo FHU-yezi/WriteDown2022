@@ -7,12 +7,12 @@ from backoff import expo, on_exception
 from httpx import TimeoutException
 
 from data.user import User
-from utils.db import timeline_data_db
+from utils.db import timeline_db
 from utils.log import run_logger
 from utils.timeline_fetcher import GetUserTimelineInfo
 
-STRAT_TIME: datetime = datetime(2022, 1, 1)
-STOP_TIME: datetime = datetime(2022, 12, 31)
+STRAT_TIME: datetime = datetime(2022, 1, 1, 0, 0, 0)
+STOP_TIME: datetime = datetime(2022, 12, 31, 23, 59, 59)
 
 GetUserTimelineInfo = on_exception(
     expo,
@@ -59,14 +59,14 @@ def fetch_timeline_data(user: User) -> None:
 
         buffer.append(item)
         if len(buffer) == 50:
-            timeline_data_db.insert_many(buffer)
+            timeline_db.insert_many(buffer)
             buffer.clear()
             user.set_fetch_start_id(item["operation_id"])
             run_logger.debug(f"已保存用户 {user.id} 的时间线数据（{item['operation_id']}）")
 
     # 采集完成，将剩余数据存入数据库
     if buffer:
-        timeline_data_db.insert_many(buffer)
+        timeline_db.insert_many(buffer)
         buffer.clear()
         user.set_fetch_start_id(item["operation_id"])
         run_logger.debug(f"已保存用户 {user.id} 的时间线数据（{item['operation_id']}）")

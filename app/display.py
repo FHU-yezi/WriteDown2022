@@ -106,7 +106,12 @@ def display() -> None:
         )
         put_button(
             "查看自己的统计数据",
-            onclick=lambda: jump_to(get_jump_link("display", {"user_slug": user.slug})),
+            onclick=lambda: jump_to(
+                get_jump_link(
+                    "display",
+                    {"user_slug": user_slug_from_cookie},
+                )
+            ),
             color="secondary",
             block=True,
             outline=True,

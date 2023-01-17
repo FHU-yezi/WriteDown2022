@@ -4,13 +4,13 @@ from typing import Dict
 from bson import ObjectId
 
 from data._base import DataModel
-from utils.db import interaction_summary_data_db
+from utils.db import interaction_summary_db
 from utils.dict_helper import get_reversed_dict
 from utils.html import link
 
 
 class InteractionSummary(DataModel):
-    db = interaction_summary_data_db
+    db = interaction_summary_db
     attr_db_key_mapping: Dict[str, str] = {
         "id": "_id",
         "user_id": "user_id",

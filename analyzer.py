@@ -6,13 +6,13 @@ from data.interaction_summary import InteractionSummary
 from data.interaction_type import InteractionType
 from data.user import User
 from data.wordcloud import Wordcloud
-from utils.db import timeline_data_db
+from utils.db import timeline_db
 from utils.word_split import get_word_freq
 
 
 def analyze_active_data(user: User) -> None:
     db_result = iter(
-        timeline_data_db.aggregate(
+        timeline_db.aggregate(
             [
                 {
                     "$match": {
@@ -46,7 +46,7 @@ def analyze_active_data(user: User) -> None:
 
 
 def analyze_comment_word_freq(user: User) -> None:
-    db_result = timeline_data_db.find(
+    db_result = timeline_db.find(
         {
             "from_user": user.id,
             "operation_type": "comment_article",
@@ -60,15 +60,22 @@ def analyze_comment_word_freq(user: User) -> None:
     data: Dict[str, int] = dict(
         get_word_freq((x["comment_content"] for x in db_result))
     )
+    total_comments_count: int = timeline_db.count_documents(
+        {
+            "from_user": user.id,
+            "operation_type": "comment_article",
+        }
+    )
     Wordcloud.create(
         user=user,
         data=data,
+        total_comments_count=total_comments_count,
     )
 
 
 def analyze_interaction_type(user: User) -> None:
     db_result = iter(
-        timeline_data_db.aggregate(
+        timeline_db.aggregate(
             [
                 {
                     "$match": {
@@ -93,12 +100,16 @@ def analyze_interaction_type(user: User) -> None:
     )
 
     data: Dict[str, int] = {x["_id"]: x["count"] for x in db_result}
+    # “加入简书”不包含在互动类型图中
+    if data.get("join_jianshu"):
+        del data["join_jianshu"]
+
     InteractionType.create(user=user, data=data)
 
 
 def analyze_interaction_per_hour_data(user: User) -> None:
     db_result = iter(
-        timeline_data_db.aggregate(
+        timeline_db.aggregate(
             [
                 {
                     "$match": {
@@ -127,9 +138,7 @@ def analyze_interaction_per_hour_data(user: User) -> None:
     # 对没有互动的小时补 0
     # 不能使用整数作为键，此处进行类型转换
     data: Dict[str, int] = {str(x): 0 for x in range(24)}
-    data.update(
-        {str(x["_id"]): x["count"] for x in db_result}
-    )
+    data.update({str(x["_id"]): x["count"] for x in db_result})
     InteractionPerHour.create(
         user=user,
         data=data,
@@ -137,31 +146,7 @@ def analyze_interaction_per_hour_data(user: User) -> None:
 
 
 def analyze_interaction_summary_data(user: User) -> None:
-    likes_count: int = timeline_data_db.count_documents(
-        {
-            "from_user": user.id,
-            "operation_type": "like_article",
-        }
-    )
-    comments_count: int = timeline_data_db.count_documents(
-        {
-            "from_user": user.id,
-            "operation_type": "comment_article",
-        }
-    )
-    subscribe_users_count: int = timeline_data_db.count_documents(
-        {
-            "from_user": user.id,
-            "operation_type": "follow_user",
-        }
-    )
-    publish_articles_count: int = timeline_data_db.count_documents(
-        {
-            "from_user": user.id,
-            "operation_type": "publish_article",
-        }
-    )
-    max_interactions_data: Dict[str, Any] = timeline_data_db.aggregate(
+    max_interactions_data: Dict[str, Any] = timeline_db.aggregate(
         [
             {
                 "$match": {
@@ -195,7 +180,7 @@ def analyze_interaction_summary_data(user: User) -> None:
     max_interactions_count = max_interactions_data["count"]
     del max_interactions_data
 
-    max_likes_data: Dict[str, Any] = timeline_data_db.aggregate(
+    max_likes_data: Dict[str, Any] = timeline_db.aggregate(
         [
             {
                 "$match": {
@@ -236,7 +221,7 @@ def analyze_interaction_summary_data(user: User) -> None:
     max_likes_user_likes_count = max_likes_data["count"]
     del max_likes_data
 
-    max_comments_data: Dict[str, Any] = timeline_data_db.aggregate(
+    max_comments_data: Dict[str, Any] = timeline_db.aggregate(
         [
             {
                 "$match": {
@@ -277,12 +262,33 @@ def analyze_interaction_summary_data(user: User) -> None:
     max_comments_user_comments_count = max_comments_data["count"]
     del max_comments_data
 
+    interactions_count_data: Dict[str, int] = {
+        x["_id"]: x["count"]
+        for x in timeline_db.aggregate(
+            [
+                {
+                    "$match": {
+                        "from_user": user.id,
+                    },
+                },
+                {
+                    "$group": {
+                        "_id": "$operation_type",
+                        "count": {
+                            "$sum": 1,
+                        },
+                    },
+                },
+            ],
+        )
+    }
+
     InteractionSummary.create(
         user=user,
-        likes_count=likes_count,
-        comments_count=comments_count,
-        subscribe_users_count=subscribe_users_count,
-        publish_articles_count=publish_articles_count,
+        likes_count=interactions_count_data.get("like_article", 0),
+        comments_count=interactions_count_data.get("comment_article", 0),
+        subscribe_users_count=interactions_count_data.get("follow_user", 0),
+        publish_articles_count=interactions_count_data.get("publish_article", 0),
         max_interactions_date=max_interactions_date,
         max_interactions_count=max_interactions_count,
         max_likes_user_name=max_likes_user_name,
