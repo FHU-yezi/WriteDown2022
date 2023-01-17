@@ -7,7 +7,7 @@ from data.interaction_type import InteractionType
 from data.user import User
 from data.wordcloud import Wordcloud
 from utils.db import timeline_db
-from utils.word_split import get_word_freq
+from utils.word_split import get_word_freq, word_split_postprocess
 
 
 def analyze_active_data(user: User) -> None:
@@ -60,6 +60,7 @@ def analyze_comment_word_freq(user: User) -> None:
     data: Dict[str, int] = dict(
         get_word_freq((x["comment_content"] for x in db_result))
     )
+    data = word_split_postprocess(data)
     total_comments_count: int = timeline_db.count_documents(
         {
             "from_user": user.id,

@@ -1,5 +1,5 @@
 from collections import Counter
-from typing import Generator, Iterable, Set
+from typing import Dict, Generator, Iterable, Set
 
 from jieba import load_userdict
 from jieba import logging as jieba_logging
@@ -29,3 +29,11 @@ def get_word_freq(text_list: Iterable[str]) -> Counter:
         result.update(Counter(word_list))
 
     return result
+
+
+def word_split_postprocess(data: Dict[str, int]) -> Dict[str, int]:
+    # 该函数假设传入的 data 字典是按照值倒序排列的
+    if len(data) <= 1000:
+        return data
+
+    return dict(tuple(data.items())[:1000])
