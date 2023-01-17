@@ -124,8 +124,12 @@ def analyze_interaction_per_hour_data(user: User) -> None:
         )
     )
 
+    # 对没有互动的小时补 0
     # 不能使用整数作为键，此处进行类型转换
-    data: Dict[str, int] = {str(x["_id"]): x["count"] for x in db_result}
+    data: Dict[str, int] = {str(x): 0 for x in range(24)}
+    data.update(
+        {str(x["_id"]): x["count"] for x in db_result}
+    )
     InteractionPerHour.create(
         user=user,
         data=data,
