@@ -110,7 +110,7 @@ class HeatGraph(DataModel):
                 title_opts=opts.TitleOpts(
                     pos_left="30px",
                     pos_top="5px",
-                    title=f"{self.user.name} 的 2022 互动热力图",
+                    title=f"{self.user.name}的 2022 互动热力图",
                     subtitle=(
                         f"活跃天数：{self.total_active_days}   "
                         f"活跃比例：{round(self.total_active_days * 100 / 365, 1)}%   "

@@ -91,7 +91,7 @@ class Wordcloud(DataModel):
                 title_opts=opts.TitleOpts(
                     pos_left="30px",
                     pos_top="5px",
-                    title=f"{self.user.name} 的 2022 评论词云图",
+                    title=f"{self.user.name}的 2022 评论词云图",
                     subtitle=f"总评论量：{self.total_comments_count}",
                 ),
                 toolbox_opts=TOOLBOX_ONLY_SAVE_PNG_WHITE_2X,
