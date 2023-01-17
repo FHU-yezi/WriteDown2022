@@ -113,7 +113,7 @@ class HeatGraph(DataModel):
                     title=f"{self.user.name} 的 2022 互动热力图",
                     subtitle=(
                         f"活跃天数：{self.total_active_days}   "
-                        f"活跃比例：{round(self.total_active_days / 365, 2) * 100}%   "
+                        f"活跃比例：{round(self.total_active_days * 100 / 365, 1)}%   "
                         f"总互动量：{self.total_interactions_count}"
                     ),
                 ),
