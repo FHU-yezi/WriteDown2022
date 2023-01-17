@@ -149,12 +149,6 @@ def analyze_interaction_summary_data(user: User) -> None:
             "operation_type": "comment_article",
         }
     )
-    rewards_count: int = timeline_data_db.count_documents(
-        {
-            "from_user": user.id,
-            "operation_type": "reward_article",
-        }
-    )
     subscribe_users_count: int = timeline_data_db.count_documents(
         {
             "from_user": user.id,
@@ -287,7 +281,6 @@ def analyze_interaction_summary_data(user: User) -> None:
         user=user,
         likes_count=likes_count,
         comments_count=comments_count,
-        rewards_count=rewards_count,
         subscribe_users_count=subscribe_users_count,
         publish_articles_count=publish_articles_count,
         max_interactions_date=max_interactions_date,
