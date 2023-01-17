@@ -1,4 +1,5 @@
 from typing import Optional
+from utils.exceptions import UserNotExistError
 
 from JianshuResearchTools.convert import UserUrlToUserSlug
 from JianshuResearchTools.exceptions import InputError, ResourceError
@@ -62,7 +63,13 @@ def join_queue() -> None:
 
     user_slug: Optional[str] = get_user_slug_cookies()
     if user_slug:
-        user = User.from_slug(user_slug)
+        try:
+            user = User.from_slug(user_slug)
+        except UserNotExistError:
+            toast_success("用户身份信息无效，已自动清除")
+            remove_user_slug_cookies()
+            reload(delay=1)
+            return
 
         if not user.is_analyze_done and not user.is_error:
             put_info(f"{user.name}，您已经在队列中了，数据正在全力获取中......")
