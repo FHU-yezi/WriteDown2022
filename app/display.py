@@ -118,11 +118,7 @@ def display() -> None:
         )
     elif user_slug_from_cookie == user.slug:  # 查看的是自己的数据
         current_link: str = get_current_link()
-        put_markdown(
-            """
-            您可以复制以下链接分享给其它简友，让他们查看您的统计数据：
-            """
-        )
+        put_markdown("分享链接：")
         put_row(
             [
                 put_input(

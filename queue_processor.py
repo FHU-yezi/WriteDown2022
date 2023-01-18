@@ -2,7 +2,7 @@ from threading import Thread
 from time import sleep
 from typing import List
 
-from analyzer import ANALYZE_FUNCS
+from analyzers import ANALYZE_FUNCS
 from data.user import UserStatus, get_waiting_user
 from fetcher import fetch_timeline_data
 from utils.config import config
@@ -17,7 +17,6 @@ def queue_processor_thread(start_sleep_time: int) -> None:
         user = get_waiting_user()
         if not user:
             sleep(config.queue_processor.check_interval)
-            run_logger.debug(f"队列为空，{config.queue_processor.check_interval} 秒后再次查询")
             continue
 
         user.set_status_fetching()

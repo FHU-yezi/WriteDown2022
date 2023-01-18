@@ -78,9 +78,10 @@ def show_data() -> None:
     try:
         user = User.from_slug(user_slug)
     except UserNotExistError:
-        toast("用户身份信息无效，已自动清除")
+        toast_success("用户身份信息无效，已自动清除")
         remove_user_slug_cookies()
         reload(delay=1)
+        return
 
     if user.is_waiting_for_fetch or user.is_fetching:
         put_markdown(

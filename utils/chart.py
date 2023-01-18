@@ -22,9 +22,9 @@ TOOLBOX_ONLY_SAVE_PNG_WHITE_2X = opts.ToolboxOpts(
     ),
 )
 
-CALENDAR_DAY_MONTH_CHINESE_YEAR_HIDE = {
+CALENDAR_MONTH_CHINESE_DAY_YEAR_HIDE = {
     "daylabel_opts": opts.CalendarDayLabelOpts(
-        name_map="cn",
+        is_show=False,
     ),
     "monthlabel_opts": opts.CalendarMonthLabelOpts(
         name_map="cn",
