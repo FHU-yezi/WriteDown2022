@@ -17,7 +17,6 @@ def queue_processor_thread(start_sleep_time: int) -> None:
         user = get_waiting_user()
         if not user:
             sleep(config.queue_processor.check_interval)
-            run_logger.debug(f"队列为空，{config.queue_processor.check_interval} 秒后再次查询")
             continue
 
         user.set_status_fetching()
