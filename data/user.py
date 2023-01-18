@@ -125,6 +125,14 @@ class User(DataModel):
         return self.status in (UserStatus.FETCH_ERROR, UserStatus.ANALYZE_ERROR)
 
     @property
+    def is_fetch_error(self) -> bool:
+        return self.status == UserStatus.FETCH_ERROR
+
+    @property
+    def is_analyze_error(self) -> bool:
+        return self.status == UserStatus.ANALYZE_ERROR
+
+    @property
     def is_first_show(self) -> bool:
         return bool(self.first_show_time)
 
