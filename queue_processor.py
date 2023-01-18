@@ -2,7 +2,7 @@ from threading import Thread
 from time import sleep
 from typing import List
 
-from analyzer import ANALYZE_FUNCS
+from analyzers import ANALYZE_FUNCS
 from data.user import UserStatus, get_waiting_user
 from fetcher import fetch_timeline_data
 from utils.config import config
