@@ -9,7 +9,7 @@ from pyecharts.globals import CurrentConfig
 from data._base import DataModel
 from utils.chart import (
     ANIMATION_OFF,
-    CALENDAR_DAY_MONTH_CHINESE_YEAR_HIDE,
+    CALENDAR_MONTH_CHINESE_DAY_YEAR_HIDE,
     TOOLBOX_ONLY_SAVE_PNG_WHITE_2X,
     VISUALMAP_JIANSHU_COLOR,
 )
@@ -101,9 +101,10 @@ class HeatGraph(DataModel):
                 ],
                 calendar_opts=opts.CalendarOpts(
                     pos_left="5px",
+                    pos_right="5px",
                     pos_top="center",
                     range_="2022",
-                    **CALENDAR_DAY_MONTH_CHINESE_YEAR_HIDE,
+                    **CALENDAR_MONTH_CHINESE_DAY_YEAR_HIDE,
                 ),
             )
             .set_global_opts(
