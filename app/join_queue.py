@@ -21,7 +21,7 @@ from widgets.button import put_button
 from widgets.toast import toast_success, toast_warn_and_return
 
 NAME: str = "排队"
-DESC: str = "查看统计数据前请先排队。"
+DESC: str = "查看统计数据前请先排队"
 VISIBILITY: bool = True
 
 
