@@ -4,7 +4,11 @@ from typing import Dict, Optional
 from bson import ObjectId
 
 from data._base import DataModel
-from utils.constants import INTERACTION_NAME_MAPPING
+from utils.constants import (
+    INTERACTION_NAME_MAPPING,
+    INTERACTION_ORDER,
+    INTERACTION_UNIT_TEXT,
+)
 from utils.db import interaction_summary_db
 from utils.dict_helper import get_reversed_dict
 from utils.html import link
@@ -113,23 +117,41 @@ class InteractionSummary(DataModel):
 
         interaction_types_detail_part = "- " + "\n- ".join(
             [
-                f"{INTERACTION_NAME_MAPPING.get(key, key)}：{value} 次"
-                for key, value in self.interactions_data.items()
+                (
+                    f"{INTERACTION_NAME_MAPPING.get(key, key)}："
+                    f"{value} "
+                    f"{INTERACTION_UNIT_TEXT.get(key, '次')}"
+                )
+                for key, value in dict(
+                    sorted(
+                        self.interactions_data.items(),
+                        key=lambda x: INTERACTION_ORDER.index(x[0]),
+                    )
+                ).items()
             ]
         )
 
         if self.max_interactions_date:
-            max_interactions_count_day_part = f"你互动量最多的一天是 {self.max_interactions_date.date()}，这一天你在社区进行了 {self.max_interactions_count} 次互动。"
+            max_interactions_count_day_part = (
+                f"你互动量最多的一天是 {self.max_interactions_date.date()}，"
+                f"这一天你在社区进行了 {self.max_interactions_count} 次互动。"
+            )
         else:
             max_interactions_count_day_part = "在 2022 年中，你没有过互动行为。"
 
         if self.max_likes_user_name:
-            max_likes_user_part = f"你最喜欢给 {link(self.max_likes_user_name, self.max_likes_user_url, new_window=True)} 的文章点赞，这一年你为 TA 送上了 {self.max_likes_user_likes_count} 个赞。"
+            max_likes_user_part = (
+                f"你最喜欢给 {link(self.max_likes_user_name, self.max_likes_user_url, new_window=True)} 的文章点赞，"
+                f"这一年你为 TA 送上了 {self.max_likes_user_likes_count} 个赞。"
+            )
         else:
             max_likes_user_part = "在 2022 年中，你没有点过赞。"
 
         if self.max_comments_user_name:
-            max_comments_user_part = f"你最喜欢评论 {link(self.max_comments_user_name, self.max_comments_user_url, new_window=True)} 的文章，这一年你在 TA 的文章下评论了 {self.max_comments_user_comments_count} 次。"
+            max_comments_user_part = (
+                f"你最喜欢评论 {link(self.max_comments_user_name, self.max_comments_user_url, new_window=True)} 的文章，"
+                f"这一年你在 TA 的文章下评论了 {self.max_comments_user_comments_count} 次。"
+            )
         else:
             max_comments_user_part = "在 2022 年中，你没有发表过评论。"
 

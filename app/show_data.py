@@ -2,7 +2,7 @@ from typing import Optional
 
 from JianshuResearchTools.convert import UserUrlToUserSlug
 from JianshuResearchTools.exceptions import InputError, ResourceError
-from pywebio.output import put_markdown, toast, put_success
+from pywebio.output import put_markdown, put_success, toast
 from pywebio.pin import pin, put_input
 
 from data.user import User, get_waiting_users_count
@@ -60,6 +60,7 @@ def on_clear_bind_data_button_clicked() -> None:
 def show_data() -> None:
     user_slug: Optional[str] = get_user_slug_cookies()
 
+    # 如果 Cookie 中没有 user_slug，提示输入个人主页链接
     if not user_slug:
         put_input(
             "user_url",
@@ -78,11 +79,14 @@ def show_data() -> None:
     try:
         user = User.from_slug(user_slug)
     except UserNotExistError:
+        # Cookie 中的 user_slug 无效或数据库被清空过
+        # 清除对应信息后重载页面
         toast_success("用户身份信息无效，已自动清除")
         remove_user_slug_cookies()
         reload(delay=1)
         return
 
+    # 如果数据未获取成功也未发生异常，提示用户等待
     if user.is_waiting_for_fetch or user.is_fetching:
         put_markdown(
             f"""
@@ -93,15 +97,18 @@ def show_data() -> None:
         )
         return
 
+    # 如果发生异常，展示错误信息
     if user.is_error:
         put_markdown(
             f"""
-            很抱歉，在获取数据的过程中出现了异常。
+            很抱歉，在{"获取数据" if user.is_fetch_error else "分析数据"}的过程中发生了异常。
 
             错误信息：{user.error_info}
             """
         )
         return
+
+    # 数据获取完成，展示跳转提示按钮
 
     put_success(f"{user.name}，您的年度统计数据已经处理完毕。")
     put_button(
