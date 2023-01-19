@@ -4,6 +4,7 @@ from pywebio.output import put_html, put_markdown, put_row
 from pywebio.pin import put_input
 
 from data.user import User, get_waiting_users_count
+from utils.exceptions import UserNotExistError
 from utils.html import grey_text
 from utils.page import (
     copy_to_clipboard,
@@ -15,6 +16,7 @@ from utils.page import (
     jump_to,
 )
 from widgets.button import put_button
+from widgets.popup import show_processing_popup
 from widgets.toast import toast_error_and_return, toast_success
 
 NAME: str = "数据展示"
@@ -36,33 +38,21 @@ def display() -> None:
     # 尝试使用 user_slug 从数据库中获取对应记录
     try:
         user = User.from_slug(user_slug_from_query_arg)
-    except ValueError:
+    except UserNotExistError:
         toast_error_and_return("请求参数错误")
 
-    # 如果数据未获取完成，也未出现异常，提示数据获取中
-    if not user.is_analyze_done and not user.is_error:
-        put_markdown(
-            f"""
-            我们正在全力获取您的数据，过一会再来试试吧。
-
-            当前有 {get_waiting_users_count()} 人正在排队。
-            """
-        )
-        return
-    # 如果发生异常，展示错误信息
-    elif user.is_error:
-        put_markdown(
-            f"""
-            很抱歉，在{"获取数据" if user.is_fetch_error else "分析数据"}的过程中发生了异常。
-
-            错误信息：{user.error_info}
-            """
+    # 如果数据未获取完成，提示数据获取中
+    if user.is_processing:
+        show_processing_popup(
+            user_name=user.name,
+            waiting_users_count=get_waiting_users_count(),
         )
         return
 
+    # 触发页面浏览次数和展示时间更新
     user.result_shown()
 
-    # 一切正常，展示统计数据
+    # 展示统计数据
 
     put_markdown(
         f"""

@@ -1,14 +1,13 @@
 from typing import Optional
-from utils.exceptions import UserNotExistError
 
 from JianshuResearchTools.convert import UserUrlToUserSlug
 from JianshuResearchTools.exceptions import InputError, ResourceError
-from pywebio.output import put_info, put_markdown, put_success, toast
+from pywebio.output import put_markdown
 from pywebio.pin import pin, put_input
 
 from data.user import User, get_waiting_users_count
 from utils.callback import bind_enter_key_callback
-from utils.exceptions import DuplicateUserError
+from utils.exceptions import DuplicateUserError, UserNotExistError
 from utils.page import (
     get_jump_link,
     get_user_slug_cookies,
@@ -31,25 +30,19 @@ def on_submit_button_clicked() -> None:
     try:
         user = User.create(user_url)
     except (InputError, ResourceError):
-        toast_warn_and_return("链接有误，请检查")
+        toast_warn_and_return("输入的链接无效，请检查")
     except DuplicateUserError:
-        # 用户已在数据库中
-        # 写入 Cookie，以便在重载页面后隐藏排队提示
+        # 用户已在数据库中，设置 Cookie 后跳转到查看结果页面
         set_user_slug_cookies(UserUrlToUserSlug(user_url))
-        toast("您已经在队列中", color="warn")
-        reload(delay=1)
+
+        toast_success("您已排队，即将跳转到查看结果页面")
+        jump_to(get_jump_link("show_data"), delay=1)
         return
-
-    # 排队成功，设置 Cookie 后刷新页面
-    set_user_slug_cookies(user.slug)
-    toast_success("排队成功")
-    reload(delay=1)
-
-
-def on_clear_bind_data_button_clicked() -> None:
-    remove_user_slug_cookies()
-    toast_success("清除成功")
-    reload(delay=1)
+    else:
+        # 排队成功，设置 Cookie 后跳转到查看结果页面
+        set_user_slug_cookies(user.slug)
+        toast_success("排队成功")
+        reload(delay=1)
 
 
 def join_queue() -> None:
@@ -66,42 +59,19 @@ def join_queue() -> None:
     user_slug: Optional[str] = get_user_slug_cookies()
     if user_slug:
         try:
-            user = User.from_slug(user_slug)
+            User.from_slug(user_slug)
         except UserNotExistError:
             # Cookie 中的 user_slug 无效或数据库被清空过
             # 清除对应信息后重载页面
-            toast_success("本地缓存信息无效，已自动清除")
+            toast_success("已清除无效的本地信息")
             remove_user_slug_cookies()
             reload(delay=1)
             return
-
-        # 如果数据未获取完成，也未发生异常，提示正在获取中
-        if not user.is_analyze_done and not user.is_error:
-            put_info(f"{user.name}，您已经在队列中了，数据正在全力获取中......")
-
-        # 数据获取完成或发生异常
-        # 错误信息在展示页面显示，因此出错时也让用户跳转到展示页面
-        elif user.is_analyze_done or user.is_error:
-            put_success(f"{user.name}，您的数据已经获取完成。")
-            put_button(
-                "点击查看>>",
-                onclick=lambda: jump_to(
-                    get_jump_link(
-                        "display",
-                        query_args={"user_slug": user.slug},
-                    )
-                ),
-                color="success",
-                block=True,
-            )
-
-        put_button(
-            "清除账号绑定信息",
-            onclick=on_clear_bind_data_button_clicked,
-            color="secondary",
-            block=True,
-            outline=True,
-        )
+        else:
+            # 用户已经排队过，跳转到查看结果页面
+            toast_success("您已排队，即将跳转到查看结果页面")
+            jump_to(get_jump_link("show_data"), delay=1)
+            return
 
     # 没有 user_slug 信息，提示排队
     else:

@@ -2,7 +2,7 @@ from typing import Optional
 
 from JianshuResearchTools.convert import UserUrlToUserSlug
 from JianshuResearchTools.exceptions import InputError, ResourceError
-from pywebio.output import put_markdown, put_success, toast
+from pywebio.output import put_success, toast
 from pywebio.pin import pin, put_input
 
 from data.user import User, get_waiting_users_count
@@ -16,6 +16,7 @@ from utils.page import (
     set_user_slug_cookies,
 )
 from widgets.button import put_button
+from widgets.popup import show_error_popup, show_processing_popup
 from widgets.toast import toast_success, toast_warn_and_return
 
 NAME: str = "查看数据"
@@ -36,7 +37,7 @@ def on_show_button_clicked() -> None:
             else User.from_slug(slug_from_cookie)  # type: ignore [arg-type]
         )
     except (InputError, ResourceError):
-        toast_warn_and_return("链接有误，请检查")
+        toast_warn_and_return("输入的链接无效，请检查")
     except UserNotExistError:
         toast("您还没有排队，即将为您跳转到排队页面", color="warn")
         jump_to(get_jump_link("join_queue"), delay=1)
@@ -45,7 +46,11 @@ def on_show_button_clicked() -> None:
             set_user_slug_cookies(UserUrlToUserSlug(user_url))
 
     if user.is_waiting_for_fetch or user.is_fetching:
-        toast_warn_and_return("您的数据正在全力获取中，请稍等")
+        show_processing_popup(
+            user_name=user.name,
+            waiting_users_count=get_waiting_users_count(),
+        )
+        return
 
     toast_success("您的数据已经获取完成，即将为您跳转")
     jump_to(get_jump_link("display", {"user_slug": user.slug}), delay=1)
@@ -76,35 +81,35 @@ def show_data() -> None:
         )
         return
 
+    # Cookie 中有 user_slug
+
     try:
         user = User.from_slug(user_slug)
     except UserNotExistError:
         # Cookie 中的 user_slug 无效或数据库被清空过
         # 清除对应信息后重载页面
-        toast_success("用户身份信息无效，已自动清除")
+        toast_success("已清除无效的本地信息")
         remove_user_slug_cookies()
         reload(delay=1)
         return
 
-    # 如果数据未获取成功也未发生异常，提示用户等待
-    if user.is_waiting_for_fetch or user.is_fetching:
-        put_markdown(
-            f"""
-            我们正在全力获取您的数据，过一会再来试试吧。
-
-            当前有 {get_waiting_users_count()} 人正在排队。
-            """
+    # 如果数据正在处理中，提示用户等待
+    if not user.is_analyze_done and not user.is_error:
+        show_processing_popup(
+            user_name=user.name,
+            waiting_users_count=get_waiting_users_count(),
         )
         return
 
     # 如果发生异常，展示错误信息
     if user.is_error:
-        put_markdown(
-            f"""
-            很抱歉，在{"获取数据" if user.is_fetch_error else "分析数据"}的过程中发生了异常。
-
-            错误信息：{user.error_info}
-            """
+        show_error_popup(user.error_info)
+        put_button(
+            "清除账号绑定信息",
+            onclick=on_clear_bind_data_button_clicked,
+            color="secondary",
+            block=True,
+            outline=True,
         )
         return
 

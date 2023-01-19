@@ -115,21 +115,24 @@ class InteractionSummary(DataModel):
 
         welcome_part = f"{link(user.name, user.url, new_window=True)}，你的 2022 互动总结如下："
 
-        interaction_types_detail_part = "- " + "\n- ".join(
-            [
-                (
-                    f"{INTERACTION_NAME_MAPPING.get(key, key)}："
-                    f"{value} "
-                    f"{INTERACTION_UNIT_TEXT.get(key, '次')}"
-                )
-                for key, value in dict(
-                    sorted(
-                        self.interactions_data.items(),
-                        key=lambda x: INTERACTION_ORDER.index(x[0]),
+        if self.interactions_data:
+            interaction_types_detail_part = "- " + "\n- ".join(
+                [
+                    (
+                        f"{INTERACTION_NAME_MAPPING.get(key, key)}："
+                        f"{value} "
+                        f"{INTERACTION_UNIT_TEXT.get(key, '次')}"
                     )
-                ).items()
-            ]
-        )
+                    for key, value in dict(
+                        sorted(
+                            self.interactions_data.items(),
+                            key=lambda x: INTERACTION_ORDER.index(x[0]),
+                        )
+                    ).items()
+                ]
+            )
+        else:
+            interaction_types_detail_part = ""
 
         if self.max_interactions_date:
             max_interactions_count_day_part = (

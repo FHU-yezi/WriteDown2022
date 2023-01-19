@@ -121,16 +121,17 @@ class User(DataModel):
         return self.status == UserStatus.ANALYZE_DONE
 
     @property
+    def is_processing(self) -> bool:
+        return self.status in (
+            UserStatus.WAITING_FOR_FETCH,
+            UserStatus.FETCHING,
+            UserStatus.WAITING_FOR_ANALYZE,
+            UserStatus.ANALYZING,
+        )
+
+    @property
     def is_error(self) -> bool:
         return self.status in (UserStatus.FETCH_ERROR, UserStatus.ANALYZE_ERROR)
-
-    @property
-    def is_fetch_error(self) -> bool:
-        return self.status == UserStatus.FETCH_ERROR
-
-    @property
-    def is_analyze_error(self) -> bool:
-        return self.status == UserStatus.ANALYZE_ERROR
 
     @property
     def is_first_show(self) -> bool:
