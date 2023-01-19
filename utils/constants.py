@@ -4,6 +4,7 @@ INTERACTION_NAME_MAPPING: Dict[str, str] = {
     "like_article": "点赞文章",
     "comment_article": "评论文章",
     "like_comment": "点赞评论",
+    "reward_article": "赞赏文章",
     "follow_user": "关注用户",
     "publish_article": "发布文章",
     "follow_collection": "关注专题",
@@ -14,6 +15,7 @@ INTERACTION_ORDER: List[str] = [
     "like_article",
     "comment_article",
     "publish_article",
+    "reward_article",
     "like_comment",
     "follow_user",
     "follow_collection",
@@ -23,6 +25,7 @@ INTERACTION_ORDER: List[str] = [
 INTERACTION_UNIT_TEXT: Dict[str, str] = {
     "like_article": "篇",
     "comment_article": "次",
+    "reward_article": "次",
     "like_comment": "条",
     "follow_user": "人",
     "publish_article": "篇",
