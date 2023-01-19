@@ -4,7 +4,7 @@ from time import sleep
 from typing import Dict, Generator, List, Optional
 
 from backoff import expo, on_exception
-from httpx import TimeoutException
+from httpx import ConnectError, TimeoutException
 
 from data.user import User
 from utils.db import timeline_db
@@ -16,7 +16,7 @@ STOP_TIME: datetime = datetime(2022, 12, 31, 23, 59, 59)
 
 GetUserTimelineInfo = on_exception(
     expo,
-    TimeoutException,
+    (TimeoutException, ConnectError),
     base=2,
     factor=4,
     max_tries=5,
