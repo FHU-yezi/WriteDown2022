@@ -130,6 +130,7 @@ def display() -> None:
     # 如果发生异常，展示错误信息
     if user.is_error:
         put_error_popup(user.error_info)
+        return
 
     # 触发页面浏览次数和展示时间更新
     user.result_shown()
