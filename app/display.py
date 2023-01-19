@@ -4,6 +4,7 @@ from pywebio.output import put_html, put_markdown, put_row
 from pywebio.pin import put_input
 
 from data.user import User, get_waiting_users_count
+from utils.exceptions import UserNotExistError
 from utils.html import grey_text
 from utils.page import (
     copy_to_clipboard,
@@ -36,7 +37,7 @@ def display() -> None:
     # 尝试使用 user_slug 从数据库中获取对应记录
     try:
         user = User.from_slug(user_slug_from_query_arg)
-    except ValueError:
+    except UserNotExistError:
         toast_error_and_return("请求参数错误")
 
     # 如果数据未获取完成，提示数据获取中
