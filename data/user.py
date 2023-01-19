@@ -131,7 +131,10 @@ class User(DataModel):
 
     @property
     def is_error(self) -> bool:
-        return self.status in (UserStatus.FETCH_ERROR, UserStatus.ANALYZE_ERROR)
+        return self.status in (
+            UserStatus.FETCH_ERROR,
+            UserStatus.ANALYZE_ERROR,
+        )
 
     @property
     def is_first_show(self) -> bool:

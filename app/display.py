@@ -69,19 +69,34 @@ def display() -> None:
         """
     )
 
-    put_markdown(user.interaction_summary.get_summary(), sanitize=False)
+    if user.interaction_summary.is_aviliable:
+        put_markdown(user.interaction_summary.get_summary(), sanitize=False,)
+    else:
+        put_markdown("抱歉，您的数据不符合分析互动概览的标准。")
 
     # 如果图表不能完整展示，提示左右滑动查看
     if not is_full_width():
         put_markdown(grey_text("（左右滑动查看图表）"))
 
-    put_html(user.heat_graph.get_graph().render_notebook())
+    if user.heat_graph.is_aviliable:
+        put_html(user.heat_graph.get_graph().render_notebook())
+    else:
+        put_markdown(grey_text("很抱歉，您的数据不符合生成互动热力图的标准。"))
 
-    put_html(user.interaction_type.get_graph().render_notebook())
+    if user.interaction_type.is_aviliable:
+        put_html(user.interaction_type.get_graph().render_notebook())
+    else:
+        put_markdown(grey_text("很抱歉，您的数据不符合生成互动类型图的标准。"))
 
-    put_html(user.interaction_per_hour.get_graph().render_notebook())
+    if user.interaction_per_hour.is_aviliable:
+        put_html(user.interaction_per_hour.get_graph().render_notebook())
+    else:
+        put_markdown(grey_text("很抱歉，您的数据不符合生成互动小时分布图的标准。"))
 
-    put_html(user.wordcloud.get_graph().render_notebook())
+    if user.wordcloud.is_aviliable:
+        put_html(user.wordcloud.get_graph().render_notebook())
+    else:
+        put_markdown(grey_text("很抱歉，您的数据不符合生成评论词云图的标准"))
 
     put_markdown("---")
 

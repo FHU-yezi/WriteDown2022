@@ -19,6 +19,7 @@ class InteractionSummary(DataModel):
     attr_db_key_mapping: Dict[str, str] = {
         "id": "_id",
         "user_id": "user_id",
+        "is_aviliable": "is_aviliable",
         "interactions_data": "interactions_data",
         "max_interactions_date": "max_interactions.date",
         "max_interactions_count": "max_interactions.count",
@@ -35,6 +36,7 @@ class InteractionSummary(DataModel):
         self,
         id: str,
         user_id: str,
+        is_aviliable: bool,
         interactions_data: Dict[str, int],
         max_interactions_date: Optional[datetime],
         max_interactions_count: Optional[int],
@@ -47,6 +49,7 @@ class InteractionSummary(DataModel):
     ) -> None:
         self.id = id
         self.user_id = user_id
+        self.is_aviliable = is_aviliable
         self.interactions_data = interactions_data
         self.max_interactions_date = max_interactions_date
         self.max_interactions_count = max_interactions_count
@@ -96,6 +99,7 @@ class InteractionSummary(DataModel):
         insert_result = cls.db.insert_one(
             {
                 "user_id": user.id,
+                "is_aviliable": True,
                 "interactions_data": interactions_data,
                 "max_interactions.date": max_interactions_date,
                 "max_interactions.count": max_interactions_count,

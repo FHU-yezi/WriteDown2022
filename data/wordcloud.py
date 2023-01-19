@@ -19,16 +19,23 @@ class Wordcloud(DataModel):
     attr_db_key_mapping: Dict[str, str] = {
         "id": "_id",
         "user_id": "user_id",
+        "is_aviliable": "is_aviliable",
         "total_comments_count": "total_comments_count",
         "data": "data",
     }
     db_key_attr_mapping = get_reversed_dict(attr_db_key_mapping)
 
     def __init__(
-        self, id: str, user_id: str, total_comments_count: int, data: Dict[str, str]
+        self,
+        id: str,
+        user_id: str,
+        is_aviliable: bool,
+        total_comments_count: int,
+        data: Dict[str, str],
     ) -> None:
         self.id = id
         self.user_id = user_id
+        self.is_aviliable = is_aviliable
         self.total_comments_count = total_comments_count
         self.data = data
 
@@ -55,10 +62,13 @@ class Wordcloud(DataModel):
         return User.from_id(self.user_id)
 
     @classmethod
-    def create(cls, user, data: Dict[str, int], total_comments_count: int) -> "Wordcloud":
+    def create(
+        cls, user, data: Dict[str, int], total_comments_count: int
+    ) -> "Wordcloud":
         insert_result = cls.db.insert_one(
             {
                 "user_id": user.id,
+                "is_aviliable": len(data) != 0,
                 "total_comments_count": total_comments_count,
                 "data": data,
             },
@@ -83,9 +93,7 @@ class Wordcloud(DataModel):
                 word_size_range=[10, 70],
                 pos_left="center",
                 pos_top="center",
-                textstyle_opts=opts.TextStyleOpts(
-                    color=JIANSHU_COLOR
-                ),
+                textstyle_opts=opts.TextStyleOpts(color=JIANSHU_COLOR),
             )
             .set_global_opts(
                 title_opts=opts.TitleOpts(
