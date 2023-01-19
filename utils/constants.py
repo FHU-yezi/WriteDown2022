@@ -1,4 +1,8 @@
 from typing import Dict, List
+from datetime import datetime
+
+DATA_STRAT_TIME = datetime(2022, 1, 1, 0, 0, 0)
+DATA_STOP_TIME = datetime(2022, 12, 31, 23, 59, 59)
 
 INTERACTION_NAME_MAPPING: Dict[str, str] = {
     "like_article": "点赞文章",
@@ -35,6 +39,7 @@ INTERACTION_UNIT_TEXT: Dict[str, str] = {
 
 TEXT_REPORT_ITEM_NAME: Dict[str, str] = {
     "interaction_summary": "互动概览",
+    "on_rank": "文章上榜记录",
 }
 
 GRAPH_REPORT_ITEM_NAME: Dict[str, str] = {

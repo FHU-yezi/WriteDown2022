@@ -5,7 +5,7 @@ from data.user import User
 from utils.db import timeline_db
 
 
-def analyze_interaction_summary_data(user: User) -> None:
+def analyze_interaction_summary(user: User) -> None:
     try:
         max_interactions_data: Dict[str, Any] = timeline_db.aggregate(
             [

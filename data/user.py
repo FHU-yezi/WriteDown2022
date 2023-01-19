@@ -170,6 +170,12 @@ class User(DataModel):
 
         return InteractionPerHour.from_user_id(self.id)
 
+    @property
+    def on_rank(self):
+        from data.on_rank import OnRank
+
+        return OnRank.from_user_id(self.id)
+
     @classmethod
     def create(cls, user_url: str) -> "User":
         AssertUserUrl(user_url)

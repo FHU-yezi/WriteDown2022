@@ -7,12 +7,10 @@ from backoff import expo, on_exception
 from httpx import ConnectError, TimeoutException
 
 from data.user import User
+from utils.constants import DATA_STOP_TIME, DATA_STRAT_TIME
 from utils.db import timeline_db
 from utils.log import run_logger
 from utils.timeline_fetcher import GetUserTimelineInfo
-
-STRAT_TIME: datetime = datetime(2022, 1, 1, 0, 0, 0)
-STOP_TIME: datetime = datetime(2022, 12, 31, 23, 59, 59)
 
 GetUserTimelineInfo = on_exception(
     expo,
@@ -49,9 +47,9 @@ def fetch_timeline_data(user: User) -> None:
         operation_time = item["operation_time"].replace(tzinfo=None)
         item["operation_time"] = operation_time  # 处理时区问题
 
-        if operation_time > STOP_TIME:
+        if operation_time > DATA_STOP_TIME:
             continue  # 晚于 2022 年，尚未进入采集范围
-        if operation_time < STRAT_TIME:
+        if operation_time < DATA_STRAT_TIME:
             break  # 早于 2022 年，已超出采集范围
 
         item["from_user"] = user.id
