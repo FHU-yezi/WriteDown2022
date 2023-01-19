@@ -22,7 +22,7 @@ INTERACTION_ORDER: List[str] = [
 
 INTERACTION_UNIT_TEXT: Dict[str, str] = {
     "like_article": "篇",
-    "comment_article": "篇",
+    "comment_article": "次",
     "like_comment": "条",
     "follow_user": "人",
     "publish_article": "篇",
