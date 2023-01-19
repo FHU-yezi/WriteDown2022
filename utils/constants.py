@@ -32,3 +32,14 @@ INTERACTION_UNIT_TEXT: Dict[str, str] = {
     "follow_collection": "个",
     "follow_notebook": "个",
 }
+
+TEXT_REPORT_ITEM_NAME: Dict[str, str] = {
+    "interaction_summary": "互动概览",
+}
+
+GRAPH_REPORT_ITEM_NAME: Dict[str, str] = {
+    "heat_graph": "互动热力图",
+    "interaction_type": "互动类型图",
+    "interaction_per_hour": "互动小时分布图",
+    "wordcloud": "评论词云图",
+}

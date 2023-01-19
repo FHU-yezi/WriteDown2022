@@ -114,7 +114,7 @@ class InteractionSummary(DataModel):
 
         return cls.from_id(insert_result.inserted_id)
 
-    def get_summary(self) -> str:
+    def get_report(self) -> str:
         user = self.user
 
         welcome_part = f"{link(user.name, user.url, new_window=True)}，你的 2022 互动总结如下："

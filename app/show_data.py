@@ -16,7 +16,7 @@ from utils.page import (
     set_user_slug_cookies,
 )
 from widgets.button import put_button
-from widgets.popup import show_error_popup, show_processing_popup
+from widgets.popup import put_error_popup, put_processing_popup
 from widgets.toast import toast_success, toast_warn_and_return
 
 NAME: str = "查看数据"
@@ -46,7 +46,7 @@ def on_show_button_clicked() -> None:
             set_user_slug_cookies(UserUrlToUserSlug(user_url))
 
     if user.is_processing:
-        show_processing_popup(
+        put_processing_popup(
             user_name=user.name,
             waiting_users_count=get_waiting_users_count(),
         )
@@ -102,7 +102,7 @@ def show_data() -> None:
 
     # 如果数据正在处理中，提示用户等待
     if user.is_processing:
-        show_processing_popup(
+        put_processing_popup(
             user_name=user.name,
             waiting_users_count=get_waiting_users_count(),
         )
@@ -110,7 +110,7 @@ def show_data() -> None:
 
     # 如果发生异常，展示错误信息
     if user.is_error:
-        show_error_popup(user.error_info)
+        put_error_popup(user.error_info)
         put_button(
             "清除账号绑定信息",
             onclick=on_clear_bind_data_button_clicked,
