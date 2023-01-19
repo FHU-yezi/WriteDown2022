@@ -50,7 +50,7 @@ def put_show_my_report(current_report_user_name: str, self_user_slug: str) -> Ou
         "查看自己的统计数据",
         onclick=lambda: jump_to(
             get_jump_link(
-                "display",
+                "report",
                 {"user_slug": self_user_slug},
             )
         ),
@@ -107,7 +107,7 @@ def on_copy_link_button_clicked(current_link: str) -> None:
     toast_success("复制成功")
 
 
-def display() -> None:
+def report() -> None:
     user_slug_from_query_arg = get_query_params().get("user_slug")
     if not user_slug_from_query_arg:
         # 该页面必须使用 user_slug 才能展示

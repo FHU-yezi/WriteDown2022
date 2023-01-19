@@ -60,7 +60,10 @@ def on_show_button_clicked() -> None:
         return
 
     toast_success("您的数据已经获取完成，即将为您跳转")
-    jump_to(get_jump_link("display", {"user_slug": user.slug}), delay=1)
+    jump_to(
+        get_jump_link("report", {"user_slug": user.slug}),
+        delay=1,
+    )
 
 
 def on_clear_bind_data_button_clicked() -> None:
