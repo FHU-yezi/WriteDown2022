@@ -16,6 +16,7 @@ from utils.page import (
     jump_to,
 )
 from widgets.button import put_button
+from widgets.popup import show_processing_popup
 from widgets.toast import toast_error_and_return, toast_success
 
 NAME: str = "数据展示"
@@ -41,19 +42,17 @@ def display() -> None:
         toast_error_and_return("请求参数错误")
 
     # 如果数据未获取完成，提示数据获取中
-    if not user.is_analyze_done:
-        put_markdown(
-            f"""
-            我们正在全力获取您的数据，过一会再来试试吧。
-
-            当前有 {get_waiting_users_count()} 人正在排队。
-            """
+    if user.is_processing:
+        show_processing_popup(
+            user_name=user.name,
+            waiting_users_count=get_waiting_users_count(),
         )
         return
 
+    # 触发页面浏览次数和展示时间更新
     user.result_shown()
 
-    # 一切正常，展示统计数据
+    # 展示统计数据
 
     put_markdown(
         f"""
