@@ -20,6 +20,9 @@ wordcloud_db = db.wordcloud
 interaction_type_db = db.interaction_type
 interaction_per_hour_db = db.interaction_per_hour
 interaction_summary_db = db.interaction_summary
+on_rank_db = db.on_rank
+
+article_FP_rank_db = init_DB("JFetcherData").article_FP_rank
 
 # 创建索引
 
@@ -57,6 +60,11 @@ interaction_per_hour_db.create_indexes(
     ]
 )
 interaction_summary_db.create_indexes(
+    [
+        IndexModel([("user_id", 1)], unique=True),
+    ]
+)
+on_rank_db.create_indexes(
     [
         IndexModel([("user_id", 1)], unique=True),
     ]

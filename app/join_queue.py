@@ -42,7 +42,7 @@ def on_submit_button_clicked() -> None:
         # 排队成功，设置 Cookie 后跳转到查看结果页面
         set_user_slug_cookies(user.slug)
         toast_success("排队成功")
-        reload(delay=1)
+        jump_to(get_jump_link("show_data"), delay=1)
 
 
 def join_queue() -> None:

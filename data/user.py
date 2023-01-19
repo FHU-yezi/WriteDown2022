@@ -131,7 +131,10 @@ class User(DataModel):
 
     @property
     def is_error(self) -> bool:
-        return self.status in (UserStatus.FETCH_ERROR, UserStatus.ANALYZE_ERROR)
+        return self.status in (
+            UserStatus.FETCH_ERROR,
+            UserStatus.ANALYZE_ERROR,
+        )
 
     @property
     def is_first_show(self) -> bool:
@@ -166,6 +169,12 @@ class User(DataModel):
         from data.interaction_per_hour import InteractionPerHour
 
         return InteractionPerHour.from_user_id(self.id)
+
+    @property
+    def on_rank(self):
+        from data.on_rank import OnRank
+
+        return OnRank.from_user_id(self.id)
 
     @classmethod
     def create(cls, user_url: str) -> "User":

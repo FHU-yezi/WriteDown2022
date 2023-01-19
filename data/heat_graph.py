@@ -25,6 +25,7 @@ class HeatGraph(DataModel):
     attr_db_key_mapping: Dict[str, str] = {
         "id": "_id",
         "user_id": "user_id",
+        "is_aviliable": "is_aviliable",
         "max_interactions_count": "max_interactions_count",
         "total_active_days": "total_active_days",
         "total_interactions_count": "total_interactions_count",
@@ -36,6 +37,7 @@ class HeatGraph(DataModel):
         self,
         id: str,
         user_id: str,
+        is_aviliable: bool,
         max_interactions_count: int,
         total_active_days: int,
         total_interactions_count: int,
@@ -43,6 +45,7 @@ class HeatGraph(DataModel):
     ) -> None:
         self.id = id
         self.user_id = user_id
+        self.is_aviliable = is_aviliable
         self.max_interactions_count = max_interactions_count
         self.total_active_days = total_active_days
         self.total_interactions_count = total_interactions_count
@@ -75,6 +78,7 @@ class HeatGraph(DataModel):
         insert_result = cls.db.insert_one(
             {
                 "user_id": user.id,
+                "is_aviliable": True,
                 "max_interactions_count": max(data.values()) if data else 0,
                 "total_active_days": len(data),
                 "total_interactions_count": sum(data.values()) if data else 0,

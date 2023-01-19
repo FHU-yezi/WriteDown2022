@@ -1,7 +1,7 @@
 from pywebio.output import popup, put_markdown
 
 
-def show_processing_popup(user_name: str, waiting_users_count: int) -> None:
+def put_processing_popup(user_name: str, waiting_users_count: int) -> None:
     with popup(title="数据处理中", size="large", implicit_close=False):
         put_markdown(
             f"""
@@ -12,7 +12,7 @@ def show_processing_popup(user_name: str, waiting_users_count: int) -> None:
         )
 
 
-def show_error_popup(error_info: str) -> None:
+def put_error_popup(error_info: str) -> None:
     with popup(title="发生异常", size="large", implicit_close=False):
         # TODO
         put_markdown(
