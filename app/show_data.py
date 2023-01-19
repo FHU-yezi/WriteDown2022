@@ -45,10 +45,17 @@ def on_show_button_clicked() -> None:
         if user_url and not slug_from_cookie:
             set_user_slug_cookies(UserUrlToUserSlug(user_url))
 
-    if user.is_waiting_for_fetch or user.is_fetching:
+    if user.is_processing:
         show_processing_popup(
             user_name=user.name,
             waiting_users_count=get_waiting_users_count(),
+        )
+        put_button(
+            "清除账号绑定信息",
+            onclick=on_clear_bind_data_button_clicked,
+            color="secondary",
+            block=True,
+            outline=True,
         )
         return
 
@@ -94,7 +101,7 @@ def show_data() -> None:
         return
 
     # 如果数据正在处理中，提示用户等待
-    if not user.is_analyze_done and not user.is_error:
+    if user.is_processing:
         show_processing_popup(
             user_name=user.name,
             waiting_users_count=get_waiting_users_count(),
