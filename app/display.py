@@ -39,23 +39,13 @@ def display() -> None:
     except ValueError:
         toast_error_and_return("请求参数错误")
 
-    # 如果数据未获取完成，也未出现异常，提示数据获取中
-    if not user.is_analyze_done and not user.is_error:
+    # 如果数据未获取完成，提示数据获取中
+    if not user.is_analyze_done:
         put_markdown(
             f"""
             我们正在全力获取您的数据，过一会再来试试吧。
 
             当前有 {get_waiting_users_count()} 人正在排队。
-            """
-        )
-        return
-    # 如果发生异常，展示错误信息
-    elif user.is_error:
-        put_markdown(
-            f"""
-            很抱歉，在{"获取数据" if user.is_fetch_error else "分析数据"}的过程中发生了异常。
-
-            错误信息：{user.error_info}
             """
         )
         return

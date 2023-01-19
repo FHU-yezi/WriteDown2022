@@ -2,7 +2,7 @@ from typing import Optional
 
 from JianshuResearchTools.convert import UserUrlToUserSlug
 from JianshuResearchTools.exceptions import InputError, ResourceError
-from pywebio.output import put_markdown, put_success, toast
+from pywebio.output import popup, put_markdown, put_success, toast
 from pywebio.pin import pin, put_input
 
 from data.user import User, get_waiting_users_count
@@ -57,6 +57,17 @@ def on_clear_bind_data_button_clicked() -> None:
     reload(delay=1)
 
 
+def show_error_popup(user: User) -> None:
+    with popup(title="发生错误", size="large", implicit_close=False):
+        put_markdown(
+            f"""
+            很抱歉，在{"获取数据" if user.is_fetch_error else "分析数据"}的过程中发生了异常。
+
+            错误信息：{user.error_info}
+            """
+        )
+
+
 def show_data() -> None:
     user_slug: Optional[str] = get_user_slug_cookies()
 
@@ -87,7 +98,7 @@ def show_data() -> None:
         return
 
     # 如果数据未获取成功也未发生异常，提示用户等待
-    if user.is_waiting_for_fetch or user.is_fetching:
+    if not user.is_analyze_done and not user.is_error:
         put_markdown(
             f"""
             我们正在全力获取您的数据，过一会再来试试吧。
@@ -99,12 +110,13 @@ def show_data() -> None:
 
     # 如果发生异常，展示错误信息
     if user.is_error:
-        put_markdown(
-            f"""
-            很抱歉，在{"获取数据" if user.is_fetch_error else "分析数据"}的过程中发生了异常。
-
-            错误信息：{user.error_info}
-            """
+        show_error_popup(user)
+        put_button(
+            "清除账号绑定信息",
+            onclick=on_clear_bind_data_button_clicked,
+            color="secondary",
+            block=True,
+            outline=True,
         )
         return
 
