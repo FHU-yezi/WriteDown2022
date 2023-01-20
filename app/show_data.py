@@ -50,13 +50,7 @@ def on_show_button_clicked() -> None:
         put_processing_popup(
             user_name=user.name,
             waiting_users_count=get_waiting_users_count(),
-        )
-        put_button(
-            "清除账号绑定信息",
-            onclick=on_clear_bind_data_button_clicked,
-            color="secondary",
-            block=True,
-            outline=True,
+            clear_cookie_callback=on_clear_cookie_button_clicked
         )
         return
 
@@ -67,7 +61,7 @@ def on_show_button_clicked() -> None:
     )
 
 
-def on_clear_bind_data_button_clicked() -> None:
+def on_clear_cookie_button_clicked() -> None:
     remove_user_slug_cookies()
     toast_success("清除成功")
     reload(delay=1)
@@ -109,6 +103,7 @@ def show_data() -> None:
         put_processing_popup(
             user_name=user.name,
             waiting_users_count=get_waiting_users_count(),
+            clear_cookie_callback=on_clear_cookie_button_clicked,
         )
         return
 
@@ -117,7 +112,7 @@ def show_data() -> None:
         put_error_popup(user.error_info)
         put_button(
             "清除账号绑定信息",
-            onclick=on_clear_bind_data_button_clicked,
+            onclick=on_clear_cookie_button_clicked,
             color="secondary",
             block=True,
             outline=True,
@@ -137,7 +132,7 @@ def show_data() -> None:
 
     put_button(
         "清除账号绑定信息",
-        onclick=on_clear_bind_data_button_clicked,
+        onclick=on_clear_cookie_button_clicked,
         color="secondary",
         block=True,
         outline=True,

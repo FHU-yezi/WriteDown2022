@@ -1,9 +1,14 @@
 from pywebio.output import popup, put_markdown
+from widgets.button import put_button
+from utils.page import reload
+from typing import Callable
 
 from utils.html import link
 
 
-def put_processing_popup(user_name: str, waiting_users_count: int) -> None:
+def put_processing_popup(
+    user_name: str, waiting_users_count: int, clear_cookie_callback: Callable[[], None]
+) -> None:
     with popup(title="数据处理中", size="large", implicit_close=False):
         put_markdown(
             f"""
@@ -11,6 +16,20 @@ def put_processing_popup(user_name: str, waiting_users_count: int) -> None:
 
             当前有 {waiting_users_count} 人正在排队。
             """
+        )
+        put_button(
+            "刷新",
+            onclick=reload,
+            color="success",
+            block=True,
+            outline=True,
+        )
+        put_button(
+            "清除账号绑定信息",
+            onclick=clear_cookie_callback,
+            color="secondary",
+            block=True,
+            outline=True,
         )
 
 
