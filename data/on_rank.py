@@ -82,7 +82,10 @@ class OnRank(DataModel):
         if not self.on_rank_count:
             return "在 2022 年，你的文章没有上过收益排行榜。"
 
-        summary_part = f"在 2022 年，你写的文章曾 {self.on_rank_count} 次登上收益排行榜。"
+        summary_part = (
+            f"在 2022 年，你写的文章曾 {self.on_rank_count} 次登上收益排行榜，"
+            f"最高排名第 {self.top_ranking} 名。"
+        )
 
         if self.on_rank_count > len(self.articles_data):
             before_detail = "以下是你的部分上榜记录："
