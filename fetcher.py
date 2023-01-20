@@ -1,5 +1,5 @@
 from datetime import datetime
-from random import random
+from random import randint
 from time import sleep
 from typing import Dict, Generator, List, Optional
 
@@ -7,6 +7,7 @@ from backoff import expo, on_exception
 from httpx import ConnectError, TimeoutException
 
 from data.user import User
+from utils.config import config
 from utils.constants import DATA_STOP_TIME, DATA_STRAT_TIME, INTERACTION_ORDER
 from utils.db import timeline_db
 from utils.log import run_logger
@@ -28,7 +29,14 @@ def get_all_data(user_url: str, start_id: Optional[int]) -> Generator[Dict, None
     max_id: int = start_id - 1 if start_id else 1000000000
     while True:
         data = GetUserTimelineInfo(user_url, max_id)
-        sleep(random())
+        # 在配置文件指定的范围内随机 sleep 一段时间
+        sleep(
+            randint(
+                config.fetcher.sleep_interval_low,
+                config.fetcher.sleep_interval_high,
+            )
+            / 1000
+        )
         if not data:
             return
 
