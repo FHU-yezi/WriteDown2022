@@ -5,7 +5,7 @@ from bson import ObjectId
 from data._base import DataModel
 from utils.db import on_rank_db
 from utils.dict_helper import get_reversed_dict
-from utils.html import link
+from utils.html import grey_text, link
 
 
 class OnRank(DataModel):
@@ -104,10 +104,16 @@ class OnRank(DataModel):
             ],
         )
 
+        on_rank_search_tool_ad = grey_text(
+            f"（查看上榜详情请点击访问 "
+            f"{link('上榜文章查询工具', 'https://tools.sscreator.com/?app=on_rank_article_viewer', new_window=True)}）"
+        )
+
         return "\n\n".join(
             [
                 summary_part,
                 before_detail,
                 on_rank_detail,
+                on_rank_search_tool_ad,
             ]
         )
