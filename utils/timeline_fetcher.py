@@ -145,26 +145,5 @@ def GetUserTimelineInfo(user_url: str, max_id: int = 1000000000) -> List[Dict]:
             item_data["target_user_likes_count"] = int(findall(r"\d+", block.xpath("//div[@class='follow-detail']/div[@class='info']/p/text()")[0])[2])
             item_data["target_user_description"] = "\n".join(block.xpath("//div[@class='signature']/text()"))
 
-        elif item_data["operation_type"] == "reward_note":  # 赞赏文章
-            item_data["operation_type"] = "reward_article"  # 鬼知道谁把赞赏文章写成 reward_note 的
-            item_data["target_article_title"] = block.xpath("//a[@class='title']/text()")[0]
-            item_data["target_article_url"] = ArticleSlugToArticleUrl(block.xpath("//a[@class='title']/@href")[0][3:])
-            item_data["target_user_name"] = block.xpath("//div[@class='origin-author']/a/text()")[0]
-            item_data["target_user_url"] = UserSlugToUserUrl(block.xpath("//div[@class='meta']/a/@href")[0][3:])
-            item_data["target_article_reads_count"] = int(block.xpath("//div[@class='meta']/a/text()")[1])
-            item_data["target_article_likes_count"] = int(block.xpath("//div[@class='meta']/span/text()")[0])
-            try:
-                item_data["target_article_comments_count"] = int(block.xpath("//div[@class='meta']/a/text()")[3])
-            except IndexError:  # 文章没有评论或评论区关闭
-                item_data["target_article_comments_count"] = 0
-            try:
-                item_data["target_article_description"] = block.xpath("//p[@class='abstract']/text()")[0]
-            except IndexError:  # 文章没有描述
-                item_data["target_article_description"] = ""
-            try:
-                item_data["target_article_rewards_count"] = int(block.xpath("//div[@class='meta']/span/text()")[1])
-            except IndexError:  # 没有赞赏数据
-                item_data["target_article_rewards_count"] = 0
-
         result.append(item_data)
     return result
