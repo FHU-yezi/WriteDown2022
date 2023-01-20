@@ -146,7 +146,7 @@ def report() -> None:
 
     put_markdown(
         f"""
-        # {user.name} 的 2022 年度数据统计
+        # {user.name}的 2022 年度数据统计
 
         {grey_text(
             f'生成时间：{user.end_fetch_time.strftime(r"%Y-%m-%d %H:%M:%S")} | '

@@ -37,9 +37,9 @@ def on_show_button_clicked() -> None:
             else User.from_slug(slug_from_cookie)  # type: ignore [arg-type]
         )
     except (InputError, ResourceError):
-        toast_warn_and_return("输入的链接无效，请检查")
+        toast_warn_and_return("链接无效，请检查")
     except UserNotExistError:
-        toast("您还没有排队，即将为您跳转到排队页面", color="warn")
+        toast("您尚未排队", color="warn")
         jump_to(get_jump_link("join_queue"), delay=1)
         return
     else:
@@ -54,7 +54,7 @@ def on_show_button_clicked() -> None:
         )
         return
 
-    toast_success("您的数据已经获取完成，即将为您跳转")
+    toast_success("您的数据已获取完成")
     jump_to(
         get_jump_link("report", {"user_slug": user.slug}),
         delay=1,
