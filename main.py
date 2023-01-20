@@ -43,6 +43,12 @@ def index():
             desc=module.page_desc,
         )
 
+    put_app_card(
+        name="反馈表单",
+        url="https://wenjuan.feishu.cn/m?t=sP3KbOMtblJi-76re",
+        desc="",
+    )
+
 
 modules_list.append(
     Module(
