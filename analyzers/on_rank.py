@@ -35,6 +35,7 @@ def analyze_on_rank(user: User) -> None:
             top_ranking=None,
             articles_data=None,
         )
+        return
 
     on_rank_data = list(
         article_FP_rank_db.aggregate(
