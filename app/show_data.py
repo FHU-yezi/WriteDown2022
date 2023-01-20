@@ -41,6 +41,7 @@ def on_show_button_clicked() -> None:
     except UserNotExistError:
         toast("您还没有排队，即将为您跳转到排队页面", color="warn")
         jump_to(get_jump_link("join_queue"), delay=1)
+        return
     else:
         if user_url and not slug_from_cookie:
             set_user_slug_cookies(UserUrlToUserSlug(user_url))
