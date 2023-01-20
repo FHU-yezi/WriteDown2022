@@ -7,7 +7,7 @@ from backoff import expo, on_exception
 from httpx import ConnectError, TimeoutException
 
 from data.user import User
-from utils.constants import DATA_STOP_TIME, DATA_STRAT_TIME
+from utils.constants import DATA_STOP_TIME, DATA_STRAT_TIME, INTERACTION_ORDER
 from utils.db import timeline_db
 from utils.log import run_logger
 from utils.timeline_fetcher import GetUserTimelineInfo
@@ -33,6 +33,9 @@ def get_all_data(user_url: str, start_id: Optional[int]) -> Generator[Dict, None
             return
 
         for item in data:
+            # 如果互动操作类型不在可分析的类型列表中，则不存储这条数据
+            if item["operation_type"] not in INTERACTION_ORDER:
+                continue
             yield item
 
         max_id = data[-1]["operation_id"] - 1
