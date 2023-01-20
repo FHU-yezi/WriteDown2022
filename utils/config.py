@@ -18,6 +18,10 @@ _DEFAULT_CONFIG = {
         "check_interval": 10,
         "threads": 3,
     },
+    "fetcher": {
+        "sleep_interval_low": 0,
+        "sleep_interval_high": 0,
+    },
     "footer": "",
     "db": {
         "host": "localhost",

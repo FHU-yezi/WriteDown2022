@@ -59,6 +59,11 @@ def analyze_on_rank(user: User) -> None:
                         "article_url": "$article.url",
                     },
                 },
+                {
+                    "$sort": {
+                        "ranking": 1,
+                    },
+                },
             ]
         )
     )
@@ -66,6 +71,6 @@ def analyze_on_rank(user: User) -> None:
     OnRank.create(
         user=user,
         on_rank_count=len(on_rank_data),
-        top_ranking=max([x["ranking"] for x in on_rank_data]) if len(on_rank_data) else None,
+        top_ranking=min([x["ranking"] for x in on_rank_data]) if len(on_rank_data) else None,
         articles_data=on_rank_data[:5],
     )

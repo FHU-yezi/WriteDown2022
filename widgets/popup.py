@@ -1,5 +1,7 @@
 from pywebio.output import popup, put_markdown
 
+from utils.html import link
+
 
 def put_processing_popup(user_name: str, waiting_users_count: int) -> None:
     with popup(title="数据处理中", size="large", implicit_close=False):
@@ -21,6 +23,7 @@ def put_error_popup(error_info: str) -> None:
 
             以下错误信息可能对解决问题有帮助：{error_info}
 
-            请访问我们的反馈表单报告此问题：[反馈表单链接]
-            """
+            请访问我们的反馈表单报告此问题：{link("点击访问", "https://wenjuan.feishu.cn/m?t=sn9OI8nublJi-tsbl", new_window=True)}
+            """,
+            sanitize=False,
         )
