@@ -134,9 +134,8 @@ def report() -> None:
             clear_cookie_callback=on_clear_cookie_button_clicked,
         )
         return
-
     # 如果发生异常，展示错误信息
-    if user.is_error:
+    elif user.is_error:
         put_error_popup(user.error_info)
         return
 

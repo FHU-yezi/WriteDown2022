@@ -87,7 +87,6 @@ def show_data() -> None:
         return
 
     # Cookie 中有 user_slug
-
     try:
         user = User.from_slug(user_slug)
     except UserNotExistError:
@@ -106,9 +105,8 @@ def show_data() -> None:
             clear_cookie_callback=on_clear_cookie_button_clicked,
         )
         return
-
     # 如果发生异常，展示错误信息
-    if user.is_error:
+    elif user.is_error:
         put_error_popup(user.error_info)
         put_button(
             "清除账号绑定信息",
