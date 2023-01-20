@@ -1,10 +1,10 @@
 from typing import Optional
 
 from pywebio.output import Output, put_html, put_markdown, put_row
-from utils.constants import GRAPH_REPORT_ITEM_NAME, TEXT_REPORT_ITEM_NAME
 from pywebio.pin import put_input
 
 from data.user import User, get_waiting_users_count
+from utils.constants import GRAPH_REPORT_ITEM_NAME, TEXT_REPORT_ITEM_NAME
 from utils.exceptions import UserNotExistError
 from utils.html import grey_text
 from utils.page import (
@@ -15,6 +15,7 @@ from utils.page import (
     get_user_slug_cookies,
     is_full_width,
     jump_to,
+    remove_user_slug_cookies,
 )
 from widgets.button import put_button
 from widgets.popup import put_error_popup, put_processing_popup
@@ -23,6 +24,12 @@ from widgets.toast import toast_error_and_return, toast_success
 NAME: str = "数据展示"
 DESC: str = "查看您的年度统计数据"
 VISIBILITY: bool = False
+
+
+def on_clear_cookie_button_clicked() -> None:
+    remove_user_slug_cookies()
+    toast_success("清除成功")
+    jump_to(get_jump_link("join_queue"), delay=1)
 
 
 def put_generate_my_report(current_report_user_name: str) -> Output:
@@ -124,11 +131,11 @@ def report() -> None:
         put_processing_popup(
             user_name=user.name,
             waiting_users_count=get_waiting_users_count(),
+            clear_cookie_callback=on_clear_cookie_button_clicked,
         )
         return
-
     # 如果发生异常，展示错误信息
-    if user.is_error:
+    elif user.is_error:
         put_error_popup(user.error_info)
         return
 
@@ -139,7 +146,7 @@ def report() -> None:
 
     put_markdown(
         f"""
-        # {user.name} 的 2022 年度数据统计
+        # {user.name}的 2022 年度数据统计
 
         {grey_text(
             f'生成时间：{user.end_fetch_time.strftime(r"%Y-%m-%d %H:%M:%S")} | '

@@ -5,7 +5,7 @@ from bson import ObjectId
 from data._base import DataModel
 from utils.db import on_rank_db
 from utils.dict_helper import get_reversed_dict
-from utils.html import link
+from utils.html import grey_text, link
 
 
 class OnRank(DataModel):
@@ -80,10 +80,10 @@ class OnRank(DataModel):
 
     def get_report(self) -> str:
         if not self.on_rank_count:
-            return "在 2022 年，你的文章没有上过收益排行榜。"
+            return "2022 年中，你的文章没有上过收益排行榜。"
 
         summary_part = (
-            f"在 2022 年，你写的文章曾 {self.on_rank_count} 次登上收益排行榜，"
+            f"2022 年中，你写的文章曾 {self.on_rank_count} 次登上收益排行榜，"
             f"最高排名第 {self.top_ranking} 名。"
         )
 
@@ -104,10 +104,16 @@ class OnRank(DataModel):
             ],
         )
 
+        on_rank_search_tool_ad = grey_text(
+            f"（查看上榜详情请点击访问 "
+            f"{link('上榜文章查询工具', 'https://tools.sscreator.com/?app=on_rank_article_viewer', new_window=True)}）"
+        )
+
         return "\n\n".join(
             [
                 summary_part,
                 before_detail,
                 on_rank_detail,
+                on_rank_search_tool_ad,
             ]
         )

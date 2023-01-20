@@ -37,9 +37,9 @@ def on_show_button_clicked() -> None:
             else User.from_slug(slug_from_cookie)  # type: ignore [arg-type]
         )
     except (InputError, ResourceError):
-        toast_warn_and_return("输入的链接无效，请检查")
+        toast_warn_and_return("链接无效，请检查")
     except UserNotExistError:
-        toast("您还没有排队，即将为您跳转到排队页面", color="warn")
+        toast("您尚未排队", color="warn")
         jump_to(get_jump_link("join_queue"), delay=1)
         return
     else:
@@ -50,24 +50,18 @@ def on_show_button_clicked() -> None:
         put_processing_popup(
             user_name=user.name,
             waiting_users_count=get_waiting_users_count(),
-        )
-        put_button(
-            "清除账号绑定信息",
-            onclick=on_clear_bind_data_button_clicked,
-            color="secondary",
-            block=True,
-            outline=True,
+            clear_cookie_callback=on_clear_cookie_button_clicked
         )
         return
 
-    toast_success("您的数据已经获取完成，即将为您跳转")
+    toast_success("您的数据已获取完成")
     jump_to(
         get_jump_link("report", {"user_slug": user.slug}),
         delay=1,
     )
 
 
-def on_clear_bind_data_button_clicked() -> None:
+def on_clear_cookie_button_clicked() -> None:
     remove_user_slug_cookies()
     toast_success("清除成功")
     reload(delay=1)
@@ -93,7 +87,6 @@ def show_data() -> None:
         return
 
     # Cookie 中有 user_slug
-
     try:
         user = User.from_slug(user_slug)
     except UserNotExistError:
@@ -109,15 +102,15 @@ def show_data() -> None:
         put_processing_popup(
             user_name=user.name,
             waiting_users_count=get_waiting_users_count(),
+            clear_cookie_callback=on_clear_cookie_button_clicked,
         )
         return
-
     # 如果发生异常，展示错误信息
-    if user.is_error:
+    elif user.is_error:
         put_error_popup(user.error_info)
         put_button(
             "清除账号绑定信息",
-            onclick=on_clear_bind_data_button_clicked,
+            onclick=on_clear_cookie_button_clicked,
             color="secondary",
             block=True,
             outline=True,
@@ -137,7 +130,7 @@ def show_data() -> None:
 
     put_button(
         "清除账号绑定信息",
-        onclick=on_clear_bind_data_button_clicked,
+        onclick=on_clear_cookie_button_clicked,
         color="secondary",
         block=True,
         outline=True,

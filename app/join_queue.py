@@ -30,18 +30,17 @@ def on_submit_button_clicked() -> None:
     try:
         user = User.create(user_url)
     except (InputError, ResourceError):
-        toast_warn_and_return("输入的链接无效，请检查")
+        toast_warn_and_return("链接无效，请检查")
     except DuplicateUserError:
+        toast_success("您已排队")
         # 用户已在数据库中，设置 Cookie 后跳转到查看结果页面
         set_user_slug_cookies(UserUrlToUserSlug(user_url))
-
-        toast_success("您已排队，即将跳转到查看结果页面")
         jump_to(get_jump_link("show_data"), delay=1)
         return
     else:
         # 排队成功，设置 Cookie 后跳转到查看结果页面
-        set_user_slug_cookies(user.slug)
         toast_success("排队成功")
+        set_user_slug_cookies(user.slug)
         jump_to(get_jump_link("show_data"), delay=1)
 
 
@@ -69,7 +68,7 @@ def join_queue() -> None:
             return
         else:
             # 用户已经排队过，跳转到查看结果页面
-            toast_success("您已排队，即将跳转到查看结果页面")
+            toast_success("您已排队")
             jump_to(get_jump_link("show_data"), delay=1)
             return
 
