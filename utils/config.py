@@ -22,6 +22,9 @@ _DEFAULT_CONFIG = {
         "sleep_interval_low": 0,
         "sleep_interval_high": 0,
     },
+    "general_analyzer": {
+        "analyze_interval": 3600,
+    },
     "footer": "",
     "db": {
         "host": "localhost",

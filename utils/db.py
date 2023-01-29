@@ -21,6 +21,7 @@ interaction_type_db = db.interaction_type
 interaction_per_hour_db = db.interaction_per_hour
 interaction_summary_db = db.interaction_summary
 on_rank_db = db.on_rank
+general_data_db = db.general_data
 
 article_FP_rank_db = init_DB("JFetcherData").article_FP_rank
 

@@ -3,6 +3,7 @@ from time import sleep
 from typing import List
 
 from analyzers import ANALYZE_FUNCS
+from analyzers.general_data import analyze_general_data
 from data.user import UserStatus, get_waiting_user
 from fetcher import fetch_timeline_data
 from utils.config import config
@@ -46,6 +47,17 @@ def queue_processor_thread(start_sleep_time: int) -> None:
         run_logger.debug(f"已完成对 {user.id} 的全部处理流程")
 
 
+def general_data_analyzer_thread() -> None:
+    while True:
+        sleep(config.general_analyzer.analyze_interval)
+        try:
+            analyze_general_data()
+        except Exception as e:
+            run_logger.error(f"分析整体总结数据时发生异常：{repr(e)}")
+        else:
+            run_logger.debug("已成功分析整体总结数据")
+
+
 def clean_unfinished_job() -> None:
     cleaned_count = user_db.update_many(
         {
@@ -81,5 +93,13 @@ def start_queue_processor_threads() -> List[Thread]:
         )
         thread.start()
         threads_list.append(thread)
+
+    thread = Thread(
+        target=general_data_analyzer_thread,
+        name="general_data_analyzer",
+        daemon=True,
+    )
+    thread.start()
+    threads_list.append(thread)
 
     return threads_list
