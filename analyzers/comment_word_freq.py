@@ -1,10 +1,11 @@
-from typing import Dict
+from typing import TYPE_CHECKING, Dict
 
-from data.user import User
 from data.wordcloud import Wordcloud
 from utils.db import timeline_db
 from utils.word_split import get_word_freq, word_split_postprocess
 
+if TYPE_CHECKING:
+    from data.user import User
 
 def analyze_comment_word_freq(user: User) -> None:
     db_result = timeline_db.find(
@@ -19,7 +20,7 @@ def analyze_comment_word_freq(user: User) -> None:
     )
 
     data: Dict[str, int] = dict(
-        get_word_freq((x["comment_content"] for x in db_result))
+        get_word_freq(x["comment_content"] for x in db_result)
     )
     data = word_split_postprocess(data)
     total_comments_count: int = timeline_db.count_documents(

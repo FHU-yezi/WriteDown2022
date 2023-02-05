@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import TYPE_CHECKING, Dict
 
 import pyecharts.options as opts
 from bson import ObjectId
@@ -16,6 +16,9 @@ from utils.config import config
 from utils.db import interaction_per_hour_db
 from utils.dict_helper import get_reversed_dict
 
+if TYPE_CHECKING:
+    from data.user import User
+
 CurrentConfig.ONLINE_HOST = config.deploy.PyEcharts_CDN
 
 
@@ -31,7 +34,7 @@ class InteractionPerHour(DataModel):
 
     def __init__(
         self,
-        id: str,
+        id: str,  # noqa
         user_id: str,
         is_aviliable: bool,
         data: Dict[str, int],
@@ -44,7 +47,7 @@ class InteractionPerHour(DataModel):
         super().__init__()
 
     @classmethod
-    def from_id(cls, id: str) -> "InteractionPerHour":
+    def from_id(cls, id: str) -> "InteractionPerHour":  # noqa
         db_data = cls.db.find_one({"_id": ObjectId(id)})
         if not db_data:
             raise ValueError
@@ -58,13 +61,13 @@ class InteractionPerHour(DataModel):
         return cls.from_db_data(db_data, flatten=False)
 
     @property
-    def user(self):
+    def user(self) -> User:
         from data.user import User
 
         return User.from_id(self.user_id)
 
     @classmethod
-    def create(cls, user, data: Dict[str, int]) -> "InteractionPerHour":
+    def create(cls, user: User, data: Dict[str, int]) -> "InteractionPerHour":
         insert_result = cls.db.insert_one(
             {
                 "user_id": user.id,
@@ -89,7 +92,7 @@ class InteractionPerHour(DataModel):
             )
             .add_yaxis(
                 "",
-                y_axis=tuple(self.data.values()),
+                y_axis=tuple(self.data.values()),  # type: ignore
                 is_smooth=True,
                 linestyle_opts=opts.LineStyleOpts(
                     color=JIANSHU_COLOR,

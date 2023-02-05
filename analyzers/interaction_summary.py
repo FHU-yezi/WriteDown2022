@@ -1,8 +1,10 @@
-from typing import Any, Dict
+from typing import TYPE_CHECKING, Any, Dict
 
 from data.interaction_summary import InteractionSummary
-from data.user import User
 from utils.db import timeline_db
+
+if TYPE_CHECKING:
+    from data.user import User
 
 
 def analyze_interaction_summary(user: User) -> None:

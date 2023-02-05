@@ -19,7 +19,7 @@ modules_list = get_all_modules_info(config.base_path)
 run_logger.debug(f"模块数量：{len(modules_list)}")
 
 
-def index():
+def index() -> None:
     """落格"""
     put_markdown(
         f"""

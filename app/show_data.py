@@ -25,7 +25,7 @@ VISIBILITY: bool = True
 
 
 def on_show_button_clicked() -> None:
-    user_url: str = pin.user_url
+    user_url: str = pin.user_url  # type: ignore
     slug_from_cookie: Optional[str] = get_user_slug_cookies()
     if not user_url and not slug_from_cookie:
         toast_warn_and_return("请输入用户个人主页链接")
@@ -106,7 +106,7 @@ def show_data() -> None:
         )
         return
     # 如果发生异常，展示错误信息
-    elif user.is_error:
+    if user.is_error:
         put_error_popup(user.error_info)
         put_button(
             "清除账号绑定信息",

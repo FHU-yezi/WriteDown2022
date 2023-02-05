@@ -1,34 +1,40 @@
 from datetime import datetime
 from random import randint
 from time import sleep
-from typing import Dict, Generator, List, Optional
+from typing import TYPE_CHECKING, Any, Dict, Generator, List, Optional
 
 from backoff import expo, on_exception
 from httpx import ConnectError, TimeoutException
 
-from data.user import User
 from utils.config import config
 from utils.constants import DATA_STOP_TIME, DATA_STRAT_TIME, INTERACTION_ORDER
 from utils.db import timeline_db
 from utils.log import run_logger
-from utils.timeline_fetcher import GetUserTimelineInfo
+from utils.timeline_fetcher import get_user_timeline_info
 
-GetUserTimelineInfo = on_exception(
+if TYPE_CHECKING:
+    from data.user import User
+
+
+get_user_timeline_info = on_exception(
     expo,
     (TimeoutException, ConnectError),
     base=2,
     factor=4,
     max_tries=5,
     on_backoff=lambda details: run_logger.warning(
-        f"发生重试，尝试次数：{details['tries']}，等待时间：{round(details['wait'], 3)}"
+        f"发生重试，尝试次数：{details['tries']}，"
+        f"等待时间：{round(details['wait'], 3)}"  # type: ignore
     ),
-)(GetUserTimelineInfo)
+)(get_user_timeline_info)
 
 
-def get_all_data(user_url: str, start_id: Optional[int]) -> Generator[Dict, None, None]:
+def get_all_data(
+    user_url: str, start_id: Optional[int]
+) -> Generator[Dict[str, Any], None, None]:
     max_id: int = start_id - 1 if start_id else 1000000000
     while True:
-        data = GetUserTimelineInfo(user_url, max_id)
+        data = get_user_timeline_info(user_url, max_id)
         # 在配置文件指定的范围内随机 sleep 一段时间
         sleep(
             randint(
@@ -77,5 +83,7 @@ def fetch_timeline_data(user: User) -> None:
     if buffer:
         timeline_db.insert_many(buffer)
         buffer.clear()
-        user.set_fetch_start_id(item["operation_id"])
-        run_logger.debug(f"已保存用户 {user.id} 的时间线数据（{item['operation_id']}）")
+        user.set_fetch_start_id(item["operation_id"])  # type: ignore
+        run_logger.debug(
+            f"已保存用户 {user.id} 的时间线数据（{item['operation_id']}）",  # type: ignore
+        )

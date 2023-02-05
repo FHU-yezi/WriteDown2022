@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import TYPE_CHECKING, Dict, List, Tuple
 
 import pyecharts.options as opts
 from bson import ObjectId
@@ -16,6 +16,9 @@ from utils.constants import INTERACTION_NAME_MAPPING
 from utils.db import interaction_type_db
 from utils.dict_helper import get_reversed_dict
 
+if TYPE_CHECKING:
+    from data.user import User
+
 CurrentConfig.ONLINE_HOST = config.deploy.PyEcharts_CDN
 
 
@@ -32,7 +35,7 @@ class InteractionType(DataModel):
 
     def __init__(
         self,
-        id: str,
+        id: str,  # noqa
         user_id: str,
         is_aviliable: bool,
         total_interactions_count: int,
@@ -47,7 +50,7 @@ class InteractionType(DataModel):
         super().__init__()
 
     @classmethod
-    def from_id(cls, id: str) -> "InteractionType":
+    def from_id(cls, id: str) -> "InteractionType":  # noqa
         db_data = cls.db.find_one({"_id": ObjectId(id)})
         if not db_data:
             raise ValueError
@@ -61,13 +64,13 @@ class InteractionType(DataModel):
         return cls.from_db_data(db_data, flatten=False)
 
     @property
-    def user(self):
+    def user(self) -> User:
         from data.user import User
 
         return User.from_id(self.user_id)
 
     @classmethod
-    def create(cls, user, data: Dict[str, int]) -> "InteractionType":
+    def create(cls, user: User, data: Dict[str, int]) -> "InteractionType":
         insert_result = cls.db.insert_one(
             {
                 "user_id": user.id,
@@ -81,7 +84,7 @@ class InteractionType(DataModel):
 
     def get_graph(self) -> Pie:
         # 对操作名称进行映射，如果找不到对应的文本，则返回原文本
-        data_pair: List[str, int] = [
+        data_pair: List[Tuple[str, int]] = [
             (INTERACTION_NAME_MAPPING.get(name, name), value)
             for name, value in self.data.items()
         ]

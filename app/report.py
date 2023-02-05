@@ -1,6 +1,6 @@
 from typing import Optional
 
-from pywebio.output import Output, put_html, put_markdown, put_row
+from pywebio.output import put_html, put_markdown, put_row
 from pywebio.pin import put_input
 
 from data.user import User, get_waiting_users_count
@@ -32,7 +32,7 @@ def on_clear_cookie_button_clicked() -> None:
     jump_to(get_jump_link("join_queue"), delay=1)
 
 
-def put_generate_my_report(current_report_user_name: str) -> Output:
+def put_generate_my_report(current_report_user_name: str) -> None:
     put_markdown(
         f"""
         您正在查看 {current_report_user_name} 的年度统计数据。
@@ -47,7 +47,7 @@ def put_generate_my_report(current_report_user_name: str) -> Output:
     )
 
 
-def put_show_my_report(current_report_user_name: str, self_user_slug: str) -> Output:
+def put_show_my_report(current_report_user_name: str, self_user_slug: str) -> None:
     put_markdown(
         f"""
         您正在查看 {current_report_user_name} 的年度统计数据。
@@ -67,7 +67,7 @@ def put_show_my_report(current_report_user_name: str, self_user_slug: str) -> Ou
     )
 
 
-def put_share_my_report() -> Output:
+def put_share_my_report() -> None:
     current_link: str = get_current_link()
     put_markdown("分享链接：")
     put_row(
@@ -90,7 +90,7 @@ def put_share_my_report() -> Output:
     )
 
 
-def put_text_report_item(user: User, argument_name: str, item_name: str) -> Output:
+def put_text_report_item(user: User, argument_name: str, item_name: str) -> None:
     text_data_obj = user.__getattribute__(argument_name)
     if text_data_obj.is_aviliable:
         put_markdown(
@@ -101,7 +101,7 @@ def put_text_report_item(user: User, argument_name: str, item_name: str) -> Outp
         put_markdown(grey_text(f"抱歉，您的数据不符合生成{item_name}的标准。"))
 
 
-def put_graph_report_item(user: User, argument_name: str, item_name: str) -> Output:
+def put_graph_report_item(user: User, argument_name: str, item_name: str) -> None:
     text_data_obj = user.__getattribute__(argument_name)
     if text_data_obj.is_aviliable:
         put_html(text_data_obj.get_graph().render_notebook())
@@ -135,7 +135,7 @@ def report() -> None:
         )
         return
     # 如果发生异常，展示错误信息
-    elif user.is_error:
+    if user.is_error:
         put_error_popup(user.error_info)
         return
 

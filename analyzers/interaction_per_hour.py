@@ -1,8 +1,10 @@
-from typing import Dict
+from typing import TYPE_CHECKING, Dict
 
 from data.interaction_per_hour import InteractionPerHour
-from data.user import User
 from utils.db import timeline_db
+
+if TYPE_CHECKING:
+    from data.user import User
 
 
 def analyze_interaction_per_hour(user: User) -> None:

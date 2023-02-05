@@ -1,6 +1,10 @@
+from typing import TYPE_CHECKING
+
 from data.heat_graph import HeatGraph
-from data.user import User
 from utils.db import timeline_db
+
+if TYPE_CHECKING:
+    from data.user import User
 
 
 def analyze_active_data(user: User) -> None:

@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional
+from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
 from bson import ObjectId
 
@@ -6,6 +6,9 @@ from data._base import DataModel
 from utils.db import on_rank_db
 from utils.dict_helper import get_reversed_dict
 from utils.html import grey_text, link
+
+if TYPE_CHECKING:
+    from data.user import User
 
 
 class OnRank(DataModel):
@@ -22,12 +25,12 @@ class OnRank(DataModel):
 
     def __init__(
         self,
-        id: str,
+        id: str,  # noqa
         user_id: str,
         is_aviliable: bool,
         on_rank_count: int,
         top_ranking: Optional[int],
-        articles_data: Optional[Dict[str, Any]],
+        articles_data: Optional[List[Dict[str, Any]]],
     ) -> None:
         self.id = id
         self.user_id = user_id
@@ -39,7 +42,7 @@ class OnRank(DataModel):
         super().__init__()
 
     @classmethod
-    def from_id(cls, id: str) -> "OnRank":
+    def from_id(cls, id: str) -> "OnRank":  # noqa
         db_data = cls.db.find_one({"_id": ObjectId(id)})
         if not db_data:
             raise ValueError
@@ -53,7 +56,7 @@ class OnRank(DataModel):
         return cls.from_db_data(db_data, flatten=False)
 
     @property
-    def user(self):
+    def user(self) -> User:
         from data.user import User
 
         return User.from_id(self.user_id)
@@ -61,7 +64,7 @@ class OnRank(DataModel):
     @classmethod
     def create(
         cls,
-        user,
+        user: User,
         on_rank_count: int,
         top_ranking: Optional[int],
         articles_data: Optional[List[Dict[str, Any]]],
@@ -87,6 +90,9 @@ class OnRank(DataModel):
             f"最高排名第 {self.top_ranking} 名。"
         )
 
+        # 确保 articles_data 不为空，以使类型检查通过
+        assert self.articles_data  # noqa
+
         if self.on_rank_count > len(self.articles_data):
             before_detail = "以下是你的部分上榜记录："
         else:
@@ -105,8 +111,13 @@ class OnRank(DataModel):
         )
 
         on_rank_search_tool_ad = grey_text(
-            f"（查看上榜详情请点击访问 "
-            f"{link('上榜文章查询工具', 'https://tools.sscreator.com/?app=on_rank_article_viewer', new_window=True)}）"
+            "（查看上榜详情请点击访问 "
+            + link(
+                "上榜文章查询工具",
+                "https://tools.sscreator.com/?app=on_rank_article_viewer",
+                new_window=True,
+            )
+            + "）"
         )
 
         return "\n\n".join(

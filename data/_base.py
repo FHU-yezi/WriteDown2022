@@ -48,7 +48,7 @@ class DataModel:
         return attr_name in self._dirty
 
     @classmethod
-    def from_id(cls, id: str):
+    def from_id(cls, id: str):  # noqa
         """从 ID 构建数据模型
 
         Args:
@@ -66,7 +66,7 @@ class DataModel:
         return cls.from_db_data(db_data)
 
     @classmethod
-    def from_db_data(cls, db_data: Dict, flatten: bool = True):
+    def from_db_data(cls, db_data: Dict, flatten: bool = True):  # noqa
         """从数据字典构建数据模型
 
         Args:

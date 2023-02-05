@@ -1,5 +1,4 @@
-from datetime import datetime
-from typing import Dict, Optional
+from typing import TYPE_CHECKING, Dict, Optional
 
 from bson import ObjectId
 
@@ -13,6 +12,10 @@ from utils.db import interaction_summary_db
 from utils.dict_helper import get_reversed_dict
 from utils.html import link
 
+if TYPE_CHECKING:
+    from datetime import datetime
+
+    from data.user import User
 
 class InteractionSummary(DataModel):
     db = interaction_summary_db
@@ -34,7 +37,7 @@ class InteractionSummary(DataModel):
 
     def __init__(
         self,
-        id: str,
+        id: str,  # noqa
         user_id: str,
         is_aviliable: bool,
         interactions_data: Dict[str, int],
@@ -63,7 +66,7 @@ class InteractionSummary(DataModel):
         super().__init__()
 
     @classmethod
-    def from_id(cls, id: str) -> "InteractionSummary":
+    def from_id(cls, id: str) -> "InteractionSummary":  # noqa
         db_data = cls.db.find_one({"_id": ObjectId(id)})
         if not db_data:
             raise ValueError
@@ -77,7 +80,7 @@ class InteractionSummary(DataModel):
         return cls.from_db_data(db_data, flatten=False)
 
     @property
-    def user(self):
+    def user(self) -> User:
         from data.user import User
 
         return User.from_id(self.user_id)
@@ -85,7 +88,7 @@ class InteractionSummary(DataModel):
     @classmethod
     def create(
         cls,
-        user,
+        user: User,
         interactions_data: Dict[str, int],
         max_interactions_date: Optional[datetime],
         max_interactions_count: Optional[int],
@@ -148,7 +151,7 @@ class InteractionSummary(DataModel):
 
         if self.max_likes_user_name:
             max_likes_user_part = (
-                f"你最喜欢给 {link(self.max_likes_user_name, self.max_likes_user_url, new_window=True)} 的文章点赞，"
+                f"你最喜欢给 {link(self.max_likes_user_name, self.max_likes_user_url, new_window=True)} 的文章点赞，"  # type: ignore
                 f"这一年你为 TA 送上了 {self.max_likes_user_likes_count} 个赞。"
             )
         else:
@@ -156,7 +159,7 @@ class InteractionSummary(DataModel):
 
         if self.max_comments_user_name:
             max_comments_user_part = (
-                f"你最喜欢评论 {link(self.max_comments_user_name, self.max_comments_user_url, new_window=True)} 的文章，"
+                f"你最喜欢评论 {link(self.max_comments_user_name, self.max_comments_user_url, new_window=True)} 的文章，"  # type: ignore
                 f"这一年你在 TA 的文章下评论了 {self.max_comments_user_comments_count} 次。"
             )
         else:

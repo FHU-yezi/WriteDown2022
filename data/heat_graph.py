@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Dict
+from typing import TYPE_CHECKING, Dict
 
 import pyecharts.options as opts
 from bson import ObjectId
@@ -16,6 +16,10 @@ from utils.chart import (
 from utils.config import config
 from utils.db import heat_graph_db
 from utils.dict_helper import get_reversed_dict
+
+if TYPE_CHECKING:
+    from data.user import User
+
 
 CurrentConfig.ONLINE_HOST = config.deploy.PyEcharts_CDN
 
@@ -35,7 +39,7 @@ class HeatGraph(DataModel):
 
     def __init__(
         self,
-        id: str,
+        id: str,  # noqa
         user_id: str,
         is_aviliable: bool,
         max_interactions_count: int,
@@ -54,7 +58,7 @@ class HeatGraph(DataModel):
         super().__init__()
 
     @classmethod
-    def from_id(cls, id: str) -> "HeatGraph":
+    def from_id(cls, id: str) -> "HeatGraph":  # noqa
         db_data = cls.db.find_one({"_id": ObjectId(id)})
         if not db_data:
             raise ValueError
@@ -68,13 +72,13 @@ class HeatGraph(DataModel):
         return cls.from_db_data(db_data, flatten=False)
 
     @property
-    def user(self):
+    def user(self) -> User:
         from data.user import User
 
         return User.from_id(self.user_id)
 
     @classmethod
-    def create(cls, user, data: Dict[str, int]) -> "HeatGraph":
+    def create(cls, user: User, data: Dict[str, int]) -> "HeatGraph":
         insert_result = cls.db.insert_one(
             {
                 "user_id": user.id,

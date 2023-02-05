@@ -1,5 +1,5 @@
-from typing import Dict, List
 from datetime import datetime
+from typing import Dict, List
 
 DATA_STRAT_TIME = datetime(2022, 1, 1, 0, 0, 0)
 DATA_STOP_TIME = datetime(2022, 12, 31, 23, 59, 59)

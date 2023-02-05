@@ -1,9 +1,10 @@
-from pywebio.output import popup, put_markdown
-from widgets.button import put_button
-from utils.page import reload
 from typing import Callable
 
+from pywebio.output import popup, put_markdown
+
 from utils.html import link
+from utils.page import reload
+from widgets.button import put_button
 
 
 def put_processing_popup(

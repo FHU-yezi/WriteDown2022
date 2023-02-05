@@ -11,17 +11,17 @@ from JianshuResearchTools.convert import (
 )
 
 
-def ArticleSlugToArticleUrl(article_slug: str) -> str:
+def article_slug_to_article_url(article_slug: str) -> str:
     AssertType(article_slug, str)
     return f"https://www.jianshu.com/p/{article_slug}"
 
 
-def NotebookSlugToNotebookUrl(notebook_slug: str) -> str:
+def notebook_slug_to_notebook_url(notebook_slug: str) -> str:
     AssertType(notebook_slug, str)
     return f"https://www.jianshu.com/nb/{notebook_slug}"
 
 
-def GetUserTimelineInfo(user_url: str, max_id: int = 1000000000) -> List[Dict]:
+def get_user_timeline_info(user_url: str, max_id: int = 1000000000) -> List[Dict]:
     """获取用户动态信息
 
     ! 这是对 JRT 中关注文集数据解析错误的修正，仅作为临时解决方案使用
@@ -57,7 +57,7 @@ def GetUserTimelineInfo(user_url: str, max_id: int = 1000000000) -> List[Dict]:
             item_data["target_article_title"] = block.xpath(
                 "//a[@class='title']/text()"
             )[0]
-            item_data["target_article_url"] = ArticleSlugToArticleUrl(
+            item_data["target_article_url"] = article_slug_to_article_url(
                 block.xpath("//a[@class='title']/@href")[0][3:]
             )
             item_data["target_user_name"] = block.xpath(
@@ -92,7 +92,7 @@ def GetUserTimelineInfo(user_url: str, max_id: int = 1000000000) -> List[Dict]:
             item_data["target_article_title"] = block.xpath(
                 "//blockquote/div/span/a/text()"
             )[0]
-            item_data["target_article_url"] = ArticleSlugToArticleUrl(
+            item_data["target_article_url"] = article_slug_to_article_url(
                 block.xpath("//blockquote/div/span/a/@href")[0][3:]
             )
             item_data["target_user_name"] = block.xpath("//blockquote/div/a/text()")[0]
@@ -105,7 +105,7 @@ def GetUserTimelineInfo(user_url: str, max_id: int = 1000000000) -> List[Dict]:
             item_data["target_article_title"] = block.xpath(
                 "//a[@class='title']/text()"
             )[0]
-            item_data["target_article_url"] = ArticleSlugToArticleUrl(
+            item_data["target_article_url"] = article_slug_to_article_url(
                 block.xpath("//a[@class='title']/@href")[0][3:]
             )
             item_data["target_article_reads_count"] = int(
@@ -134,7 +134,7 @@ def GetUserTimelineInfo(user_url: str, max_id: int = 1000000000) -> List[Dict]:
             item_data["target_article_title"] = block.xpath(
                 "//a[@class='title']/text()"
             )[0]
-            item_data["target_article_url"] = ArticleSlugToArticleUrl(
+            item_data["target_article_url"] = article_slug_to_article_url(
                 block.xpath("//a[@class='title']/@href")[0][3:]
             )
             item_data["target_user_name"] = block.xpath(
@@ -176,7 +176,7 @@ def GetUserTimelineInfo(user_url: str, max_id: int = 1000000000) -> List[Dict]:
                 "//a[@class='title']/text()"
             )[0]
             # 此处对 JRT 中的错误进行了修复
-            item_data["target_notebook_url"] = NotebookSlugToNotebookUrl(
+            item_data["target_notebook_url"] = notebook_slug_to_notebook_url(
                 block.xpath("//a[@class='title']/@href")[0][4:]
             )
             item_data["target_notebook_avatar_url"] = block.xpath(
