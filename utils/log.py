@@ -4,15 +4,13 @@ from os import listdir
 from queue import Queue
 from threading import Thread
 from time import sleep
-from typing import TYPE_CHECKING, Dict, List, Optional
+from typing import Dict, List, Optional
+
+from pymongo.collection import Collection
+from pywebio.session import _SessionInfoType
 
 from utils.config import config
 from utils.db import access_log_db, run_log_db
-
-if TYPE_CHECKING:
-    from pymongo.collection import Collection
-    from pywebio.session import _SessionInfoType
-
 
 RUN_LOG_LEVELS = {
     "DEBUG": 0,

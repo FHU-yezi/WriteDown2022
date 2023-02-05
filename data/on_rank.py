@@ -1,14 +1,12 @@
-from typing import TYPE_CHECKING, Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 from bson import ObjectId
 
 from data._base import DataModel
+from data.user import User
 from utils.db import on_rank_db
 from utils.dict_helper import get_reversed_dict
 from utils.html import grey_text, link
-
-if TYPE_CHECKING:
-    from data.user import User
 
 
 class OnRank(DataModel):

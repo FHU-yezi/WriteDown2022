@@ -1,11 +1,7 @@
-from typing import TYPE_CHECKING
-
 from pymongo import IndexModel, MongoClient
+from pymongo.database import Database
 
 from utils.config import config
-
-if TYPE_CHECKING:
-    from pymongo.database import Database
 
 
 def init_db(db_name: str) -> Database:

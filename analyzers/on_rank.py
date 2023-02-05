@@ -1,11 +1,9 @@
-from typing import TYPE_CHECKING, List
+from typing import List
 
 from data.on_rank import OnRank
+from data.user import User
 from utils.constants import DATA_STOP_TIME, DATA_STRAT_TIME
 from utils.db import article_fp_rank_db, timeline_db
-
-if TYPE_CHECKING:
-    from data.user import User
 
 
 def analyze_on_rank(user: User) -> None:

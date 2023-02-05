@@ -1,20 +1,17 @@
 from datetime import datetime
 from random import randint
 from time import sleep
-from typing import TYPE_CHECKING, Any, Dict, Generator, List, Optional
+from typing import Any, Dict, Generator, List, Optional
 
 from backoff import expo, on_exception
 from httpx import ConnectError, TimeoutException
 
+from data.user import User
 from utils.config import config
 from utils.constants import DATA_STOP_TIME, DATA_STRAT_TIME, INTERACTION_ORDER
 from utils.db import timeline_db
 from utils.log import run_logger
 from utils.timeline_fetcher import get_user_timeline_info
-
-if TYPE_CHECKING:
-    from data.user import User
-
 
 get_user_timeline_info = on_exception(
     expo,

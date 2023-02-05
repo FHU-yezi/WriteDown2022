@@ -1,8 +1,10 @@
-from typing import TYPE_CHECKING, Dict, Optional
+from datetime import datetime
+from typing import Dict, Optional
 
 from bson import ObjectId
 
 from data._base import DataModel
+from data.user import User
 from utils.constants import (
     INTERACTION_NAME_MAPPING,
     INTERACTION_ORDER,
@@ -12,10 +14,6 @@ from utils.db import interaction_summary_db
 from utils.dict_helper import get_reversed_dict
 from utils.html import link
 
-if TYPE_CHECKING:
-    from datetime import datetime
-
-    from data.user import User
 
 class InteractionSummary(DataModel):
     db = interaction_summary_db

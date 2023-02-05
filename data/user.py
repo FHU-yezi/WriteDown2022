@@ -1,6 +1,6 @@
 from datetime import datetime
 from enum import IntEnum
-from typing import TYPE_CHECKING, Dict, Optional
+from typing import Dict, Optional
 
 from bson import ObjectId
 from JianshuResearchTools.assert_funcs import (
@@ -15,14 +15,6 @@ from data._base import DataModel
 from utils.db import user_db
 from utils.dict_helper import get_reversed_dict
 from utils.exceptions import DuplicateUserError, UserNotExistError
-
-if TYPE_CHECKING:
-    from data.heat_graph import HeatGraph
-    from data.interaction_per_hour import InteractionPerHour
-    from data.interaction_summary import InteractionSummary
-    from data.interaction_type import InteractionType
-    from data.on_rank import OnRank
-    from data.wordcloud import Wordcloud
 
 
 class UserStatus(IntEnum):
@@ -149,37 +141,37 @@ class User(DataModel):
         return bool(self.first_show_time)
 
     @property
-    def interaction_summary(self) -> InteractionSummary:
+    def interaction_summary(self):  # noqa
         from data.interaction_summary import InteractionSummary
 
         return InteractionSummary.from_user_id(self.id)
 
     @property
-    def heat_graph(self) -> HeatGraph:
+    def heat_graph(self):  # noqa
         from data.heat_graph import HeatGraph
 
         return HeatGraph.from_user_id(self.id)
 
     @property
-    def wordcloud(self) -> Wordcloud:
+    def wordcloud(self):  # noqa
         from data.wordcloud import Wordcloud
 
         return Wordcloud.from_user_id(self.id)
 
     @property
-    def interaction_type(self) -> InteractionType:
+    def interaction_type(self):  # noqa
         from data.interaction_type import InteractionType
 
         return InteractionType.from_user_id(self.id)
 
     @property
-    def interaction_per_hour(self) -> InteractionPerHour:
+    def interaction_per_hour(self):  # noqa
         from data.interaction_per_hour import InteractionPerHour
 
         return InteractionPerHour.from_user_id(self.id)
 
     @property
-    def on_rank(self) -> OnRank:
+    def on_rank(self): # noqa
         from data.on_rank import OnRank
 
         return OnRank.from_user_id(self.id)

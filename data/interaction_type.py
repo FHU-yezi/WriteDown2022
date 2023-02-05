@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Dict, List, Tuple
+from typing import Dict, List, Tuple
 
 import pyecharts.options as opts
 from bson import ObjectId
@@ -6,6 +6,7 @@ from pyecharts.charts import Pie
 from pyecharts.globals import CurrentConfig
 
 from data._base import DataModel
+from data.user import User
 from utils.chart import (
     ANIMATION_OFF,
     NO_LEGEND,
@@ -15,9 +16,6 @@ from utils.config import config
 from utils.constants import INTERACTION_NAME_MAPPING
 from utils.db import interaction_type_db
 from utils.dict_helper import get_reversed_dict
-
-if TYPE_CHECKING:
-    from data.user import User
 
 CurrentConfig.ONLINE_HOST = config.deploy.PyEcharts_CDN
 

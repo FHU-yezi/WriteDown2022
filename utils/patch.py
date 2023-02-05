@@ -1,10 +1,8 @@
 from functools import wraps
-from typing import TYPE_CHECKING, Callable, List
+from typing import Callable, List
 
 from utils.config import config
-
-if TYPE_CHECKING:
-    from utils.module_finder import Module
+from utils.module_finder import Module
 
 
 def patch_add_html_name_desc(

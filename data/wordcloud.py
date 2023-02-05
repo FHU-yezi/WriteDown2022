@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Dict
+from typing import Dict
 
 import pyecharts.options as opts
 from bson import ObjectId
@@ -6,13 +6,11 @@ from pyecharts.charts import WordCloud as _WordCloud
 from pyecharts.globals import CurrentConfig
 
 from data._base import DataModel
+from data.user import User
 from utils.chart import JIANSHU_COLOR, TOOLBOX_ONLY_SAVE_PNG_WHITE_2X
 from utils.config import config
 from utils.db import wordcloud_db
 from utils.dict_helper import get_reversed_dict
-
-if TYPE_CHECKING:
-    from data.user import User
 
 CurrentConfig.ONLINE_HOST = config.deploy.PyEcharts_CDN
 
