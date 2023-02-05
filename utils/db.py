@@ -1,15 +1,15 @@
 from pymongo import IndexModel, MongoClient
+from pymongo.database import Database
 
 from utils.config import config
 
 
-def init_DB(db_name: str):
+def init_db(db_name: str) -> Database:
     connection: MongoClient = MongoClient(config.db.host, config.db.port)
-    db = connection[db_name]
-    return db
+    return connection[db_name]
 
 
-db = init_DB(config.db.main_database)
+db = init_db(config.db.main_database)
 
 run_log_db = db.run_log
 access_log_db = db.access_log
@@ -23,7 +23,7 @@ interaction_summary_db = db.interaction_summary
 on_rank_db = db.on_rank
 general_data_db = db.general_data
 
-article_FP_rank_db = init_DB("JFetcherData").article_FP_rank
+article_fp_rank_db = init_db("JFetcherData").article_FP_rank
 
 # 创建索引
 

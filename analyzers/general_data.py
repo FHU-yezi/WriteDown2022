@@ -1,11 +1,12 @@
 from datetime import datetime, timedelta
+from typing import Any, Dict, List
+
 from JianshuResearchTools.convert import UserUrlToUserSlug
-from typing import Dict, List, Any
 
 from data.general_analyze import GeneralData
 from utils.db import heat_graph_db, user_db
 
-ALL_DAYS_IN_2022 = tuple((datetime(2022, 1, 1) + timedelta(days=x) for x in range(365)))
+ALL_DAYS_IN_2022 = tuple(datetime(2022, 1, 1) + timedelta(days=x) for x in range(365))
 active_data_query_statements: Dict[str, Dict[str, str]] = {
     x.isoformat(): {"$sum": f"$data.{x.isoformat()}"} for x in ALL_DAYS_IN_2022
 }

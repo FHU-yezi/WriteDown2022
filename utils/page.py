@@ -17,7 +17,7 @@ def jump_to(url: str, new_window: bool = False, delay: int = 0) -> None:
 
 
 def get_current_link() -> str:
-    return eval_js("window.location.href")
+    return eval_js("window.location.href")  # type: ignore
 
 
 def copy_to_clipboard(text: str) -> None:
@@ -37,21 +37,17 @@ def copy_to_clipboard(text: str) -> None:
     )
 
 
-def can_use_URL_Scheme() -> bool:
+def can_use_url_scheme() -> bool:
     ua: str = str(info.user_agent)
 
-    for item in URL_SCHEME_ALLOW_LIST:
-        if item in ua:
-            return True
-
-    return False
+    return any(item in ua for item in URL_SCHEME_ALLOW_LIST)
 
 
 def get_base_url() -> str:
     return eval_js(
         'window.location.href.split("?")[0]'
         '.replace(window.pathname != "/" ? window.pathname : "", "")'
-    )
+    )  # type: ignore
 
 
 def reload(delay: int = 0) -> None:
@@ -75,7 +71,7 @@ def set_cookies(data: Dict[str, Union[str, int, float]]) -> None:
 
 
 def get_cookies() -> Dict[str, str]:
-    cookies_str: str = eval_js("document.cookie")
+    cookies_str: str = eval_js("document.cookie")  # type: ignore
     if not cookies_str:  # Cookie 字符串为空
         return {}
 
@@ -100,11 +96,13 @@ def remove_user_slug_cookies() -> None:
 
 def get_query_params() -> Dict[str, str]:
     url = eval_js("window.location.href")
-    result: Dict[str, str] = dict([x.split("=") for x in url.split("?")[1].split("&")])
+    result: Dict[str, str] = dict(
+        [x.split("=") for x in url.split("?")[1].split("&")],  # type: ignore
+    )
     if result.get("app"):  # 去除子页面参数
         del result["app"]
     return result
 
 
 def is_full_width() -> bool:
-    return eval_js('$("#output-container")[0].clientWidth === 880')
+    return eval_js('$("#output-container")[0].clientWidth === 880')  # type: ignore

@@ -50,7 +50,7 @@ class User(DataModel):
 
     def __init__(
         self,
-        id: str,
+        id: str,  # noqa
         status: int,
         name: str,
         slug: str,
@@ -85,7 +85,7 @@ class User(DataModel):
         super().__init__()
 
     @classmethod
-    def from_id(cls, id: str) -> "User":
+    def from_id(cls, id: str) -> "User":  # noqa
         db_data = cls.db.find_one({"_id": ObjectId(id)})
         if not db_data:
             raise UserNotExistError(f"未找到 _id = {id} 的用户")
@@ -141,37 +141,37 @@ class User(DataModel):
         return bool(self.first_show_time)
 
     @property
-    def interaction_summary(self):
+    def interaction_summary(self):  # noqa
         from data.interaction_summary import InteractionSummary
 
         return InteractionSummary.from_user_id(self.id)
 
     @property
-    def heat_graph(self):
+    def heat_graph(self):  # noqa
         from data.heat_graph import HeatGraph
 
         return HeatGraph.from_user_id(self.id)
 
     @property
-    def wordcloud(self):
+    def wordcloud(self):  # noqa
         from data.wordcloud import Wordcloud
 
         return Wordcloud.from_user_id(self.id)
 
     @property
-    def interaction_type(self):
+    def interaction_type(self):  # noqa
         from data.interaction_type import InteractionType
 
         return InteractionType.from_user_id(self.id)
 
     @property
-    def interaction_per_hour(self):
+    def interaction_per_hour(self):  # noqa
         from data.interaction_per_hour import InteractionPerHour
 
         return InteractionPerHour.from_user_id(self.id)
 
     @property
-    def on_rank(self):
+    def on_rank(self): # noqa
         from data.on_rank import OnRank
 
         return OnRank.from_user_id(self.id)
@@ -205,8 +205,8 @@ class User(DataModel):
 
         try:
             insert_result = cls.db.insert_one(data_to_insert)
-        except DuplicateKeyError:
-            raise DuplicateUserError(f"用户 {user_name}（{user_url}）已存在")
+        except DuplicateKeyError as e:
+            raise DuplicateUserError(f"用户 {user_name}（{user_url}）已存在") from e
 
         return cls.from_id(insert_result.inserted_id)
 

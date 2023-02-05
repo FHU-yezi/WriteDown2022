@@ -7,7 +7,7 @@ from jieba.posseg import cut
 
 ALLOWED_WORD_TYPES: Set[str] = {
     x.strip()
-    for x in open(
+    for x in open(  # noqa
         "word_split_assets/allowed_word_types.txt", encoding="utf-8"
     ).readlines()
 }

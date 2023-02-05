@@ -36,7 +36,7 @@ class GeneralData(DataModel):
 
     def __init__(
         self,
-        id: str,
+        id: str,  # noqa
         analyze_time: datetime,
         total_users_count: int,
         active_data: Dict[str, int],
@@ -57,7 +57,7 @@ class GeneralData(DataModel):
         super().__init__()
 
     @classmethod
-    def from_id(cls, id: str) -> "GeneralData":
+    def from_id(cls, id: str) -> "GeneralData":  # noqa
         db_data = cls.db.find_one({"_id": ObjectId(id)})
         if not db_data:
             raise ValueError

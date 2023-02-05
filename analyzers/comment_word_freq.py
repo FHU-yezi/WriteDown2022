@@ -19,7 +19,7 @@ def analyze_comment_word_freq(user: User) -> None:
     )
 
     data: Dict[str, int] = dict(
-        get_word_freq((x["comment_content"] for x in db_result))
+        get_word_freq(x["comment_content"] for x in db_result)
     )
     data = word_split_postprocess(data)
     total_comments_count: int = timeline_db.count_documents(

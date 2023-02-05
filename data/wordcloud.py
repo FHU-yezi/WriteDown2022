@@ -6,6 +6,7 @@ from pyecharts.charts import WordCloud as _WordCloud
 from pyecharts.globals import CurrentConfig
 
 from data._base import DataModel
+from data.user import User
 from utils.chart import JIANSHU_COLOR, TOOLBOX_ONLY_SAVE_PNG_WHITE_2X
 from utils.config import config
 from utils.db import wordcloud_db
@@ -27,7 +28,7 @@ class Wordcloud(DataModel):
 
     def __init__(
         self,
-        id: str,
+        id: str,  # noqa
         user_id: str,
         is_aviliable: bool,
         total_comments_count: int,
@@ -42,7 +43,7 @@ class Wordcloud(DataModel):
         super().__init__()
 
     @classmethod
-    def from_id(cls, id: str) -> "Wordcloud":
+    def from_id(cls, id: str) -> "Wordcloud":  # noqa
         db_data = cls.db.find_one({"_id": ObjectId(id)})
         if not db_data:
             raise ValueError
@@ -56,14 +57,14 @@ class Wordcloud(DataModel):
         return cls.from_db_data(db_data, flatten=False)
 
     @property
-    def user(self):
+    def user(self) -> User:
         from data.user import User
 
         return User.from_id(self.user_id)
 
     @classmethod
     def create(
-        cls, user, data: Dict[str, int], total_comments_count: int
+        cls, user: User, data: Dict[str, int], total_comments_count: int
     ) -> "Wordcloud":
         insert_result = cls.db.insert_one(
             {

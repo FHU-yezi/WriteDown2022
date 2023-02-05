@@ -7,6 +7,7 @@ from pyecharts.charts import Calendar
 from pyecharts.globals import CurrentConfig
 
 from data._base import DataModel
+from data.user import User
 from utils.chart import (
     ANIMATION_OFF,
     CALENDAR_MONTH_CHINESE_DAY_YEAR_HIDE,
@@ -35,7 +36,7 @@ class HeatGraph(DataModel):
 
     def __init__(
         self,
-        id: str,
+        id: str,  # noqa
         user_id: str,
         is_aviliable: bool,
         max_interactions_count: int,
@@ -54,7 +55,7 @@ class HeatGraph(DataModel):
         super().__init__()
 
     @classmethod
-    def from_id(cls, id: str) -> "HeatGraph":
+    def from_id(cls, id: str) -> "HeatGraph":  # noqa
         db_data = cls.db.find_one({"_id": ObjectId(id)})
         if not db_data:
             raise ValueError
@@ -68,13 +69,13 @@ class HeatGraph(DataModel):
         return cls.from_db_data(db_data, flatten=False)
 
     @property
-    def user(self):
+    def user(self) -> User:
         from data.user import User
 
         return User.from_id(self.user_id)
 
     @classmethod
-    def create(cls, user, data: Dict[str, int]) -> "HeatGraph":
+    def create(cls, user: User, data: Dict[str, int]) -> "HeatGraph":
         insert_result = cls.db.insert_one(
             {
                 "user_id": user.id,

@@ -25,7 +25,7 @@ VISIBILITY: bool = True
 
 
 def on_submit_button_clicked() -> None:
-    user_url: str = pin.user_url
+    user_url: str = pin.user_url  # type: ignore
 
     try:
         user = User.create(user_url)

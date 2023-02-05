@@ -10,7 +10,7 @@ DESC: str = "感谢这些简友 / 项目为「落格」做出的贡献"
 VISIBILITY: bool = True
 
 
-THANKS_DATA: Dict[str, Any] = safe_load(open("thanks.yaml", "r", encoding="utf-8"))
+THANKS_DATA: Dict[str, Any] = safe_load(open("thanks.yaml", encoding="utf-8"))  # noqa
 
 
 def thanks() -> None:
