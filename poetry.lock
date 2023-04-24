@@ -22,18 +22,6 @@ test = ["contextlib2", "coverage[toml] (>=4.5)", "hypothesis (>=4.0)", "mock (>=
 trio = ["trio (>=0.16,<0.22)"]
 
 [[package]]
-name = "backoff"
-version = "2.2.1"
-description = "Function decoration for backoff and retry"
-category = "main"
-optional = false
-python-versions = ">=3.7,<4.0"
-files = [
-    {file = "backoff-2.2.1-py3-none-any.whl", hash = "sha256:63579f9a0628e06278f7e47b7d7d5b6ce20dc65c5e96a6f3ca99a6adca0396e8"},
-    {file = "backoff-2.2.1.tar.gz", hash = "sha256:03f829f5bb1923180821643f8753b0502c3b682293992485b0eef2807afa5cba"},
-]
-
-[[package]]
 name = "black"
 version = "23.3.0"
 description = "The uncompromising code formatter."
@@ -1004,4 +992,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "d117e5c3be05943986bf175608a3da7e2c322cc9738f74bbef0c946e76ab6486"
+content-hash = "d27552aa6784bdf303708ee4da142bcf4fdd789acfc639528a77e110fea9f6f3"

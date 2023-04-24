@@ -3,27 +3,15 @@ from random import randint
 from time import sleep
 from typing import Any, Dict, Generator, List, Optional
 
-from backoff import expo, on_exception
-from httpx import ConnectError, TimeoutException
-
 from data.user import User
 from utils.config import config
 from utils.constants import DATA_STOP_TIME, DATA_STRAT_TIME, INTERACTION_ORDER
 from utils.db import timeline_db
 from utils.log import run_logger
+from utils.retry import retry_on_network_error
 from utils.timeline_fetcher import get_user_timeline_info
 
-get_user_timeline_info = on_exception(
-    expo,
-    (TimeoutException, ConnectError),
-    base=2,
-    factor=4,
-    max_tries=5,
-    on_backoff=lambda details: run_logger.warning(
-        f"发生重试，尝试次数：{details['tries']}，"
-        f"等待时间：{round(details['wait'], 3)}"  # type: ignore
-    ),
-)(get_user_timeline_info)
+get_user_timeline_info = retry_on_network_error(get_user_timeline_info)
 
 
 def get_all_data(
@@ -34,7 +22,7 @@ def get_all_data(
         data = get_user_timeline_info(user_url, max_id)
         # 在配置文件指定的范围内随机 sleep 一段时间
         sleep(
-            randint(
+            randint(  # noqa: S311
                 config.fetcher.sleep_interval_low,
                 config.fetcher.sleep_interval_high,
             )
