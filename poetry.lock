@@ -262,17 +262,6 @@ high-perf = ["ujson (>=5.7.0,<6.0.0)"]
 md-convert = ["tomd (>=0.1.3,<0.2.0)"]
 
 [[package]]
-name = "jieba"
-version = "0.42.1"
-description = "Chinese Words Segmentation Utilities"
-category = "main"
-optional = false
-python-versions = "*"
-files = [
-    {file = "jieba-0.42.1.tar.gz", hash = "sha256:055ca12f62674fafed09427f176506079bc135638a14e23e25be909131928db2"},
-]
-
-[[package]]
 name = "jinja2"
 version = "3.1.2"
 description = "A very fast and expressive template engine."
@@ -988,4 +977,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "025f0739361842a33f0efbdc6bc576512629874205ef4890c4cbdfb0a2bd3fdd"
+content-hash = "34daca62ac445b119f64b56a485fda059cce828449dd6377222dcdc53e698bf4"
