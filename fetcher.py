@@ -3,15 +3,16 @@ from random import randint
 from time import sleep
 from typing import Any, Dict, Generator, List, Optional
 
+from JianshuResearchTools.user import GetUserTimelineInfo
+
 from data.user import User
 from utils.config import config
 from utils.constants import DATA_STOP_TIME, DATA_STRAT_TIME, INTERACTION_ORDER
 from utils.db import timeline_db
 from utils.log import run_logger
 from utils.retry import retry_on_network_error
-from utils.timeline_fetcher import get_user_timeline_info
 
-get_user_timeline_info = retry_on_network_error(get_user_timeline_info)
+GetUserTimelineInfo = retry_on_network_error(GetUserTimelineInfo)
 
 
 def get_all_data(
@@ -19,7 +20,7 @@ def get_all_data(
 ) -> Generator[Dict[str, Any], None, None]:
     max_id: int = start_id - 1 if start_id else 1000000000
     while True:
-        data = get_user_timeline_info(user_url, max_id)
+        data = GetUserTimelineInfo(user_url, max_id)
         # 在配置文件指定的范围内随机 sleep 一段时间
         sleep(
             randint(  # noqa: S311
