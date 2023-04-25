@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import Dict, Optional
 
 from bson import ObjectId
+from sspeedup.pywebio.html import link
 
 from data._base import DataModel
 from data.user import User
@@ -12,7 +13,6 @@ from utils.constants import (
 )
 from utils.db import interaction_summary_db
 from utils.dict_helper import get_reversed_dict
-from utils.html import link
 
 
 class InteractionSummary(DataModel):

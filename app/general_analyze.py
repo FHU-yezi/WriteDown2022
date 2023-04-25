@@ -1,7 +1,7 @@
 from pywebio.output import put_html, put_markdown, put_warning
+from sspeedup.pywebio.html import grey, link
 
 from data.general_analyze import GeneralData
-from utils.html import grey_text, link
 
 NAME: str = "聚合分析"
 DESC: str = "查看「落格」用户的综合数据"
@@ -17,7 +17,7 @@ def general_analyze() -> None:
         put_warning("聚合分析数据暂不可用，请稍后再试")
         return
 
-    put_markdown(grey_text(f"分析时间：{data.analyze_time.replace(microsecond=0)}"))
+    put_markdown(grey(f"分析时间：{data.analyze_time.replace(microsecond=0)}"))
 
     put_markdown(
         f"""

@@ -4,15 +4,14 @@ from JianshuResearchTools.convert import UserUrlToUserSlug
 from JianshuResearchTools.exceptions import InputError, ResourceError
 from pywebio.output import put_markdown
 from pywebio.pin import pin, put_input
+from sspeedup.pywebio.callbacks import on_enter_pressed
+from sspeedup.pywebio.navigation import jump_to, reload
 
 from data.user import User, get_waiting_users_count
-from utils.callback import bind_enter_key_callback
 from utils.exceptions import DuplicateUserError, UserNotExistError
 from utils.page import (
     get_jump_link,
     get_user_slug_cookies,
-    jump_to,
-    reload,
     remove_user_slug_cookies,
     set_user_slug_cookies,
 )
@@ -87,7 +86,7 @@ def join_queue() -> None:
             block=True,
         )
 
-        bind_enter_key_callback(
-            "user_url",
-            on_press=lambda _: on_submit_button_clicked(),
-        )
+    on_enter_pressed(
+        "user_url",
+        func=on_submit_button_clicked,
+    )
