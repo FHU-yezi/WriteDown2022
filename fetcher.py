@@ -47,8 +47,7 @@ def fetch_timeline_data(user: User) -> None:
 
     buffer: List[Dict] = []
     for item in get_all_data(user.url, user.fetch_start_id):
-        operation_time = item["operation_time"].replace(tzinfo=None)
-        item["operation_time"] = operation_time  # 处理时区问题
+        operation_time = item["operation_time"]
 
         if operation_time > DATA_STOP_TIME:
             continue  # 晚于 2022 年，尚未进入采集范围
