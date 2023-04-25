@@ -43,7 +43,9 @@ def get_all_data(
 
 def fetch_timeline_data(user: User) -> None:
     if user.fetch_start_id:
-        run_logger.warning(f"用户 {user.id} 上次采集任务未完成，将从 {user.fetch_start_id} 处继续采集")
+        run_logger.warning(
+            "用户的上一次采集任务未完成，将自动继续采集", user_id=user.id, breakpoint_id=user.fetch_start_id
+        )
 
     buffer: List[Dict] = []
     for item in get_all_data(user.url, user.fetch_start_id):
@@ -62,13 +64,13 @@ def fetch_timeline_data(user: User) -> None:
             timeline_db.insert_many(buffer)
             buffer.clear()
             user.set_fetch_start_id(item["operation_id"])
-            run_logger.debug(f"已保存用户 {user.id} 的时间线数据（{item['operation_id']}）")
+            run_logger.debug(
+                "已保存用户的时间线数据", user_id=user.id, operation_id=item["operation_id"]
+            )
 
     # 采集完成，将剩余数据存入数据库
     if buffer:
         timeline_db.insert_many(buffer)
         buffer.clear()
         user.set_fetch_start_id(item["operation_id"])  # type: ignore
-        run_logger.debug(
-            f"已保存用户 {user.id} 的时间线数据（{item['operation_id']}）",  # type: ignore
-        )
+        run_logger.debug("已保存用户的时间线数据", user_id=user.id, operation_id=item["operation_id"])  # type: ignore
