@@ -13,12 +13,12 @@ pyecharts = "^2.0.0"
 pymongo = "^4.3.3"
 pywebio = "^1.8.2"
 pyyaml = "^6.0"
-sspeedup = {version = "^0.10.0", extras = ["logging", "pywebio", "ability-word-split"]}
+sspeedup = {version = "^0.11.0", extras = ["logging", "pywebio", "ability-word-split"]}
 
 
 [tool.poetry.group.dev.dependencies]
 black = "^23.3.0"
-ruff = "^0.0.262"
+ruff = "^0.0.263"
 pyright = "^1.1.292"
 
 [build-system]
