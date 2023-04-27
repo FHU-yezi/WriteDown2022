@@ -22,7 +22,7 @@ def patch_add_footer(func: Callable[[], None], _: Module) -> Callable[[], None]:
     def footer_patched() -> None:
         func()
 
-        from utils.page import set_footer
+        from sspeedup.pywebio.footer import set_footer
 
         set_footer(config.footer)
 

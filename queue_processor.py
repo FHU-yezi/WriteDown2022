@@ -21,16 +21,16 @@ def queue_processor_thread(start_sleep_time: int) -> None:
             continue
 
         user.set_status_fetching()
-        run_logger.debug(f"开始采集用户 {user.id} 的时间线数据")
+        run_logger.debug("开始采集用户时间线数据", user_id=user.id)
         try:
             fetch_timeline_data(user)
         except Exception as e:
             user.set_status_fetch_error("获取时间线数据失败")
-            run_logger.error(f"获取用户 {user.id} 的时间线数据时发生异常：{repr(e)}")
+            run_logger.error("获取用户时间线数据时发生异常", user_id=user.id, exception=e)
             continue
         else:
             user.set_status_waiting_for_analyze()
-            run_logger.debug(f"用户 {user.id} 的时间线数据采集已完成")
+            run_logger.debug("用户时间线数据采集完成", user_id=user.id)
 
         user.set_status_analyzing()
         for analyze_item_name, analyze_func in ANALYZE_FUNCS.items():
@@ -38,13 +38,13 @@ def queue_processor_thread(start_sleep_time: int) -> None:
                 analyze_func(user)
             except Exception as e:
                 user.set_status_analyze_error(f"分析{analyze_item_name}失败")
-                run_logger.error(f"分析 {user.id} 的{analyze_item_name}时发生异常：{repr(e)}")
+                run_logger.error("分析数据时发生异常", user_id=user.id, analyze_item_name=analyze_item_name, exception=e)
                 break
             else:
                 user.set_status_analyze_done()
-                run_logger.debug(f"已完成对 {user.id} 的{analyze_item_name}分析")
+                run_logger.debug("数据分析成功", user_id=user.id, analyze_item_name=analyze_item_name)
 
-        run_logger.debug(f"已完成对 {user.id} 的全部处理流程")
+        run_logger.debug("已完成该用户的全部处理流程", user_id=user.id)
 
 
 def general_data_analyzer_thread() -> None:
@@ -53,7 +53,7 @@ def general_data_analyzer_thread() -> None:
         try:
             analyze_general_data()
         except Exception as e:
-            run_logger.error(f"分析整体总结数据时发生异常：{repr(e)}")
+            run_logger.error("分析整体总结数据时发生异常", exception=e)
         else:
             run_logger.debug("已成功分析整体总结数据")
 
@@ -70,7 +70,7 @@ def clean_unfinished_job() -> None:
         },
     ).modified_count
     if cleaned_count:
-        run_logger.warning(f"有 {cleaned_count} 个未完成的任务，已重新加入队列")
+        run_logger.warning("有未完成的任务，已重新加入队列", unfinished_task_count=cleaned_count)
     else:
         run_logger.info("没有未完成的任务")
 

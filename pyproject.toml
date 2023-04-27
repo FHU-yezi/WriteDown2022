@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "writedown2022"
-version = "1.4.0"
+version = "1.5.0"
 description = "简书 2022「落格计划」"
 authors = ["yezi <yehaowei20060411@qq.com>"]
 license = "MIT"
@@ -8,18 +8,17 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.8"
-backoff = "^2.2.1"
-jianshuresearchtools = "^2.10.1"
+jianshuresearchtools = "^2.11.0"
 pyecharts = "^2.0.0"
-jieba = "^0.42.1"
 pymongo = "^4.3.3"
-pywebio = "^1.7.1"
+pywebio = "^1.8.2"
 pyyaml = "^6.0"
+sspeedup = {version = "^0.11.0", extras = ["logging", "pywebio", "ability-word-split"]}
 
 
 [tool.poetry.group.dev.dependencies]
-black = "^22.12.0"
-ruff = "^0.0.241"
+black = "^23.3.0"
+ruff = "^0.0.263"
 pyright = "^1.1.292"
 
 [build-system]

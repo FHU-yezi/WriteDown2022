@@ -26,6 +26,10 @@ _DEFAULT_CONFIG = {
         "analyze_interval": 3600,
     },
     "footer": "",
+    "word_split_ability": {
+        "host": "localhost",
+        "port": 6001,
+    },
     "db": {
         "host": "localhost",
         "port": 27017,

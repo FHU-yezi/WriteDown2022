@@ -1,16 +1,16 @@
 from typing import Callable
 
 from pywebio.output import popup, put_markdown
+from sspeedup.pywebio.html import link
+from sspeedup.pywebio.navigation import reload
 
-from utils.html import link
-from utils.page import reload
 from widgets.button import put_button
 
 
 def put_processing_popup(
     user_name: str, waiting_users_count: int, clear_cookie_callback: Callable[[], None]
 ) -> None:
-    with popup(title="数据处理中", size="large", closable=False):
+    with popup(title="数据处理中", size="large", closable=False): # type: ignore
         put_markdown(
             f"""
             {user_name}，我们正在全力处理您的数据，过一会再来试试吧。
@@ -35,7 +35,7 @@ def put_processing_popup(
 
 
 def put_error_popup(error_info: str) -> None:
-    with popup(title="发生异常", size="large", closable=False):
+    with popup(title="发生异常", size="large", closable=False): # type: ignore
         # TODO
         put_markdown(
             f"""

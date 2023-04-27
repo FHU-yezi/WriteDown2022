@@ -1,9 +1,8 @@
 from typing import Any, Dict
 
 from pywebio.output import put_markdown
+from sspeedup.pywebio.html import link
 from yaml import safe_load
-
-from utils.html import link
 
 NAME: str = "鸣谢"
 DESC: str = "感谢这些简友 / 项目为「落格」做出的贡献"

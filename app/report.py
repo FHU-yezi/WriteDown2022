@@ -2,19 +2,18 @@ from typing import Optional
 
 from pywebio.output import put_html, put_markdown, put_row
 from pywebio.pin import put_input
+from sspeedup.pywebio.clipboard import copy_to_clipboard
+from sspeedup.pywebio.html import grey
+from sspeedup.pywebio.navigation import get_full_url, jump_to
+from sspeedup.pywebio.query_params import get_query_params
 
 from data.user import User, get_waiting_users_count
 from utils.constants import GRAPH_REPORT_ITEM_NAME, TEXT_REPORT_ITEM_NAME
 from utils.exceptions import UserNotExistError
-from utils.html import grey_text
 from utils.page import (
-    copy_to_clipboard,
-    get_current_link,
     get_jump_link,
-    get_query_params,
     get_user_slug_cookies,
     is_full_width,
-    jump_to,
     remove_user_slug_cookies,
 )
 from widgets.button import put_button
@@ -68,7 +67,7 @@ def put_show_my_report(current_report_user_name: str, self_user_slug: str) -> No
 
 
 def put_share_my_report() -> None:
-    current_link: str = get_current_link()
+    current_link: str = get_full_url()
     put_markdown("分享链接：")
     put_row(
         [
@@ -98,7 +97,7 @@ def put_text_report_item(user: User, argument_name: str, item_name: str) -> None
             sanitize=False,
         )
     else:
-        put_markdown(grey_text(f"抱歉，您的数据不符合生成{item_name}的标准。"))
+        put_markdown(grey(f"抱歉，您的数据不符合生成{item_name}的标准。"))
 
 
 def put_graph_report_item(user: User, argument_name: str, item_name: str) -> None:
@@ -106,7 +105,7 @@ def put_graph_report_item(user: User, argument_name: str, item_name: str) -> Non
     if text_data_obj.is_aviliable:
         put_html(text_data_obj.get_graph().render_notebook())
     else:
-        put_markdown(grey_text(f"抱歉，您的数据不符合生成{item_name}的标准。"))
+        put_markdown(grey(f"抱歉，您的数据不符合生成{item_name}的标准。"))
 
 
 def on_copy_link_button_clicked(current_link: str) -> None:
@@ -148,7 +147,7 @@ def report() -> None:
         f"""
         # {user.name}的 2022 年度数据统计
 
-        {grey_text(
+        {grey(
             f'生成时间：{user.end_fetch_time.strftime(r"%Y-%m-%d %H:%M:%S")} | '
             f'展示次数：{user.result_show_count}'
         )}
@@ -160,7 +159,7 @@ def report() -> None:
 
     # 如果图表不能完整展示，提示左右滑动查看
     if not is_full_width():
-        put_markdown(grey_text("（左右滑动查看图表）"))
+        put_markdown(grey("（左右滑动查看图表）"))
 
     for argument_name, item_name in GRAPH_REPORT_ITEM_NAME.items():
         put_graph_report_item(user, argument_name, item_name)

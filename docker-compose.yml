@@ -3,10 +3,12 @@ version: "3"
 networks:
   mongodb:
     external: true
+  cutup:
+    external: true
 
 services:
   main:
-    image: write-down-2022:1.4.0
+    image: write-down-2022:1.5.0
     build: .
     ports:
       - "8607:8607"
@@ -14,13 +16,14 @@ services:
       - "./config.yaml:/app/config.yaml:ro"
     networks:
       - mongodb
+      - cutup
     environment:
       - PYTHONUNBUFFERED=1
     deploy:
       resources:
         limits:
-          cpus: "1.00"
-          memory: 384M
+          cpus: "0.50"
+          memory: 128M
       restart_policy:
         condition: on-failure
         delay: 5s

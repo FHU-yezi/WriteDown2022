@@ -4,14 +4,13 @@ from JianshuResearchTools.convert import UserUrlToUserSlug
 from JianshuResearchTools.exceptions import InputError, ResourceError
 from pywebio.output import put_success, toast
 from pywebio.pin import pin, put_input
+from sspeedup.pywebio.navigation import jump_to, reload
 
 from data.user import User, get_waiting_users_count
 from utils.exceptions import UserNotExistError
 from utils.page import (
     get_jump_link,
     get_user_slug_cookies,
-    jump_to,
-    reload,
     remove_user_slug_cookies,
     set_user_slug_cookies,
 )

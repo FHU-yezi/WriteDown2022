@@ -1,12 +1,12 @@
 from typing import Any, Dict, List, Optional
 
 from bson import ObjectId
+from sspeedup.pywebio.html import grey, link
 
 from data._base import DataModel
 from data.user import User
 from utils.db import on_rank_db
 from utils.dict_helper import get_reversed_dict
-from utils.html import grey_text, link
 
 
 class OnRank(DataModel):
@@ -108,7 +108,7 @@ class OnRank(DataModel):
             ],
         )
 
-        on_rank_search_tool_ad = grey_text(
+        on_rank_search_tool_ad = grey(
             "（查看上榜详情请点击访问 "
             + link(
                 "上榜文章查询工具",
